@@ -34,3 +34,12 @@
   - E2E tests use `getComputedStyle` via Playwright's `EvaluateAsync<string>()` for style assertions
   - CSS arrows use `::after` pseudo-elements with Unicode arrow characters
   - Category colors: data-input=#1976D2, processing=#00897B, approval=#F57C00, output=#388E3C
+
+## 2026-02-22 - US-004: Commit sidebar Material Design styling and navigation tests
+- Sidebar themed with dark background, active link highlight, E2E navigation tests
+- Files changed: wwwroot/css/app.css, Shared/NavMenu.razor, NavigationTests.cs
+- **Learnings for future iterations:**
+  - Sidebar colors: background #20232a, active highlight #61dafb (rgb(97, 218, 251))
+  - Active links have `border-left: 3px solid #61dafb` indicator
+  - NavMenu uses Blazor `NavLink` component with `NavLinkMatch.All` for home route
+  - E2E tests for CSS use pattern: `EvaluateAsync<string>("el => window.getComputedStyle(el).propertyName")`
