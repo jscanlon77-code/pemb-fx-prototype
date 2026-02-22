@@ -68,3 +68,12 @@
   - Use `EvaluateAsync<string>("el => window.getComputedStyle(el).fontFamily")` to check font-family
   - Use `EvaluateAsync<int>("el => el.offsetWidth")` to verify element has non-zero rendered dimensions
   - Material Icons font-family string contains "Material Icons" when loaded from Google Fonts CDN
+
+## 2026-02-22 - US-008: Add E2E test for category background colors
+- Added DiagramPage_Nodes_HaveCategoryBackgroundColors test to DiagramPageTests.cs
+- Files changed: tests/.../DiagramPageTests.cs
+- **Learnings for future iterations:**
+  - Use `EvaluateAsync<string>("el => window.getComputedStyle(el).backgroundColor")` for background color assertions
+  - Browser returns colors in `rgb(r, g, b)` format — assert against that, not hex
+  - Test one representative node per category: node 0 (data-input), node 2 (processing), node 5 (approval), node 6 (output)
+  - Category-to-color mapping: data-input=rgb(25, 118, 210), processing=rgb(0, 137, 123), approval=rgb(245, 124, 0), output=rgb(56, 142, 60)

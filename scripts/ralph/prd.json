@@ -122,8 +122,8 @@
         "Commit with message: feat: US-008 - Add E2E test for category background colors"
       ],
       "priority": 8,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Test checks background-color via getComputedStyle for one node per category: data-input (node 0), processing (node 2), approval (node 5), output (node 6)."
     },
     {
       "id": "US-009",
