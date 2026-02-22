@@ -50,8 +50,6 @@ public class WizardPageTests : AppPageTest
     [Test]
     public async Task WizardPage_StepProgress_ShowsAllNineStepLabels()
     {
-        // RadzenSteps renders a .rz-steps container with one label per step.
-        // The wizard uses its own Back/Next buttons — there are no .rz-steps-prev/next elements.
         var stepsContainer = Page.Locator(".rz-steps");
         await stepsContainer.WaitForAsync(new LocatorWaitForOptions { Timeout = 8000 });
 
@@ -61,14 +59,14 @@ public class WizardPageTests : AppPageTest
             "Trade Instructions", "Approvals", "Execution", "Booking", "Reporting"
         ];
 
-        // RadzenSteps renders step items as <li> elements inside .rz-steps.
-        // Wait for at least the first item to ensure Blazor has connected and rendered.
-        var stepItems = stepsContainer.Locator("li");
+        // RadzenSteps renders step items inside a <ul role="tablist">.
+        // Wait for the first item to ensure Blazor has rendered all step labels.
+        var stepItems = stepsContainer.Locator("ul[role='tablist'] li");
         await stepItems.First.WaitForAsync(new LocatorWaitForOptions { Timeout = 8000 });
 
         var count = await stepItems.CountAsync();
         count.Should().Be(expectedLabels.Length,
-            "RadzenSteps must render one <li> per wizard step");
+            "RadzenSteps must render one item per wizard step");
     }
 
     // ── step 0 & 1 content ────────────────────────────────────────────────────────────────

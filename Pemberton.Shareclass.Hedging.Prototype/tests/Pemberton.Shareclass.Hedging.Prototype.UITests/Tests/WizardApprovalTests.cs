@@ -112,11 +112,10 @@ public class WizardApprovalTests : AppPageTest
         // Vm.Next() returns early when Step == 5 && !AllApproved.
         var nextBtn = Page.Locator("button").Filter(new LocatorFilterOptions { HasText = "Next" });
         await nextBtn.ClickAsync();
-        await Page.WaitForTimeoutAsync(500); // give Blazor time to re-render
 
+        // Verify the approvals header is still visible (wizard didn't advance)
         var approvalsHeader = Page.Locator("h4").Filter(new LocatorFilterOptions { HasText = "Approvals" });
-        (await approvalsHeader.IsVisibleAsync()).Should().BeTrue(
-            "wizard must remain on step 5 when not all approvals are in place");
+        await Expect(approvalsHeader).ToBeVisibleAsync(new() { Timeout = 3000 });
     }
 
     [Test]
@@ -136,32 +135,28 @@ public class WizardApprovalTests : AppPageTest
     {
         await NavigateToApprovalStep();
 
-        // Approve each approver in grid order (0-3).  Using Nth(i) avoids the
-        // partial-text ambiguity where "Fund Finance Approver" matches both that
-        // row and the "Fund Finance Approver Originator" row.
-        // Each ApproveAsync has a 500 ms internal delay, so we wait 700 ms per click.
-        var allApproveBtns = Page.Locator("button").Filter(new LocatorFilterOptions { HasText = "Approve" });
-        for (int i = 0; i < ApproverNames.Length; i++)
+        // Approve each approver by locating their row to avoid partial-text ambiguity.
+        foreach (var name in ApproverNames)
         {
-            var approveBtn = allApproveBtns.Nth(i);
+            var nameCell = Page.GetByText(name, new PageGetByTextOptions { Exact = true });
+            var row = nameCell.Locator("xpath=ancestor::tr[1]");
+            var approveBtn = row.Locator("button").Filter(new LocatorFilterOptions { HasText = "Approve" });
             await approveBtn.WaitForAsync(new LocatorWaitForOptions { Timeout = 3000 });
             await approveBtn.ClickAsync();
-            await Page.WaitForTimeoutAsync(700);
+            // Wait for the button to become disabled, confirming the approval completed
+            await Expect(approveBtn).ToBeDisabledAsync(new() { Timeout = 3000 });
         }
 
-        // After all four approvals the required-message must disappear ...
+        // After all four approvals the required-message must disappear
         var message = Page.GetByText("All four approvals are required before continuing");
-        (await message.IsHiddenAsync()).Should().BeTrue(
-            "the warning message must disappear once all approvals are received");
+        await Expect(message).ToBeHiddenAsync(new() { Timeout = 5000 });
 
-        // ... and clicking Next must advance to step 6 (the Approvals h4 disappears).
+        // Clicking Next must advance past step 5
         var nextBtn = Page.Locator("button").Filter(new LocatorFilterOptions { HasText = "Next" });
         await nextBtn.ClickAsync();
-        await Page.WaitForTimeoutAsync(500);
 
         var approvalsHeader = Page.Locator("h4").Filter(new LocatorFilterOptions { HasText = "Approvals" });
-        (await approvalsHeader.IsHiddenAsync()).Should().BeTrue(
-            "wizard must advance past step 5 once all approvals have been granted");
+        await Expect(approvalsHeader).ToBeHiddenAsync(new() { Timeout = 5000 });
     }
 
     // ── last step ─────────────────────────────────────────────────────────────
@@ -175,21 +170,17 @@ public class WizardApprovalTests : AppPageTest
         // Approve all four
         foreach (var name in ApproverNames)
         {
-            // Locate the exact approver name cell, then walk up to its <tr> to find
-            // the Approve button — avoids partial-match issues with "Fund Finance Approver"
-            // vs "Fund Finance Approver Originator".
             var nameCell = Page.GetByText(name, new PageGetByTextOptions { Exact = true });
             var approveBtn = nameCell.Locator("xpath=ancestor::tr[1]")
                 .Locator("button").Filter(new LocatorFilterOptions { HasText = "Approve" });
             await approveBtn.WaitForAsync(new LocatorWaitForOptions { Timeout = 3000 });
             await approveBtn.ClickAsync();
-            await Page.WaitForTimeoutAsync(700);
+            await Expect(approveBtn).ToBeDisabledAsync(new() { Timeout = 3000 });
         }
 
         // 5 → 6
         var nextBtn = Page.Locator("button").Filter(new LocatorFilterOptions { HasText = "Next" });
         await nextBtn.ClickAsync();
-        await Page.WaitForTimeoutAsync(1000); // step 6 fires ExecuteStep (async void BookMovements)
 
         // 6 → 7 (Reporting h4)
         var step7 = Page.Locator("h4").Filter(new LocatorFilterOptions { HasText = "Reporting" });

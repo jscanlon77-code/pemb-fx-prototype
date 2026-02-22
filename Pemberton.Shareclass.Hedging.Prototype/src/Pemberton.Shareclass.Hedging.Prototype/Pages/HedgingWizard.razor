@@ -3,16 +3,18 @@
 
 <h3>Hedging Execution Wizard</h3>
 
-<RadzenSteps @bind-Value="Vm.Step">
-    <RadzenStepsItem Text="BNY Data" />
-    <RadzenStepsItem Text="Record FX Data" />
-    <RadzenStepsItem Text="Validation" />
-    <RadzenStepsItem Text="Calculation" />
-    <RadzenStepsItem Text="Trade Instructions" />
-    <RadzenStepsItem Text="Approvals" />
-    <RadzenStepsItem Text="Execution" />
-    <RadzenStepsItem Text="Booking" />
-    <RadzenStepsItem Text="Reporting" />
+<RadzenSteps @bind-Value="Vm.Step" ShowStepsButtons="false">
+    <Steps>
+        <RadzenStepsItem Text="BNY Data" />
+        <RadzenStepsItem Text="Record FX Data" />
+        <RadzenStepsItem Text="Validation" />
+        <RadzenStepsItem Text="Calculation" />
+        <RadzenStepsItem Text="Trade Instructions" />
+        <RadzenStepsItem Text="Approvals" />
+        <RadzenStepsItem Text="Execution" />
+        <RadzenStepsItem Text="Booking" />
+        <RadzenStepsItem Text="Reporting" />
+    </Steps>
 </RadzenSteps>
 
 <div class="mt-4">
