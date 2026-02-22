@@ -157,4 +157,37 @@ public class DiagramPageTests : AppPageTest
         width.Should().BeGreaterThan(0,
             "icon elements must have non-zero width (confirming the font rendered)");
     }
+
+    // ── category colors ───────────────────────────────────────────────
+
+    [Test]
+    public async Task DiagramPage_Nodes_HaveCategoryBackgroundColors()
+    {
+        var nodes = Page.Locator(".hedge-node");
+        await nodes.First.WaitForAsync(new LocatorWaitForOptions { Timeout = 8000 });
+
+        // data-input: #1976D2 = rgb(25, 118, 210) — node 0
+        var dataInputBg = await nodes.Nth(0).EvaluateAsync<string>(
+            "el => window.getComputedStyle(el).backgroundColor");
+        dataInputBg.Should().Be("rgb(25, 118, 210)",
+            "data-input nodes must have background #1976D2");
+
+        // processing: #00897B = rgb(0, 137, 123) — node 2
+        var processingBg = await nodes.Nth(2).EvaluateAsync<string>(
+            "el => window.getComputedStyle(el).backgroundColor");
+        processingBg.Should().Be("rgb(0, 137, 123)",
+            "processing nodes must have background #00897B");
+
+        // approval: #F57C00 = rgb(245, 124, 0) — node 5
+        var approvalBg = await nodes.Nth(5).EvaluateAsync<string>(
+            "el => window.getComputedStyle(el).backgroundColor");
+        approvalBg.Should().Be("rgb(245, 124, 0)",
+            "approval nodes must have background #F57C00");
+
+        // output: #388E3C = rgb(56, 142, 60) — node 6
+        var outputBg = await nodes.Nth(6).EvaluateAsync<string>(
+            "el => window.getComputedStyle(el).backgroundColor");
+        outputBg.Should().Be("rgb(56, 142, 60)",
+            "output nodes must have background #388E3C");
+    }
 }
