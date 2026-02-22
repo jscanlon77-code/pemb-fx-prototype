@@ -97,3 +97,15 @@
   - Node.js installed via nodesource setup script for apt — `setup_20.x` for LTS
   - Claude CLI installed globally via `npm install -g @anthropic-ai/claude-code`
   - No ENTRYPOINT set yet — that's US-011's responsibility
+
+## 2026-02-22 - US-011: Create container entrypoint script
+- Created `scripts/ralph/entrypoint.sh` as the Docker container entrypoint
+- Updated `scripts/ralph/Dockerfile` to set `ENTRYPOINT ["scripts/ralph/entrypoint.sh"]`
+- Files changed: scripts/ralph/entrypoint.sh (new), scripts/ralph/Dockerfile (updated)
+- **Learnings for future iterations:**
+  - entrypoint.sh validates `ANTHROPIC_API_KEY`, exits non-zero with clear message if missing
+  - Git configured with `--global` for user.name/email; `/workspace` marked as safe directory
+  - GITHUB_TOKEN rewrites origin URL to `https://x-access-token:TOKEN@github.com/...` via sed
+  - Branch checkout: reads `branchName` from prd.json, checks out or creates branch
+  - Exports `RALPH_DOCKER=1` before exec'ing into ralph.sh — US-013 will use this for conditional push
+  - Dockerfile adds `chmod +x` for both entrypoint.sh and ralph.sh to ensure scripts are executable in container

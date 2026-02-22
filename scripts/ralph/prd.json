@@ -169,8 +169,8 @@
         "Dockerfile ENTRYPOINT is updated to [\"scripts/ralph/entrypoint.sh\"]"
       ],
       "priority": 11,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Created entrypoint.sh: validates ANTHROPIC_API_KEY, configures git user/email, rewrites remote with GITHUB_TOKEN, checks out PRD branch, exports RALPH_DOCKER=1, execs into ralph.sh. Updated Dockerfile with ENTRYPOINT."
     },
     {
       "id": "US-012",
