@@ -85,3 +85,15 @@
   - Use `EvaluateAsync<string>("el => window.getComputedStyle(el).transition")` to check transition property
   - The computed `transition` shorthand includes "transform" when `transition: transform 0.2s` is set in CSS
   - Only need to check one node since all `.hedge-node` elements share the same CSS rule
+
+## 2026-02-22 - US-010: Create Dockerfile for Ralph sandbox environment
+- Created `scripts/ralph/Dockerfile` using `mcr.microsoft.com/dotnet/sdk:8.0` base image
+- Created `.dockerignore` at repo root excluding bin/, obj/, .git/, node_modules/, IDE files, test results
+- Dockerfile installs jq, git, Node.js 20.x (LTS via nodesource), and Claude CLI via npm
+- Uses `COPY . /workspace`, `WORKDIR /workspace`, and runs `dotnet restore` on the solution
+- Files changed: scripts/ralph/Dockerfile (new), .dockerignore (new)
+- **Learnings for future iterations:**
+  - Docker build context is ~125MB after .dockerignore exclusions
+  - Node.js installed via nodesource setup script for apt — `setup_20.x` for LTS
+  - Claude CLI installed globally via `npm install -g @anthropic-ai/claude-code`
+  - No ENTRYPOINT set yet — that's US-011's responsibility

@@ -139,6 +139,70 @@
       "priority": 9,
       "passes": true,
       "notes": "Test checks computed transition property via getComputedStyle and asserts it contains 'transform' for the hover elevation effect."
+    },
+    {
+      "id": "US-010",
+      "title": "Create Dockerfile for Ralph sandbox environment",
+      "description": "Create a Dockerfile at scripts/ralph/Dockerfile and a .dockerignore at the repo root that build an isolated sandbox image for running Ralph. The image must contain the .NET SDK, jq, Node.js, Claude CLI, and git so Ralph can build, test, and commit inside the container without affecting the host.",
+      "acceptanceCriteria": [
+        "scripts/ralph/Dockerfile exists and uses mcr.microsoft.com/dotnet/sdk:8.0 (or equivalent devcontainer base)",
+        "Dockerfile installs jq, Node.js (LTS), git, and Claude CLI via npm install -g @anthropic-ai/claude-code",
+        "Dockerfile uses COPY . /workspace and WORKDIR /workspace, then runs dotnet restore",
+        "No secrets (API keys, tokens) are baked into the image",
+        ".dockerignore at repo root excludes bin/, obj/, .git/, node_modules/, and other build artifacts",
+        "docker build -f scripts/ralph/Dockerfile . succeeds with no errors"
+      ],
+      "priority": 10,
+      "passes": true,
+      "notes": "Dockerfile uses dotnet/sdk:8.0 base, installs jq/git/Node.js 20.x/Claude CLI. .dockerignore excludes bin/, obj/, .git/, node_modules/, IDE files. Docker build succeeds with dotnet restore."
+    },
+    {
+      "id": "US-011",
+      "title": "Create container entrypoint script",
+      "description": "Create scripts/ralph/entrypoint.sh — the container entrypoint that validates the environment, configures git, and hands off to ralph.sh. Update the Dockerfile to set ENTRYPOINT to this script.",
+      "acceptanceCriteria": [
+        "scripts/ralph/entrypoint.sh exists and is executable (chmod +x)",
+        "entrypoint.sh validates that ANTHROPIC_API_KEY is set, exits non-zero with a clear message if missing",
+        "entrypoint.sh configures git user.name and user.email for in-container commits",
+        "When GITHUB_TOKEN is set, entrypoint.sh rewrites the git remote origin URL to https://x-access-token:$GITHUB_TOKEN@github.com/... format",
+        "entrypoint.sh checks out the PRD branch (from prd.json branchName) and execs into ralph.sh",
+        "Dockerfile ENTRYPOINT is updated to [\"scripts/ralph/entrypoint.sh\"]"
+      ],
+      "priority": 11,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-012",
+      "title": "Create wrapper script to build and run Ralph in Docker",
+      "description": "Create scripts/ralph/docker-run.sh — a host-side convenience script that builds the Docker image, runs the container with correct environment variables, and prints a summary banner on completion.",
+      "acceptanceCriteria": [
+        "scripts/ralph/docker-run.sh exists and is executable (chmod +x)",
+        "Script builds the Docker image using scripts/ralph/Dockerfile with a tagged name (e.g. ralph-sandbox)",
+        "Script runs the container with --rm, passing through ANTHROPIC_API_KEY and GITHUB_TOKEN from the host environment",
+        "Script accepts a --max-iterations <n> argument and passes it to ralph.sh inside the container",
+        "Script prints a summary banner after the container exits (success/failure, branch name)",
+        "Running ./scripts/ralph/docker-run.sh --help prints usage information"
+      ],
+      "priority": 12,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-013",
+      "title": "Push results branch from container on completion",
+      "description": "Wire up automatic git push of the results branch when Ralph runs inside Docker. ralph.sh should detect the RALPH_DOCKER=1 environment variable and push to origin when GITHUB_TOKEN is also set. docker-run.sh should support a --no-push flag to disable this behavior. Non-Docker behavior must remain unchanged.",
+      "acceptanceCriteria": [
+        "entrypoint.sh exports RALPH_DOCKER=1 before execing into ralph.sh",
+        "ralph.sh conditionally runs git push origin <branch> when both RALPH_DOCKER=1 and GITHUB_TOKEN are set",
+        "When RALPH_DOCKER is unset or not equal to 1, ralph.sh does NOT push (existing behavior preserved)",
+        "docker-run.sh accepts a --no-push flag that sets RALPH_NO_PUSH=1 in the container environment",
+        "When RALPH_NO_PUSH=1 is set, ralph.sh skips the push even if RALPH_DOCKER=1 and GITHUB_TOKEN are set",
+        "Existing non-Docker ralph.sh behavior is completely unchanged"
+      ],
+      "priority": 13,
+      "passes": false,
+      "notes": ""
     }
   ]
 }
