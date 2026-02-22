@@ -201,8 +201,8 @@
         "Existing non-Docker ralph.sh behavior is completely unchanged"
       ],
       "priority": 13,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Added push_if_docker() function to ralph.sh. Pushes to origin when RALPH_DOCKER=1 and GITHUB_TOKEN set, skips when RALPH_NO_PUSH=1. Called on both success and max-iterations exit paths. entrypoint.sh already exported RALPH_DOCKER=1; docker-run.sh already passes --no-push as RALPH_NO_PUSH=1."
     }
   ]
 }

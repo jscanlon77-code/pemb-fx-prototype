@@ -122,3 +122,14 @@
   - Docker run args built as bash array for clean handling of conditional `-e` flags
   - Capture container exit code via `|| EXIT_CODE=$?` pattern to still print summary banner on failure
   - `--no-push` sets `RALPH_NO_PUSH=1` env var — US-013 will use this in ralph.sh to skip push
+
+## 2026-02-22 - US-013: Push results branch from container on completion
+- Added `push_if_docker()` function to ralph.sh that conditionally pushes the branch to origin
+- Function checks three conditions: RALPH_DOCKER=1, GITHUB_TOKEN is set, RALPH_NO_PUSH != 1
+- Called from both exit paths: successful completion (all stories done) and max iterations reached
+- No changes needed to entrypoint.sh (already exports RALPH_DOCKER=1) or docker-run.sh (already passes RALPH_NO_PUSH=1)
+- Files changed: scripts/ralph/ralph.sh
+- **Learnings for future iterations:**
+  - The push function is defined after BRANCH_NAME is read from prd.json, but placed before the archive section for readability — it uses `$BRANCH_NAME` which is set later in the script flow, but only called at the end after BRANCH_NAME is populated
+  - Three env vars control push behavior: RALPH_DOCKER (set by entrypoint.sh), GITHUB_TOKEN (passed from host), RALPH_NO_PUSH (set by docker-run.sh --no-push)
+  - Non-Docker runs are completely unaffected since RALPH_DOCKER is never set outside the container
