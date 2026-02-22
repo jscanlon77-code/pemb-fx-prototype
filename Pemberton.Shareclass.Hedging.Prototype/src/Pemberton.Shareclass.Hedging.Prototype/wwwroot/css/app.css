@@ -27,12 +27,32 @@ body {
 .nav-menu a {
     color: #fff;
     text-decoration: none;
+    display: block;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: color 0.2s, background-color 0.2s;
+    border-left: 3px solid transparent;
+}
+
+.nav-menu a:hover {
+    color: #61dafb;
+    background-color: rgba(255,255,255,0.08);
 }
 
 .nav-menu a.active {
     font-weight: bold;
     pointer-events: auto;
     cursor: pointer;
+    color: #61dafb;
+    border-left: 3px solid #61dafb;
+}
+
+.nav-header {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.45);
+    padding: 16px 15px 6px;
 }
 
 main {

@@ -15,6 +15,8 @@ public class NavigationTests : AppPageTest
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
     }
 
+    // ── existing navigation tests ───────────────────────────────────────
+
     [Test]
     public async Task ClickingDiagramLink_NavigatesToDiagramPage()
     {
@@ -39,7 +41,6 @@ public class NavigationTests : AppPageTest
     [Description("Regression: active sidebar link must remain clickable after CSS fix")]
     public async Task ActiveSidebarLink_HasPointerEventsAuto()
     {
-        // Navigate to wizard so the wizard link becomes active
         await Page.GotoAsync("/wizard");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
@@ -73,13 +74,11 @@ public class NavigationTests : AppPageTest
     [Description("Regression: clicking the active link must not throw or freeze")]
     public async Task ActiveHomeLink_CanBeClicked()
     {
-        // Home is active; clicking it again must succeed
         var homeLink = Page.Locator(".nav-menu a.active");
         await homeLink.WaitForAsync();
         await homeLink.ClickAsync();
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
-        // Still on home (accept both localhost and 127.0.0.1)
         Page.Url.Should().MatchRegex(@"(localhost|127\.0\.0\.1):\d+/?$");
     }
 
@@ -92,10 +91,73 @@ public class NavigationTests : AppPageTest
 
         await Page.Locator(".nav-menu a[href='wizard']").ClickAsync();
 
-        // The wizard nav link must successfully navigate to /wizard — this is the
-        // regression being tested (the link must remain clickable after diagram visit).
         await Page.WaitForURLAsync("**/wizard");
         Page.Url.Should().Contain("/wizard",
             "clicking the wizard nav link from the diagram page must navigate to /wizard");
+    }
+
+    // ── sidebar styling tests ───────────────────────────────────────────
+
+    [Test]
+    [Description("Nav links must have transition property for smooth hover effects")]
+    public async Task SidebarLink_HasTransitionProperty()
+    {
+        var link = Page.Locator(".nav-menu a").First;
+        await link.WaitForAsync();
+
+        var transition = await link.EvaluateAsync<string>(
+            "el => window.getComputedStyle(el).transition");
+
+        transition.Should().Contain("color",
+            "nav links must transition the color property");
+    }
+
+    [Test]
+    [Description("Active nav link must have a highlight color")]
+    public async Task ActiveLink_HasHighlightColor()
+    {
+        await Page.GotoAsync("/wizard");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        var activeLink = Page.Locator(".nav-menu a.active");
+        await activeLink.WaitForAsync();
+
+        var color = await activeLink.EvaluateAsync<string>(
+            "el => window.getComputedStyle(el).color");
+
+        // #61dafb = rgb(97, 218, 251)
+        color.Should().Be("rgb(97, 218, 251)",
+            "active nav link must use the highlight color #61dafb");
+    }
+
+    [Test]
+    [Description("Nav links must use block display for full-width click targets")]
+    public async Task SidebarLink_HasBlockDisplay()
+    {
+        var link = Page.Locator(".nav-menu a").First;
+        await link.WaitForAsync();
+
+        var display = await link.EvaluateAsync<string>(
+            "el => window.getComputedStyle(el).display");
+
+        display.Should().Be("block",
+            "nav links must use display:block for full-width click targets");
+    }
+
+    [Test]
+    [Description("Active link must have a left border indicator")]
+    public async Task ActiveLink_HasLeftBorderIndicator()
+    {
+        await Page.GotoAsync("/wizard");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        var activeLink = Page.Locator(".nav-menu a.active");
+        await activeLink.WaitForAsync();
+
+        var borderLeft = await activeLink.EvaluateAsync<string>(
+            "el => window.getComputedStyle(el).borderLeftStyle");
+
+        borderLeft.Should().Be("solid",
+            "active nav link must have a solid left border indicator");
     }
 }
