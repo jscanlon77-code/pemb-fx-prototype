@@ -21,10 +21,10 @@ public class HedgingWizardViewModel : BaseViewModel, IHedgingWizardViewModel
 
     private readonly List<ApproverStatus> _approvals =
     [
-        new() { ApproverName = ""Fund Finance Approver Originator"" },
-        new() { ApproverName = ""Fund Finance Approver"" },
-        new() { ApproverName = ""PM Approver"" },
-        new() { ApproverName = ""PAMSA Approver"" }
+        new() { ApproverName = "Fund Finance Approver Originator" },
+        new() { ApproverName = "Fund Finance Approver" },
+        new() { ApproverName = "PM Approver" },
+        new() { ApproverName = "PAMSA Approver" }
     ];
 
     public HedgingWizardViewModel(IHedgingEngine engine, IApiService api)
@@ -37,7 +37,7 @@ public class HedgingWizardViewModel : BaseViewModel, IHedgingWizardViewModel
     public int Step
     {
         get => _step;
-        private set => SetProperty(ref _step, value);
+        set => SetProperty(ref _step, value);
     }
 
     public List<BnyData> BnyData => _bnyData;
@@ -60,7 +60,7 @@ public class HedgingWizardViewModel : BaseViewModel, IHedgingWizardViewModel
 
     public IList<ApproverStatus> Approvals => _approvals;
 
-    public bool AllApproved => _approvals.All(a => a.Status == ""Approved"");
+    public bool AllApproved => _approvals.All(a => a.Status == "Approved");
 
     public IEnumerable<object>? ReportingData
     {
@@ -203,7 +203,7 @@ public class HedgingWizardViewModel : BaseViewModel, IHedgingWizardViewModel
 
         foreach (var item in _fxData)
         {
-            string col = $""{item.ShareClassName} ({item.CurrencyPair})"";
+            string col = $"{item.ShareClassName} ({item.CurrencyPair})";
 
             if (!row.ContainsKey(col))
                 row[col] = 0m;
@@ -221,7 +221,7 @@ public class HedgingWizardViewModel : BaseViewModel, IHedgingWizardViewModel
 
         foreach (var item in _bnyData)
         {
-            string col = $""{item.ShareClassName} (Exposure)"";
+            string col = $"{item.ShareClassName} (Exposure)";
 
             if (!row.ContainsKey(col))
                 row[col] = 0m;
@@ -239,9 +239,9 @@ public class HedgingWizardViewModel : BaseViewModel, IHedgingWizardViewModel
 
         await Task.Delay(500);
 
-        approver.Status = ""Approved"";
+        approver.Status = "Approved";
 
-        await _api.LogApprovalAsync(approverName, ""Approved"", DateTime.UtcNow);
+        await _api.LogApprovalAsync(approverName, "Approved", DateTime.UtcNow);
 
         OnPropertyChanged(nameof(Approvals));
         OnPropertyChanged(nameof(AllApproved));
@@ -253,9 +253,9 @@ public class HedgingWizardViewModel : BaseViewModel, IHedgingWizardViewModel
 
         await Task.Delay(500);
 
-        approver.Status = ""Rejected"";
+        approver.Status = "Rejected";
 
-        await _api.LogApprovalAsync(approverName, ""Rejected"", DateTime.UtcNow);
+        await _api.LogApprovalAsync(approverName, "Rejected", DateTime.UtcNow);
 
         OnPropertyChanged(nameof(Approvals));
         OnPropertyChanged(nameof(AllApproved));

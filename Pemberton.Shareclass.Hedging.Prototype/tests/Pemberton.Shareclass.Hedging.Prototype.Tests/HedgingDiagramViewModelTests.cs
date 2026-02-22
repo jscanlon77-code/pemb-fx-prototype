@@ -12,7 +12,7 @@ public class HedgingDiagramViewModelTests
     {
         var vm = new HedgingDiagramViewModel();
 
-        vm.Nodes.Should().Contain(""Approvals"");
-        vm.Nodes.Should().Contain(""Reporting"");
+        vm.Nodes.Should().Contain("Approvals");
+        vm.Nodes.Should().Contain("Reporting");
     }
 }
