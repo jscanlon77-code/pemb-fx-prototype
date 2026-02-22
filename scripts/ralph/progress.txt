@@ -43,3 +43,11 @@
   - Active links have `border-left: 3px solid #61dafb` indicator
   - NavMenu uses Blazor `NavLink` component with `NavLinkMatch.All` for home route
   - E2E tests for CSS use pattern: `EvaluateAsync<string>("el => window.getComputedStyle(el).propertyName")`
+
+## 2026-02-22 - US-005: Commit wizard back-navigation E2E tests
+- Committed WizardBackNavigationTests.cs with 4 back-navigation tests
+- Files changed: tests/.../WizardBackNavigationTests.cs (new)
+- **Learnings for future iterations:**
+  - E2E test helpers `ClickNextAndWaitFor`/`ClickBackAndWaitFor` accept a locator to wait for after click
+  - Back button uses `Page.Locator("button").Filter(new LocatorFilterOptions { HasText = "Back" })`
+  - Wizard step headers are `h4` elements, identifiable by step title text

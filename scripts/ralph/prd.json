@@ -75,8 +75,8 @@
         "Commit with message: feat: US-005 - Commit wizard back-navigation E2E tests"
       ],
       "priority": 5,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "4 back-navigation E2E tests committed. Uses ClickBackAndWaitFor/ClickNextAndWaitFor helper pattern."
     },
     {
       "id": "US-006",
