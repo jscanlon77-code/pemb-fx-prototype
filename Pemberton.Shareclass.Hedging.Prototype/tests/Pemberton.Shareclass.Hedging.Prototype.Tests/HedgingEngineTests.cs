@@ -14,12 +14,12 @@ public class HedgingEngineTests
         var engine = new HedgingEngine();
         var exposures = new List<Exposure>
         {
-            new() { ShareClassId = ""SC01"", ShareClassName = ""Fund A"", CurrencyPair = ""EURUSD"", Amount = 1_000_000m }
+            new() { ShareClassId = "SC01", ShareClassName = "Fund A", CurrencyPair = "EURUSD", Amount = 1_000_000m }
         };
 
         var result = engine.Calculate(exposures);
 
         result.Should().HaveCount(1);
-        result[0].CurrencyPair.Should().Be(""EURUSD"");
+        result[0].CurrencyPair.Should().Be("EURUSD");
     }
 }

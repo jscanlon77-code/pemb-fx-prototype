@@ -17,9 +17,9 @@ public class HedgingWizardViewModelTests
         var api = new Mock<IApiService>();
         var vm = new HedgingWizardViewModel(engine.Object, api.Object);
 
-        await vm.ApproveAsync(""PM Approver"");
+        await vm.ApproveAsync("PM Approver");
 
-        api.Verify(a => a.LogApprovalAsync(""PM Approver"", ""Approved"", It.IsAny<DateTime>()), Times.Once);
+        api.Verify(a => a.LogApprovalAsync("PM Approver", "Approved", It.IsAny<DateTime>()), Times.Once);
     }
 
     [Test]
