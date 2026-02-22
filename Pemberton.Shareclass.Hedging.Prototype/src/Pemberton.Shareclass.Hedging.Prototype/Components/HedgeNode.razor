@@ -1,7 +1,12 @@
-<div class="hedge-node">
-    <strong>@Title</strong>
+<div class="hedge-node @Category" data-step="@StepIndex">
+    <span class="hedge-node-icon material-icons">@Icon</span>
+    <span class="hedge-node-label">Step @StepIndex</span>
+    <strong class="hedge-node-title">@Title</strong>
 </div>
 
 @code {
     [Parameter] public string Title { get; set; } = string.Empty;
+    [Parameter] public string Category { get; set; } = string.Empty;
+    [Parameter] public string Icon { get; set; } = string.Empty;
+    [Parameter] public int StepIndex { get; set; }
 }
