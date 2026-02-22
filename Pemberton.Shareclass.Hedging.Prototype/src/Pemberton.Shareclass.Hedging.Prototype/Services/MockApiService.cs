@@ -45,7 +45,7 @@ public class MockApiService : IApiService
         await Task.Delay(300);
         return new List<object>
         {
-            new { Report = ""Mock reporting data"", Created = DateTime.UtcNow }
+            new { Report = "Mock reporting data", Created = DateTime.UtcNow }
         };
     }
 

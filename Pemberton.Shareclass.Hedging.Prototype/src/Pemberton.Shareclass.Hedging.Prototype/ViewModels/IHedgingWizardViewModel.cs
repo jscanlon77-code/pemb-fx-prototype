@@ -5,7 +5,7 @@ namespace Pemberton.Shareclass.Hedging.Prototype.ViewModels;
 
 public interface IHedgingWizardViewModel
 {
-    int Step { get; }
+    int Step { get; set; }
     List<BnyData> BnyData { get; }
     List<Exposure> FxData { get; }
     List<HedgeInstruction>? Instructions { get; }

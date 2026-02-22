@@ -1,19 +1,24 @@
-@page ""/diagram""
+@page "/diagram"
 @using Blazor.Diagrams
+@using Blazor.Diagrams.Components
 @using Blazor.Diagrams.Core.Models
 @using Blazor.Diagrams.Core.Geometry
 @inject IHedgingDiagramViewModel Vm
 
 <h3>Hedging Workflow Diagram</h3>
 
-<BlazorDiagram Model=""@diagram"" />
+<div style="width:100%; height:500px;">
+    <CascadingValue Value="diagram">
+        <DiagramCanvas />
+    </CascadingValue>
+</div>
 
 @code {
-    private Diagram diagram = default!;
+    private BlazorDiagram diagram = default!;
 
     protected override void OnInitialized()
     {
-        diagram = new Diagram();
+        diagram = new BlazorDiagram();
 
         var nodes = new List<NodeModel>();
 
@@ -22,7 +27,7 @@
 
         foreach (var title in Vm.Nodes)
         {
-            var node = new NodeModel(new Point(x, y))
+            var node = new NodeModel(new Blazor.Diagrams.Core.Geometry.Point(x, y))
             {
                 Title = title
             };
@@ -39,9 +44,9 @@
 
         for (int i = 0; i < nodes.Count - 1; i++)
         {
-            var link = new LinkModel(
-                nodes[i].GetDefaultPort(PortAlignment.Right),
-                nodes[i + 1].GetDefaultPort(PortAlignment.Left));
+            var sourcePort = nodes[i].Ports.First(p => p.Alignment == PortAlignment.Right);
+            var targetPort = nodes[i + 1].Ports.First(p => p.Alignment == PortAlignment.Left);
+            var link = new LinkModel(sourcePort, targetPort);
             diagram.Links.Add(link);
         }
     }

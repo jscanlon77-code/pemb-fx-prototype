@@ -21,13 +21,13 @@ var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler(""/Error"");
+    app.UseExceptionHandler("/Error");
 }
 
 app.UseStaticFiles();
 app.UseRouting();
 
 app.MapBlazorHub();
-app.MapFallbackToPage(""/_Host"");
+app.MapFallbackToPage("/_Host");
 
 app.Run();
