@@ -24,3 +24,13 @@
   - Test file already had `Nodes_ShouldContainApprovalsAndReporting` from before — 4 new WorkflowStep tests added alongside
   - Tests instantiate `HedgingDiagramViewModel` directly (no mocking needed — no service dependencies)
   - Total unit test count is now 8 (3 wizard + 5 diagram)
+
+## 2026-02-22 - US-003: Commit diagram page rewrite with CSS Grid and Material Design
+- Atomic commit of the core UI rewrite: CSS Grid layout, Material Icons, HedgeNode component
+- Files changed: Pages/HedgingDiagram.razor, Components/HedgeNode.razor, wwwroot/css/hedging.css, Pages/_Host.cshtml, csproj, _Imports.razor, DiagramPageTests.cs
+- **Learnings for future iterations:**
+  - Removed Z.Blazor.Diagrams dependency in favor of pure CSS Grid + custom HedgeNode component
+  - HedgeNode.razor uses `@Category` as a CSS class on `.hedge-node` div for color mapping
+  - E2E tests use `getComputedStyle` via Playwright's `EvaluateAsync<string>()` for style assertions
+  - CSS arrows use `::after` pseudo-elements with Unicode arrow characters
+  - Category colors: data-input=#1976D2, processing=#00897B, approval=#F57C00, output=#388E3C
