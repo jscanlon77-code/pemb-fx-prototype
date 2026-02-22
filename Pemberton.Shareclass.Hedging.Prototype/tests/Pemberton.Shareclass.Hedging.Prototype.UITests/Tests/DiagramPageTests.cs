@@ -138,4 +138,23 @@ public class DiagramPageTests : AppPageTest
         (await Page.Locator(".nav-menu a[href='diagram']").IsVisibleAsync()).Should().BeTrue();
         (await Page.Locator(".nav-menu a[href='wizard']").IsVisibleAsync()).Should().BeTrue();
     }
+
+    // ── Material Icons ────────────────────────────────────────────────
+
+    [Test]
+    public async Task DiagramPage_MaterialIcons_FontIsLoaded()
+    {
+        var icons = Page.Locator(".hedge-node-icon");
+        await icons.First.WaitForAsync(new LocatorWaitForOptions { Timeout = 8000 });
+
+        var fontFamily = await icons.First.EvaluateAsync<string>(
+            "el => window.getComputedStyle(el).fontFamily");
+        fontFamily.Should().Contain("Material Icons",
+            "icon elements must use the 'Material Icons' font-family");
+
+        var width = await icons.First.EvaluateAsync<int>(
+            "el => el.offsetWidth");
+        width.Should().BeGreaterThan(0,
+            "icon elements must have non-zero width (confirming the font rendered)");
+    }
 }
