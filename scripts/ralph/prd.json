@@ -185,8 +185,8 @@
         "Running ./scripts/ralph/docker-run.sh --help prints usage information"
       ],
       "priority": 12,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Created docker-run.sh: builds ralph-sandbox image, runs with --rm, passes ANTHROPIC_API_KEY/GITHUB_TOKEN, supports --max-iterations and --no-push flags, prints summary banner on exit. --help prints usage."
     },
     {
       "id": "US-013",
