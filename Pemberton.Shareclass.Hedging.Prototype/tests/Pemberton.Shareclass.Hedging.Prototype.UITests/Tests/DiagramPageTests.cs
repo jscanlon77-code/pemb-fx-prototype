@@ -158,6 +158,20 @@ public class DiagramPageTests : AppPageTest
             "icon elements must have non-zero width (confirming the font rendered)");
     }
 
+    // ── hover transition ─────────────────────────────────────────────
+
+    [Test]
+    public async Task DiagramPage_Nodes_HaveHoverTransition()
+    {
+        var nodes = Page.Locator(".hedge-node");
+        await nodes.First.WaitForAsync(new LocatorWaitForOptions { Timeout = 8000 });
+
+        var transition = await nodes.First.EvaluateAsync<string>(
+            "el => window.getComputedStyle(el).transition");
+        transition.Should().Contain("transform",
+            "hedge-node elements must have a transition that includes 'transform' for the hover elevation effect");
+    }
+
     // ── category colors ───────────────────────────────────────────────
 
     [Test]
