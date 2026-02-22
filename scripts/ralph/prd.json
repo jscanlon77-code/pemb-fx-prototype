@@ -28,8 +28,8 @@
         "Commit with message: feat: US-002 - Commit and verify WorkflowStep unit tests"
       ],
       "priority": 2,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Staged and committed HedgingDiagramViewModelTests.cs. All 8 unit tests pass (5 WorkflowStep tests + existing tests)."
     },
     {
       "id": "US-003",

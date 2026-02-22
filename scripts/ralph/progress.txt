@@ -16,3 +16,11 @@
   - WorkflowStep uses `init`-only properties — immutable after construction
   - The ViewModel maintains both legacy `Nodes` (string list) and new `WorkflowSteps` for backward compatibility
   - 9 workflow steps (0-8) with 4 categories: data-input (2), processing (3), approval (1), output (3)
+
+## 2026-02-22 - US-002: Commit and verify WorkflowStep unit tests
+- Staged and committed HedgingDiagramViewModelTests.cs with 5 WorkflowStep tests
+- Files changed: tests/Pemberton.Shareclass.Hedging.Prototype.Tests/HedgingDiagramViewModelTests.cs
+- **Learnings for future iterations:**
+  - Test file already had `Nodes_ShouldContainApprovalsAndReporting` from before — 4 new WorkflowStep tests added alongside
+  - Tests instantiate `HedgingDiagramViewModel` directly (no mocking needed — no service dependencies)
+  - Total unit test count is now 8 (3 wizard + 5 diagram)
