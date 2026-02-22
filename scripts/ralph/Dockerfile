@@ -23,3 +23,8 @@ WORKDIR /workspace
 
 # Restore .NET dependencies
 RUN dotnet restore Pemberton.Shareclass.Hedging.Prototype/Pemberton.Shareclass.Hedging.Prototype.sln
+
+# Make entrypoint executable
+RUN chmod +x scripts/ralph/entrypoint.sh scripts/ralph/ralph.sh
+
+ENTRYPOINT ["scripts/ralph/entrypoint.sh"]
