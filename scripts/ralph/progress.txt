@@ -1,0 +1,38 @@
+# Ralph Progress Log
+## Codebase Patterns
+<!-- Reusable patterns discovered across iterations — update this section, don't append -->
+
+- **WorkflowStep model**: `Models/WorkflowStep.cs` — record-like class with `StepIndex`, `Title`, `Category`, `Icon` (all `init`-only)
+- **ViewModel pattern**: `HedgingDiagramViewModel` exposes both `IReadOnlyList<string> Nodes` (legacy) and `IReadOnlyList<WorkflowStep> WorkflowSteps`
+- **Categories**: data-input, processing, approval, output — map to Material Design color palette
+- **CSS files**: `wwwroot/css/app.css` (layout, components), `wwwroot/css/hedging.css` (diagram grid, nodes)
+- **E2E test base**: `AppPageTest` class with `BaseUrl` from `TEST_BASE_URL` env var (default localhost:5000)
+- **E2E test pattern**: `EvaluateAsync<string>("el => window.getComputedStyle(el).propertyName")` for CSS assertions
+- **NuGet packages**: Main app uses `Z.Blazor.Diagrams` (not `Blazor.Diagrams`) v3.0.4; namespace is still `Blazor.Diagrams`. Radzen.Blazor resolves to 4.31.0.
+- **Z.Blazor.Diagrams v3 API**: `Diagram` renamed to `BlazorDiagram`, `<BlazorDiagram>` component → `<DiagramCanvas BlazorDiagram="@diagram" />`, `GetDefaultPort()` removed — use `Ports.First(p => p.Alignment == ...)` instead
+- **File upload**: Use standard Blazor `InputFile` with `InputFileChangeEventArgs` (not Radzen `RadzenFileInput`/`FileInputChangeEventArgs`)
+- **IHedgingWizardViewModel.Step**: Has `{ get; set; }` — setter needed for `@bind-Value` in RadzenSteps
+- **Design skill**: `.claude/skills/design/SKILL.md` — comprehensive design system tokens (colors, spacing, typography, components)
+- **Wizard step numbering**: Steps 0-8 rendered via `Vm.Step switch` in HedgingWizard.razor; note steps 7/8 are Reporting/Booking (swapped from expected order)
+- **Approval gate**: Approver rows found via exact text match + XPath ancestor::tr[1]; Approve button disabled after click confirms state change
+- **Unit tests**: `dotnet test Pemberton.Shareclass.Hedging.Prototype/tests/Pemberton.Shareclass.Hedging.Prototype.Tests/`
+- **E2E tests**: `dotnet test Pemberton.Shareclass.Hedging.Prototype/tests/Pemberton.Shareclass.Hedging.Prototype.UITests/`
+
+---
+<!-- Iteration logs below — always append, never replace -->
+
+## 2026-02-22 - US-001: Create the Professional Web Design AI Skill
+- Created `.claude/skills/design/SKILL.md` with YAML frontmatter and all 8 required sections
+- Fixed pre-existing doubled-quote corruption (`""` → `"`) across 18 source files (all .cs, .razor, .cshtml, .css)
+- Fixed NuGet package: `Blazor.Diagrams` → `Z.Blazor.Diagrams` v3.0.4 (net8.0 target)
+- Fixed .csproj files: doubled quotes in XML attributes
+- Updated HedgingDiagram.razor for Z.Blazor.Diagrams v3 API (BlazorDiagram, DiagramCanvas, port lookup)
+- Replaced `RadzenFileInput`/`Radzen.FileInputChangeEventArgs` with standard `InputFile`/`InputFileChangeEventArgs`
+- Added `@using Microsoft.AspNetCore.Components.Forms` and `@using Microsoft.AspNetCore.Components.Routing` to _Imports.razor
+- Made `IHedgingWizardViewModel.Step` settable (needed for `@bind-Value`)
+- Files changed: 23 files (SKILL.md, 2 .csproj, 12 src .cs/.razor/.cshtml/.css, 3 test .cs, _Imports.razor, IHedgingWizardViewModel.cs, HedgingDiagram.razor)
+- **Learnings for future iterations:**
+  - The codebase on main had systematic doubled-quote corruption — all fixed now
+  - Z.Blazor.Diagrams v3 has breaking API changes from v2 (Diagram→BlazorDiagram, different component names, removed GetDefaultPort)
+  - Radzen 4.31 doesn't have `FileInputChangeEventArgs` — use standard Blazor `InputFileChangeEventArgs` instead
+  - The `@bind-Value` on RadzenSteps requires a settable property on the interface
