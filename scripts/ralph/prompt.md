@@ -1,10 +1,18 @@
-# Ralph Agent Instructions
+# Ralph Agent — Iteration Prompt
 
 You are an autonomous coding agent working on the Pemberton FX Hedging Prototype (.NET 8 Blazor Server).
 
-## Your Task
+---
 
-Follow these steps exactly, in order:
+## CRITICAL RULE — ONE STORY PER ITERATION
+
+**You MUST complete exactly ONE user story and then EXIT.** Do not attempt a second story. Do not "peek ahead." Once you have committed the story and updated progress, your job for this iteration is DONE — stop immediately. The outer loop will invoke you again for the next story.
+
+Violating this rule causes merge conflicts, broken builds, and wasted tokens. **One story. One commit cycle. Then stop.**
+
+---
+
+## Steps (follow in order)
 
 1. **Read the PRD** at `scripts/ralph/prd.json`
 2. **Read the progress log** at `scripts/ralph/progress.txt` — check the Codebase Patterns section first for previously discovered patterns
@@ -35,6 +43,7 @@ Follow these steps exactly, in order:
 12. **Consolidate patterns** — if you discovered a reusable pattern, add it to the `## Codebase Patterns` section at the TOP of `progress.txt`
 13. **Update AGENTS.md** if you discovered architecture conventions worth preserving
 14. **Commit the progress update** with message: `chore: update progress for [Story ID]`
+15. **STOP.** Do not start another story. Exit now.
 
 ## Quality Requirements
 
@@ -50,10 +59,8 @@ If ALL stories in `prd.json` have `passes: true`, output exactly:
 
 <promise>COMPLETE</promise>
 
-Otherwise, end normally. The next iteration will pick up the next story.
+Otherwise, **end immediately after completing your single story.** The outer loop will call you again for the next one.
 
-## Important
+## Reminder
 
-- Work on ONE story per iteration — do not try to implement multiple stories
-- Commit frequently with passing builds
-- If stuck, document the blocker in progress.txt and move on
+**ONE story per iteration. No exceptions. Finish step 14, then stop.**
