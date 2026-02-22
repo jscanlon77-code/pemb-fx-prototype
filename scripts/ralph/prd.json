@@ -90,8 +90,8 @@
         "Commit with message: feat: US-006 - Commit wizard post-approval E2E tests"
       ],
       "priority": 6,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "5 post-approval E2E tests committed. NavigateToStep6 helper approves all 4 approvers via XPath ancestor traversal to find Approve button per row."
     },
     {
       "id": "US-007",
