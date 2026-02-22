@@ -31,6 +31,8 @@ body {
 
 .nav-menu a.active {
     font-weight: bold;
+    pointer-events: auto;
+    cursor: pointer;
 }
 
 main {
