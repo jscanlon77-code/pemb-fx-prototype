@@ -2,5 +2,17 @@
 ## Codebase Patterns
 <!-- Reusable patterns discovered across iterations — update this section, don't append -->
 
+- **WorkflowStep model**: `Models/WorkflowStep.cs` — simple record-like class with `StepIndex`, `Title`, `Category`, `Icon` (all `init`-only)
+- **ViewModel pattern**: `HedgingDiagramViewModel` exposes both `IReadOnlyList<string> Nodes` (legacy) and `IReadOnlyList<WorkflowStep> WorkflowSteps` (new)
+- **Categories**: data-input, processing, approval, output — map to Material Design color palette
+
 ---
 <!-- Iteration logs below — always append, never replace -->
+
+## 2026-02-22 - US-001: Commit WorkflowStep model and ViewModel changes
+- Staged and committed WorkflowStep.cs, HedgingDiagramViewModel.cs, IHedgingDiagramViewModel.cs
+- Files changed: Models/WorkflowStep.cs (new), ViewModels/HedgingDiagramViewModel.cs, ViewModels/IHedgingDiagramViewModel.cs
+- **Learnings for future iterations:**
+  - WorkflowStep uses `init`-only properties — immutable after construction
+  - The ViewModel maintains both legacy `Nodes` (string list) and new `WorkflowSteps` for backward compatibility
+  - 9 workflow steps (0-8) with 4 categories: data-input (2), processing (3), approval (1), output (3)
