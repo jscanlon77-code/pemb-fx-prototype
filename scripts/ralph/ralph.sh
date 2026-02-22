@@ -38,6 +38,17 @@ if ! dotnet build "$REPO_ROOT/Pemberton.Shareclass.Hedging.Prototype/Pemberton.S
 fi
 echo "── Build passed ──"
 
+# ── Push helper (Docker only) ────────────────────────────────────────
+
+push_if_docker() {
+  if [ "${RALPH_DOCKER:-}" = "1" ] && [ -n "${GITHUB_TOKEN:-}" ] && [ "${RALPH_NO_PUSH:-}" != "1" ]; then
+    echo ""
+    echo "── Pushing $BRANCH_NAME to origin ──"
+    git push origin "$BRANCH_NAME"
+    echo "── Push complete ──"
+  fi
+}
+
 # ── Archive previous run if branch changed ──────────────────────────
 
 BRANCH_NAME=$(jq -r '.branchName' "$PRD_FILE")
@@ -86,13 +97,14 @@ for i in $(seq 1 $MAX_ITERATIONS); do
 
   echo "── Iteration $i of $MAX_ITERATIONS  ($DONE/$TOTAL stories complete) ──"
 
-  OUTPUT=$(claude --dangerously-skip-permissions --print < "$SCRIPT_DIR/CLAUDE.md" 2>&1 | tee /dev/stderr) || true
+  OUTPUT=$(claude --dangerously-skip-permissions --print --model claude-opus-4-6 < "$SCRIPT_DIR/prompt.md" 2>&1 | tee /dev/stderr) || true
 
   if echo "$OUTPUT" | grep -q "<promise>COMPLETE</promise>"; then
     echo ""
     echo "═══════════════════════════════════════════"
     echo "  Ralph completed all stories!"
     echo "═══════════════════════════════════════════"
+    push_if_docker
     exit 0
   fi
 
@@ -104,4 +116,5 @@ done
 echo ""
 echo "Reached max iterations ($MAX_ITERATIONS) without completing all stories."
 echo "Run again with: ./ralph.sh $((MAX_ITERATIONS + 5))"
+push_if_docker
 exit 1
