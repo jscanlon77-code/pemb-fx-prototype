@@ -1,0 +1,6 @@
+# Ralph Progress Log
+## Codebase Patterns
+<!-- Reusable patterns discovered across iterations — update this section, don't append -->
+
+---
+<!-- Iteration logs below — always append, never replace -->

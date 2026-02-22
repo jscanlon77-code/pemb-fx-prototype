@@ -26,3 +26,7 @@ TestResults/
 
 # Logs
 *.log
+
+# Ralph runtime
+scripts/ralph/.last-branch
+scripts/ralph/archive/
