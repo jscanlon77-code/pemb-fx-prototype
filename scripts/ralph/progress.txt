@@ -1,0 +1,135 @@
+# Ralph Progress Log
+## Codebase Patterns
+<!-- Reusable patterns discovered across iterations — update this section, don't append -->
+
+- **WorkflowStep model**: `Models/WorkflowStep.cs` — simple record-like class with `StepIndex`, `Title`, `Category`, `Icon` (all `init`-only)
+- **ViewModel pattern**: `HedgingDiagramViewModel` exposes both `IReadOnlyList<string> Nodes` (legacy) and `IReadOnlyList<WorkflowStep> WorkflowSteps` (new)
+- **Categories**: data-input, processing, approval, output — map to Material Design color palette
+
+---
+<!-- Iteration logs below — always append, never replace -->
+
+## 2026-02-22 - US-001: Commit WorkflowStep model and ViewModel changes
+- Staged and committed WorkflowStep.cs, HedgingDiagramViewModel.cs, IHedgingDiagramViewModel.cs
+- Files changed: Models/WorkflowStep.cs (new), ViewModels/HedgingDiagramViewModel.cs, ViewModels/IHedgingDiagramViewModel.cs
+- **Learnings for future iterations:**
+  - WorkflowStep uses `init`-only properties — immutable after construction
+  - The ViewModel maintains both legacy `Nodes` (string list) and new `WorkflowSteps` for backward compatibility
+  - 9 workflow steps (0-8) with 4 categories: data-input (2), processing (3), approval (1), output (3)
+
+## 2026-02-22 - US-002: Commit and verify WorkflowStep unit tests
+- Staged and committed HedgingDiagramViewModelTests.cs with 5 WorkflowStep tests
+- Files changed: tests/Pemberton.Shareclass.Hedging.Prototype.Tests/HedgingDiagramViewModelTests.cs
+- **Learnings for future iterations:**
+  - Test file already had `Nodes_ShouldContainApprovalsAndReporting` from before — 4 new WorkflowStep tests added alongside
+  - Tests instantiate `HedgingDiagramViewModel` directly (no mocking needed — no service dependencies)
+  - Total unit test count is now 8 (3 wizard + 5 diagram)
+
+## 2026-02-22 - US-003: Commit diagram page rewrite with CSS Grid and Material Design
+- Atomic commit of the core UI rewrite: CSS Grid layout, Material Icons, HedgeNode component
+- Files changed: Pages/HedgingDiagram.razor, Components/HedgeNode.razor, wwwroot/css/hedging.css, Pages/_Host.cshtml, csproj, _Imports.razor, DiagramPageTests.cs
+- **Learnings for future iterations:**
+  - Removed Z.Blazor.Diagrams dependency in favor of pure CSS Grid + custom HedgeNode component
+  - HedgeNode.razor uses `@Category` as a CSS class on `.hedge-node` div for color mapping
+  - E2E tests use `getComputedStyle` via Playwright's `EvaluateAsync<string>()` for style assertions
+  - CSS arrows use `::after` pseudo-elements with Unicode arrow characters
+  - Category colors: data-input=#1976D2, processing=#00897B, approval=#F57C00, output=#388E3C
+
+## 2026-02-22 - US-004: Commit sidebar Material Design styling and navigation tests
+- Sidebar themed with dark background, active link highlight, E2E navigation tests
+- Files changed: wwwroot/css/app.css, Shared/NavMenu.razor, NavigationTests.cs
+- **Learnings for future iterations:**
+  - Sidebar colors: background #20232a, active highlight #61dafb (rgb(97, 218, 251))
+  - Active links have `border-left: 3px solid #61dafb` indicator
+  - NavMenu uses Blazor `NavLink` component with `NavLinkMatch.All` for home route
+  - E2E tests for CSS use pattern: `EvaluateAsync<string>("el => window.getComputedStyle(el).propertyName")`
+
+## 2026-02-22 - US-005: Commit wizard back-navigation E2E tests
+- Committed WizardBackNavigationTests.cs with 4 back-navigation tests
+- Files changed: tests/.../WizardBackNavigationTests.cs (new)
+- **Learnings for future iterations:**
+  - E2E test helpers `ClickNextAndWaitFor`/`ClickBackAndWaitFor` accept a locator to wait for after click
+  - Back button uses `Page.Locator("button").Filter(new LocatorFilterOptions { HasText = "Back" })`
+  - Wizard step headers are `h4` elements, identifiable by step title text
+
+## 2026-02-22 - US-006: Commit wizard post-approval E2E tests
+- Committed WizardPostApprovalTests.cs with 5 tests covering steps 6-8
+- Files changed: tests/.../WizardPostApprovalTests.cs (new)
+- **Learnings for future iterations:**
+  - Approval gate pattern: find approver name cell, traverse to parent `<tr>` via XPath, find Approve button
+  - After clicking Approve, wait for button to become disabled (confirms state change)
+  - Step 6 renders execution result in `div.mt-4 p`; step 7 shows "Reporting" heading; step 8 shows "Movements booked"
+  - Next button is disabled on the final step (step 8)
+
+## 2026-02-22 - US-007: Add E2E test for Material Icons font loading
+- Added DiagramPage_MaterialIcons_FontIsLoaded test to DiagramPageTests.cs
+- Files changed: tests/.../DiagramPageTests.cs
+- **Learnings for future iterations:**
+  - Use `EvaluateAsync<string>("el => window.getComputedStyle(el).fontFamily")` to check font-family
+  - Use `EvaluateAsync<int>("el => el.offsetWidth")` to verify element has non-zero rendered dimensions
+  - Material Icons font-family string contains "Material Icons" when loaded from Google Fonts CDN
+
+## 2026-02-22 - US-008: Add E2E test for category background colors
+- Added DiagramPage_Nodes_HaveCategoryBackgroundColors test to DiagramPageTests.cs
+- Files changed: tests/.../DiagramPageTests.cs
+- **Learnings for future iterations:**
+  - Use `EvaluateAsync<string>("el => window.getComputedStyle(el).backgroundColor")` for background color assertions
+  - Browser returns colors in `rgb(r, g, b)` format — assert against that, not hex
+  - Test one representative node per category: node 0 (data-input), node 2 (processing), node 5 (approval), node 6 (output)
+  - Category-to-color mapping: data-input=rgb(25, 118, 210), processing=rgb(0, 137, 123), approval=rgb(245, 124, 0), output=rgb(56, 142, 60)
+
+## 2026-02-22 - US-009: Add E2E test for hover elevation effect
+- Added DiagramPage_Nodes_HaveHoverTransition test to DiagramPageTests.cs
+- Files changed: tests/.../DiagramPageTests.cs
+- **Learnings for future iterations:**
+  - Use `EvaluateAsync<string>("el => window.getComputedStyle(el).transition")` to check transition property
+  - The computed `transition` shorthand includes "transform" when `transition: transform 0.2s` is set in CSS
+  - Only need to check one node since all `.hedge-node` elements share the same CSS rule
+
+## 2026-02-22 - US-010: Create Dockerfile for Ralph sandbox environment
+- Created `scripts/ralph/Dockerfile` using `mcr.microsoft.com/dotnet/sdk:8.0` base image
+- Created `.dockerignore` at repo root excluding bin/, obj/, .git/, node_modules/, IDE files, test results
+- Dockerfile installs jq, git, Node.js 20.x (LTS via nodesource), and Claude CLI via npm
+- Uses `COPY . /workspace`, `WORKDIR /workspace`, and runs `dotnet restore` on the solution
+- Files changed: scripts/ralph/Dockerfile (new), .dockerignore (new)
+- **Learnings for future iterations:**
+  - Docker build context is ~125MB after .dockerignore exclusions
+  - Node.js installed via nodesource setup script for apt — `setup_20.x` for LTS
+  - Claude CLI installed globally via `npm install -g @anthropic-ai/claude-code`
+  - No ENTRYPOINT set yet — that's US-011's responsibility
+
+## 2026-02-22 - US-011: Create container entrypoint script
+- Created `scripts/ralph/entrypoint.sh` as the Docker container entrypoint
+- Updated `scripts/ralph/Dockerfile` to set `ENTRYPOINT ["scripts/ralph/entrypoint.sh"]`
+- Files changed: scripts/ralph/entrypoint.sh (new), scripts/ralph/Dockerfile (updated)
+- **Learnings for future iterations:**
+  - entrypoint.sh validates `ANTHROPIC_API_KEY`, exits non-zero with clear message if missing
+  - Git configured with `--global` for user.name/email; `/workspace` marked as safe directory
+  - GITHUB_TOKEN rewrites origin URL to `https://x-access-token:TOKEN@github.com/...` via sed
+  - Branch checkout: reads `branchName` from prd.json, checks out or creates branch
+  - Exports `RALPH_DOCKER=1` before exec'ing into ralph.sh — US-013 will use this for conditional push
+  - Dockerfile adds `chmod +x` for both entrypoint.sh and ralph.sh to ensure scripts are executable in container
+
+## 2026-02-22 - US-012: Create wrapper script to build and run Ralph in Docker
+- Created `scripts/ralph/docker-run.sh` — host-side convenience script for Docker-based Ralph runs
+- Builds `ralph-sandbox` image from `scripts/ralph/Dockerfile`, runs with `--rm`
+- Passes `ANTHROPIC_API_KEY` and `GITHUB_TOKEN` (if set) to the container
+- Supports `--max-iterations <n>` (passed through to ralph.sh), `--no-push` (sets `RALPH_NO_PUSH=1`), and `--help`
+- Prints summary banner on completion with success/failure status and branch name
+- Files changed: scripts/ralph/docker-run.sh (new)
+- **Learnings for future iterations:**
+  - ralph.sh accepts max iterations as a positional numeric arg: `if [[ "$1" =~ ^[0-9]+$ ]]; then MAX_ITERATIONS=$1; fi`
+  - Docker run args built as bash array for clean handling of conditional `-e` flags
+  - Capture container exit code via `|| EXIT_CODE=$?` pattern to still print summary banner on failure
+  - `--no-push` sets `RALPH_NO_PUSH=1` env var — US-013 will use this in ralph.sh to skip push
+
+## 2026-02-22 - US-013: Push results branch from container on completion
+- Added `push_if_docker()` function to ralph.sh that conditionally pushes the branch to origin
+- Function checks three conditions: RALPH_DOCKER=1, GITHUB_TOKEN is set, RALPH_NO_PUSH != 1
+- Called from both exit paths: successful completion (all stories done) and max iterations reached
+- No changes needed to entrypoint.sh (already exports RALPH_DOCKER=1) or docker-run.sh (already passes RALPH_NO_PUSH=1)
+- Files changed: scripts/ralph/ralph.sh
+- **Learnings for future iterations:**
+  - The push function is defined after BRANCH_NAME is read from prd.json, but placed before the archive section for readability — it uses `$BRANCH_NAME` which is set later in the script flow, but only called at the end after BRANCH_NAME is populated
+  - Three env vars control push behavior: RALPH_DOCKER (set by entrypoint.sh), GITHUB_TOKEN (passed from host), RALPH_NO_PUSH (set by docker-run.sh --no-push)
+  - Non-Docker runs are completely unaffected since RALPH_DOCKER is never set outside the container

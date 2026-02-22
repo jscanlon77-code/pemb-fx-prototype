@@ -1,0 +1,20 @@
+{
+    "name": "Pemberton Hedging Prototype",
+    "image": "mcr.microsoft.com/devcontainers/dotnet:8.0",
+    "features": {
+        // PowerShell Core is required to run playwright.ps1 to install browser binaries.
+        "ghcr.io/devcontainers/features/powershell:1": {}
+    },
+    // After the container is created: restore & build the solution, then install
+    // Playwright's Chromium binary along with its Linux OS dependencies.
+    "postCreateCommand": "dotnet restore Pemberton.Shareclass.Hedging.Prototype/Pemberton.Shareclass.Hedging.Prototype.sln && dotnet build Pemberton.Shareclass.Hedging.Prototype/Pemberton.Shareclass.Hedging.Prototype.sln && pwsh Pemberton.Shareclass.Hedging.Prototype/tests/Pemberton.Shareclass.Hedging.Prototype.UITests/bin/Debug/net8.0/playwright.ps1 install --with-deps chromium",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-dotnettools.csdevkit",
+                "ms-dotnettools.csharp"
+            ]
+        }
+    },
+    "forwardPorts": [5000]
+}

@@ -1,0 +1,208 @@
+{
+  "project": "Pemberton FX Hedging Prototype — Material Glow-Up",
+  "branchName": "mark/material-glow-up",
+  "description": "Systematically commit, verify, and extend test coverage for the Material Design styling overhaul: CSS Grid diagram, HedgeNode component, Material Icons, sidebar theming, and Radzen InputFile migration.",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Commit WorkflowStep model and ViewModel changes",
+      "description": "Stage and commit the new WorkflowStep model and updated ViewModels that expose WorkflowSteps. These three files form the data layer foundation that all other stories depend on. The files already exist in the working tree — stage them, verify the build passes, and commit.",
+      "acceptanceCriteria": [
+        "Stage exactly these 3 files: src/.../Models/WorkflowStep.cs, src/.../ViewModels/HedgingDiagramViewModel.cs, src/.../ViewModels/IHedgingDiagramViewModel.cs",
+        "dotnet build passes with no errors",
+        "dotnet test (unit tests) passes — the existing Nodes_ShouldContainApprovalsAndReporting test still works",
+        "Commit with message: feat: US-001 - Commit WorkflowStep model and ViewModel changes"
+      ],
+      "priority": 1,
+      "passes": true,
+      "notes": "Staged and committed WorkflowStep.cs, HedgingDiagramViewModel.cs, IHedgingDiagramViewModel.cs. Build and all 8 unit tests pass."
+    },
+    {
+      "id": "US-002",
+      "title": "Commit and verify WorkflowStep unit tests",
+      "description": "Stage and commit the updated HedgingDiagramViewModelTests.cs which adds tests for WorkflowSteps (count, categories, sequential indices, non-empty icons). The file already exists in the working tree.",
+      "acceptanceCriteria": [
+        "Stage exactly: tests/.../HedgingDiagramViewModelTests.cs",
+        "dotnet build passes",
+        "dotnet test (unit tests) passes — all 5 tests in HedgingDiagramViewModelTests pass (Nodes_ShouldContainApprovalsAndReporting, WorkflowSteps_ShouldContainNineSteps, WorkflowSteps_ShouldHaveExpectedCategories, WorkflowSteps_ShouldHaveSequentialStepIndices, WorkflowSteps_ShouldHaveNonEmptyIcons)",
+        "Commit with message: feat: US-002 - Commit and verify WorkflowStep unit tests"
+      ],
+      "priority": 2,
+      "passes": true,
+      "notes": "Staged and committed HedgingDiagramViewModelTests.cs. All 8 unit tests pass (5 WorkflowStep tests + existing tests)."
+    },
+    {
+      "id": "US-003",
+      "title": "Commit diagram page rewrite with CSS Grid and Material Design",
+      "description": "Atomic commit of the core UI rewrite: HedgingDiagram.razor (CSS Grid), HedgeNode.razor (Material Icons), hedging.css (node/grid/arrow styles), _Host.cshtml (Material Icons font link), csproj (removed Z.Blazor.Diagrams), _Imports.razor (added Radzen usings), and updated DiagramPageTests.cs + NavigationTests test for diagram link. All files already exist in the working tree. These must be committed together because removing Z.Blazor.Diagrams from the csproj while the old razor files reference it would break the build.",
+      "acceptanceCriteria": [
+        "Stage exactly these files: src/.../Pages/HedgingDiagram.razor, src/.../Components/HedgeNode.razor, src/.../wwwroot/css/hedging.css, src/.../Pages/_Host.cshtml, src/.../Pemberton.Shareclass.Hedging.Prototype.csproj, src/...//_Imports.razor, tests/.../DiagramPageTests.cs",
+        "The csproj must NOT reference Z.Blazor.Diagrams — only Radzen.Blazor",
+        "_Host.cshtml must include the Material Icons font stylesheet link",
+        "dotnet build passes with no errors",
+        "dotnet test (unit tests) passes",
+        "Commit with message: feat: US-003 - Commit diagram page rewrite with CSS Grid and Material Design"
+      ],
+      "priority": 3,
+      "passes": true,
+      "notes": "Atomic commit of 7 files: diagram page, HedgeNode component, CSS Grid layout, Material Icons font, csproj cleanup, Radzen imports, and comprehensive E2E tests."
+    },
+    {
+      "id": "US-004",
+      "title": "Commit sidebar Material Design styling and navigation tests",
+      "description": "Stage and commit the Material Design sidebar theming (app.css), updated NavMenu.razor, and new navigation E2E tests (NavigationTests.cs). The files already exist in the working tree.",
+      "acceptanceCriteria": [
+        "Stage exactly these files: src/.../wwwroot/css/app.css, src/.../Shared/NavMenu.razor, tests/.../NavigationTests.cs",
+        "app.css sidebar background must be #20232a with white text",
+        "NavMenu.razor must contain links to /, /diagram, and /wizard",
+        "dotnet build passes",
+        "dotnet test (unit tests) passes",
+        "Commit with message: feat: US-004 - Commit sidebar Material Design styling and navigation tests"
+      ],
+      "priority": 4,
+      "passes": true,
+      "notes": "Sidebar themed with dark background #20232a, active link indicator with #61dafb highlight. Navigation tests include pointer-events, cursor, transition, and cross-page navigation."
+    },
+    {
+      "id": "US-005",
+      "title": "Commit wizard back-navigation E2E tests",
+      "description": "Stage and commit the new WizardBackNavigationTests.cs file which tests the Back button in the wizard (back from step 1, back from step 2, disabled on step 0, round-trip). The file already exists in the working tree as an untracked file.",
+      "acceptanceCriteria": [
+        "Stage exactly: tests/.../WizardBackNavigationTests.cs",
+        "File contains tests: BackFromStep1_ReturnsToStep0, BackFromStep2_ReturnsToStep1, BackButton_IsDisabled_OnStep0, BackThenForward_RoundTrip_ReturnsToSameStep",
+        "dotnet build passes",
+        "dotnet test (unit tests) passes",
+        "Commit with message: feat: US-005 - Commit wizard back-navigation E2E tests"
+      ],
+      "priority": 5,
+      "passes": true,
+      "notes": "4 back-navigation E2E tests committed. Uses ClickBackAndWaitFor/ClickNextAndWaitFor helper pattern."
+    },
+    {
+      "id": "US-006",
+      "title": "Commit wizard post-approval E2E tests",
+      "description": "Stage and commit the new WizardPostApprovalTests.cs file which tests wizard steps 6-8 (post-approval execution, reporting, book movements). The file already exists in the working tree as an untracked file.",
+      "acceptanceCriteria": [
+        "Stage exactly: tests/.../WizardPostApprovalTests.cs",
+        "File contains tests: Step6_ShowsExecutionContent, Step7_ShowsReportingHeading, Step7_ShowsReportingContent, Step8_ShowsMovementsBookedText, Step8_NextButton_IsDisabled",
+        "dotnet build passes",
+        "dotnet test (unit tests) passes",
+        "Commit with message: feat: US-006 - Commit wizard post-approval E2E tests"
+      ],
+      "priority": 6,
+      "passes": true,
+      "notes": "5 post-approval E2E tests committed. NavigateToStep6 helper approves all 4 approvers via XPath ancestor traversal to find Approve button per row."
+    },
+    {
+      "id": "US-007",
+      "title": "Add E2E test for Material Icons font loading",
+      "description": "Write a NEW Playwright E2E test in DiagramPageTests.cs that verifies the Material Icons web font is loaded and rendering correctly on the diagram page. The test should check that the .hedge-node-icon elements use the 'Material Icons' font-family and that the icons have non-zero rendered dimensions (confirming the font loaded rather than falling back to text).",
+      "acceptanceCriteria": [
+        "A new test method DiagramPage_MaterialIcons_FontIsLoaded exists in DiagramPageTests.cs",
+        "The test verifies .hedge-node-icon elements have font-family containing 'Material Icons' (via getComputedStyle)",
+        "The test verifies at least one icon element has non-zero offsetWidth (confirming the font rendered)",
+        "dotnet build passes",
+        "dotnet test (unit tests) passes",
+        "Commit with message: feat: US-007 - Add E2E test for Material Icons font loading"
+      ],
+      "priority": 7,
+      "passes": true,
+      "notes": "Test checks fontFamily via getComputedStyle and offsetWidth > 0 to confirm font rendered."
+    },
+    {
+      "id": "US-008",
+      "title": "Add E2E test for category background colors",
+      "description": "Write a NEW Playwright E2E test in DiagramPageTests.cs that verifies each category of hedge-node has the correct Material Design background color. data-input=#1976D2 (rgb(25,118,210)), processing=#00897B (rgb(0,137,123)), approval=#F57C00 (rgb(245,124,0)), output=#388E3C (rgb(56,142,60)). Test at least one node per category.",
+      "acceptanceCriteria": [
+        "A new test method DiagramPage_Nodes_HaveCategoryBackgroundColors exists in DiagramPageTests.cs",
+        "The test checks background-color via getComputedStyle for at least one node per category",
+        "Expected colors: data-input=rgb(25, 118, 210), processing=rgb(0, 137, 123), approval=rgb(245, 124, 0), output=rgb(56, 142, 60)",
+        "dotnet build passes",
+        "dotnet test (unit tests) passes",
+        "Commit with message: feat: US-008 - Add E2E test for category background colors"
+      ],
+      "priority": 8,
+      "passes": true,
+      "notes": "Test checks background-color via getComputedStyle for one node per category: data-input (node 0), processing (node 2), approval (node 5), output (node 6)."
+    },
+    {
+      "id": "US-009",
+      "title": "Add E2E test for hover elevation effect",
+      "description": "Write a NEW Playwright E2E test in DiagramPageTests.cs that verifies hedge-node elements have a CSS transition property set (confirming the hover elevation animation is wired up). The test should check that the computed transition property includes 'transform' since the hover effect uses transform: translateY(-2px).",
+      "acceptanceCriteria": [
+        "A new test method DiagramPage_Nodes_HaveHoverTransition exists in DiagramPageTests.cs",
+        "The test verifies .hedge-node elements have a computed transition property that includes 'transform'",
+        "dotnet build passes",
+        "dotnet test (unit tests) passes",
+        "Commit with message: feat: US-009 - Add E2E test for hover elevation effect"
+      ],
+      "priority": 9,
+      "passes": true,
+      "notes": "Test checks computed transition property via getComputedStyle and asserts it contains 'transform' for the hover elevation effect."
+    },
+    {
+      "id": "US-010",
+      "title": "Create Dockerfile for Ralph sandbox environment",
+      "description": "Create a Dockerfile at scripts/ralph/Dockerfile and a .dockerignore at the repo root that build an isolated sandbox image for running Ralph. The image must contain the .NET SDK, jq, Node.js, Claude CLI, and git so Ralph can build, test, and commit inside the container without affecting the host.",
+      "acceptanceCriteria": [
+        "scripts/ralph/Dockerfile exists and uses mcr.microsoft.com/dotnet/sdk:8.0 (or equivalent devcontainer base)",
+        "Dockerfile installs jq, Node.js (LTS), git, and Claude CLI via npm install -g @anthropic-ai/claude-code",
+        "Dockerfile uses COPY . /workspace and WORKDIR /workspace, then runs dotnet restore",
+        "No secrets (API keys, tokens) are baked into the image",
+        ".dockerignore at repo root excludes bin/, obj/, .git/, node_modules/, and other build artifacts",
+        "docker build -f scripts/ralph/Dockerfile . succeeds with no errors"
+      ],
+      "priority": 10,
+      "passes": true,
+      "notes": "Dockerfile uses dotnet/sdk:8.0 base, installs jq/git/Node.js 20.x/Claude CLI. .dockerignore excludes bin/, obj/, .git/, node_modules/, IDE files. Docker build succeeds with dotnet restore."
+    },
+    {
+      "id": "US-011",
+      "title": "Create container entrypoint script",
+      "description": "Create scripts/ralph/entrypoint.sh — the container entrypoint that validates the environment, configures git, and hands off to ralph.sh. Update the Dockerfile to set ENTRYPOINT to this script.",
+      "acceptanceCriteria": [
+        "scripts/ralph/entrypoint.sh exists and is executable (chmod +x)",
+        "entrypoint.sh validates that ANTHROPIC_API_KEY is set, exits non-zero with a clear message if missing",
+        "entrypoint.sh configures git user.name and user.email for in-container commits",
+        "When GITHUB_TOKEN is set, entrypoint.sh rewrites the git remote origin URL to https://x-access-token:$GITHUB_TOKEN@github.com/... format",
+        "entrypoint.sh checks out the PRD branch (from prd.json branchName) and execs into ralph.sh",
+        "Dockerfile ENTRYPOINT is updated to [\"scripts/ralph/entrypoint.sh\"]"
+      ],
+      "priority": 11,
+      "passes": true,
+      "notes": "Created entrypoint.sh: validates ANTHROPIC_API_KEY, configures git user/email, rewrites remote with GITHUB_TOKEN, checks out PRD branch, exports RALPH_DOCKER=1, execs into ralph.sh. Updated Dockerfile with ENTRYPOINT."
+    },
+    {
+      "id": "US-012",
+      "title": "Create wrapper script to build and run Ralph in Docker",
+      "description": "Create scripts/ralph/docker-run.sh — a host-side convenience script that builds the Docker image, runs the container with correct environment variables, and prints a summary banner on completion.",
+      "acceptanceCriteria": [
+        "scripts/ralph/docker-run.sh exists and is executable (chmod +x)",
+        "Script builds the Docker image using scripts/ralph/Dockerfile with a tagged name (e.g. ralph-sandbox)",
+        "Script runs the container with --rm, passing through ANTHROPIC_API_KEY and GITHUB_TOKEN from the host environment",
+        "Script accepts a --max-iterations <n> argument and passes it to ralph.sh inside the container",
+        "Script prints a summary banner after the container exits (success/failure, branch name)",
+        "Running ./scripts/ralph/docker-run.sh --help prints usage information"
+      ],
+      "priority": 12,
+      "passes": true,
+      "notes": "Created docker-run.sh: builds ralph-sandbox image, runs with --rm, passes ANTHROPIC_API_KEY/GITHUB_TOKEN, supports --max-iterations and --no-push flags, prints summary banner on exit. --help prints usage."
+    },
+    {
+      "id": "US-013",
+      "title": "Push results branch from container on completion",
+      "description": "Wire up automatic git push of the results branch when Ralph runs inside Docker. ralph.sh should detect the RALPH_DOCKER=1 environment variable and push to origin when GITHUB_TOKEN is also set. docker-run.sh should support a --no-push flag to disable this behavior. Non-Docker behavior must remain unchanged.",
+      "acceptanceCriteria": [
+        "entrypoint.sh exports RALPH_DOCKER=1 before execing into ralph.sh",
+        "ralph.sh conditionally runs git push origin <branch> when both RALPH_DOCKER=1 and GITHUB_TOKEN are set",
+        "When RALPH_DOCKER is unset or not equal to 1, ralph.sh does NOT push (existing behavior preserved)",
+        "docker-run.sh accepts a --no-push flag that sets RALPH_NO_PUSH=1 in the container environment",
+        "When RALPH_NO_PUSH=1 is set, ralph.sh skips the push even if RALPH_DOCKER=1 and GITHUB_TOKEN are set",
+        "Existing non-Docker ralph.sh behavior is completely unchanged"
+      ],
+      "priority": 13,
+      "passes": true,
+      "notes": "Added push_if_docker() function to ralph.sh. Pushes to origin when RALPH_DOCKER=1 and GITHUB_TOKEN set, skips when RALPH_NO_PUSH=1. Called on both success and max-iterations exit paths. entrypoint.sh already exported RALPH_DOCKER=1; docker-run.sh already passes --no-push as RALPH_NO_PUSH=1."
+    }
+  ]
+}

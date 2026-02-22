@@ -1,53 +1,16 @@
 @page "/diagram"
-@using Blazor.Diagrams
-@using Blazor.Diagrams.Components
-@using Blazor.Diagrams.Core.Models
-@using Blazor.Diagrams.Core.Geometry
 @inject IHedgingDiagramViewModel Vm
 
 <h3>Hedging Workflow Diagram</h3>
 
-<div style="width:100%; height:500px;">
-    <CascadingValue Value="diagram">
-        <DiagramCanvas />
-    </CascadingValue>
-</div>
-
-@code {
-    private BlazorDiagram diagram = default!;
-
-    protected override void OnInitialized()
+<div class="workflow-grid">
+    @foreach (var step in Vm.WorkflowSteps)
     {
-        diagram = new BlazorDiagram();
-
-        var nodes = new List<NodeModel>();
-
-        double x = 50;
-        double y = 50;
-
-        foreach (var title in Vm.Nodes)
-        {
-            var node = new NodeModel(new Blazor.Diagrams.Core.Geometry.Point(x, y))
-            {
-                Title = title
-            };
-            node.AddPort(PortAlignment.Right);
-            node.AddPort(PortAlignment.Left);
-            nodes.Add(node);
-            x += 250;
-        }
-
-        foreach (var node in nodes)
-        {
-            diagram.Nodes.Add(node);
-        }
-
-        for (int i = 0; i < nodes.Count - 1; i++)
-        {
-            var sourcePort = nodes[i].Ports.First(p => p.Alignment == PortAlignment.Right);
-            var targetPort = nodes[i + 1].Ports.First(p => p.Alignment == PortAlignment.Left);
-            var link = new LinkModel(sourcePort, targetPort);
-            diagram.Links.Add(link);
-        }
+        <div class="workflow-cell">
+            <HedgeNode Title="@step.Title"
+                       Category="@step.Category"
+                       Icon="@step.Icon"
+                       StepIndex="@step.StepIndex" />
+        </div>
     }
-}
+</div>
