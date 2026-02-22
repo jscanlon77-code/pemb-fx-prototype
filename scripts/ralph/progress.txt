@@ -60,3 +60,11 @@
   - After clicking Approve, wait for button to become disabled (confirms state change)
   - Step 6 renders execution result in `div.mt-4 p`; step 7 shows "Reporting" heading; step 8 shows "Movements booked"
   - Next button is disabled on the final step (step 8)
+
+## 2026-02-22 - US-007: Add E2E test for Material Icons font loading
+- Added DiagramPage_MaterialIcons_FontIsLoaded test to DiagramPageTests.cs
+- Files changed: tests/.../DiagramPageTests.cs
+- **Learnings for future iterations:**
+  - Use `EvaluateAsync<string>("el => window.getComputedStyle(el).fontFamily")` to check font-family
+  - Use `EvaluateAsync<int>("el => el.offsetWidth")` to verify element has non-zero rendered dimensions
+  - Material Icons font-family string contains "Material Icons" when loaded from Google Fonts CDN

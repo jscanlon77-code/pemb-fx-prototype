@@ -106,8 +106,8 @@
         "Commit with message: feat: US-007 - Add E2E test for Material Icons font loading"
       ],
       "priority": 7,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Test checks fontFamily via getComputedStyle and offsetWidth > 0 to confirm font rendered."
     },
     {
       "id": "US-008",
