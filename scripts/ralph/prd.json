@@ -93,8 +93,8 @@
         "dotnet test (unit tests) passes"
       ],
       "priority": 5,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Replaced DiagramCanvas (Z.Blazor.Diagrams) with custom workflow grid using HedgeNode components. Added page-header with h3.page-title 'Hedging Workflow' and subtitle. Replaced Unicode arrow pseudo-elements with CSS-drawn 2px connector lines (horizontal between columns, vertical at row ends). Added color-legend section below grid with four category swatches. Wrapped HedgeNode content in clickable <a> linking to /wizard. Made grid responsive: 3 cols >900px, 2 cols 600-900px, 1 col <600px. Updated DiagramPageTests and NavigationTests heading expectations."
     },
     {
       "id": "US-006",

@@ -24,6 +24,10 @@
 - **Page header pattern**: Use `.page-header` > `h3.page-title` + `p.page-subtitle` for consistent page headers — CSS defined in app.css
 - **Dashboard nav-card pattern**: `.nav-card` with `__icon`, `__title`, `__desc` — links rendered as `<a>` elements with href for E2E test compatibility (`article a[href='...']`)
 - **Workflow pills**: `.workflow-pill` with category color classes (data-input, processing, approval, output) — reusable for step indicators
+- **Color legend**: `.color-legend` with `__item`, `__swatch`, `__label` — category swatches reuse `.data-input`, `.processing`, `.approval`, `.output` classes
+- **Hedge node link**: HedgeNode wraps content in `<a href="/wizard" class="hedge-node-link">` — nodes are clickable links to wizard
+- **CSS connector lines**: `.workflow-cell::after` uses 2px background lines (not Unicode arrows) — hidden on responsive layouts via `display: none`
+- **Responsive grid**: `.workflow-grid` uses media queries: 3 cols >900px, 2 cols 600-900px, 1 col <600px
 
 ---
 <!-- Iteration logs below — always append, never replace -->
@@ -90,3 +94,21 @@
   - E2E test `HomePage_HasLinksToWizardAndDiagram` expects `article a[href='diagram']` — the nav-card links must be `<a>` elements (not NavLink wrapped in div) directly inside the `article.content` container
   - The .page-header/.page-title pattern is reusable for all page redesigns (US-005, US-006, etc.)
   - No inline styles needed — all dashboard styling achieved through CSS classes using design tokens
+
+## 2026-02-23 - US-005: Redesign Hedging Diagram Page
+- Replaced DiagramCanvas (Z.Blazor.Diagrams) with custom workflow grid using HedgeNode components rendered via `Vm.WorkflowSteps`
+- Added page-header with h3.page-title 'Hedging Workflow' and p.page-subtitle '9-step share-class FX hedging process'
+- Replaced Unicode arrow pseudo-elements (`\2192`, `\2193`) with CSS-drawn 2px connector lines using `background: var(--text-secondary)`
+- Added color-legend section below grid with four category swatches (Data Input, Processing, Approval, Output)
+- Wrapped HedgeNode content in clickable `<a href="/wizard" class="hedge-node-link">` element
+- Added `.hedge-node-link` CSS (text-decoration:none, color:inherit, display:block)
+- Made grid responsive: 3 cols >900px, 2 cols 600-900px, 1 col <600px via media queries; connectors hidden on smaller layouts
+- Updated DiagramPageTests.cs: heading expects 'Hedging Workflow' (was 'Hedging Workflow Diagram')
+- Updated NavigationTests.cs: diagram heading expects 'Hedging Workflow'
+- Removed Z.Blazor.Diagrams `@using` directives and DiagramCanvas code from HedgingDiagram.razor
+- Files changed: `HedgingDiagram.razor`, `HedgeNode.razor`, `hedging.css`, `DiagramPageTests.cs`, `NavigationTests.cs`
+- **Learnings for future iterations:**
+  - The diagram page originally used Z.Blazor.Diagrams DiagramCanvas but E2E tests expected custom `.workflow-grid`/`.hedge-node` elements — the custom grid approach is the correct one
+  - Wrapping components in `<a>` elements doesn't break existing E2E locators (`.hedge-node` still matched inside the link)
+  - CSS connector lines are cleaner than Unicode arrows — use `content: ""` with width/height/background instead of text-based arrows
+  - Responsive layouts should hide connectors on breakpoints where grid columns change (connectors assume specific column positions)
