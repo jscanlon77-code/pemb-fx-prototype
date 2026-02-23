@@ -55,8 +55,8 @@
         "dotnet test (unit tests) passes"
       ],
       "priority": 3,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Added nav-brand area with Pemberton title (20px/600) and FX Hedging subtitle. Added Material Icons to each nav link (home, account_tree, play_circle). Updated nav items to display:flex with icon gap, 12px vertical padding, hover background. Updated sidebar to 240px. Top bar set to 64px with flex centering. Content area has max-width:1200px and margin:0 auto. Added SVG favicon with navy P. Removed px-4 Bootstrap utility classes from MainLayout. Updated SidebarLink_HasBlockDisplay E2E test to expect flex display."
     },
     {
       "id": "US-004",

@@ -9,6 +9,9 @@
 - **CSS custom properties**: All design tokens defined in `:root` block of app.css — colors, spacing, shadows, radii. Always use `var(--token)` instead of hardcoded values.
 - **E2E test base**: `AppPageTest` class with `BaseUrl` from `TEST_BASE_URL` env var (default localhost:5000)
 - **E2E test pattern**: `EvaluateAsync<string>("el => window.getComputedStyle(el).propertyName")` for CSS assertions
+- **Nav link display**: `.nav-menu a` uses `display: flex` (not block) for icon+text alignment — E2E test `SidebarLink_HasFlexDisplay` expects "flex"
+- **Layout dimensions**: Sidebar 240px, top bar 64px, content max-width 1200px
+- **Material Icons**: Loaded via Google Fonts CDN in `_Host.cshtml`; use `<span class="material-icons">icon_name</span>` in nav links
 - **NuGet packages**: Main app uses `Z.Blazor.Diagrams` (not `Blazor.Diagrams`) v3.0.4; namespace is still `Blazor.Diagrams`. Radzen.Blazor resolves to 4.31.0.
 - **Z.Blazor.Diagrams v3 API**: `Diagram` renamed to `BlazorDiagram`, `<BlazorDiagram>` component → `<DiagramCanvas BlazorDiagram="@diagram" />`, `GetDefaultPort()` removed — use `Ports.First(p => p.Alignment == ...)` instead
 - **File upload**: Use standard Blazor `InputFile` with `InputFileChangeEventArgs` (not Radzen `RadzenFileInput`/`FileInputChangeEventArgs`)
@@ -51,3 +54,21 @@
   - CSS variable values intentionally differ from old hardcoded values — E2E tests checking computed colors MUST be updated when design tokens change
   - The `:root` block is the single source of truth for all design tokens; future CSS should reference `var(--token)` exclusively
   - Resolved pre-existing merge conflict state on `prd.json` and `progress.txt` — files had unmerged status but no actual conflict markers
+
+## 2026-02-23 - US-003: Redesign Layout Shell — Sidebar, Top Bar, Navigation
+- Added nav-brand area to `NavMenu.razor` with 'Pemberton' title (20px, weight 600) and 'FX Hedging' subtitle (12px, uppercase, accent color)
+- Added Material Icons to each nav link: home, account_tree, play_circle via `<span class="material-icons">`
+- Updated `.nav-menu a` to `display: flex` with `align-items: center` and `gap: var(--space-3)` for icon+text alignment
+- Nav items padding updated to use design tokens (`var(--space-1)` vertical, `var(--space-3)` horizontal)
+- Added `.material-icons` opacity styling (0.7 default, 1.0 on hover/active)
+- Updated sidebar width from 220px to 240px
+- Top bar: height 64px, display:flex, align-items:center, padding via tokens, h2 styled (16px/600)
+- Content area: max-width 1200px, margin:0 auto, padding via tokens
+- Removed `px-4` Bootstrap utility class from MainLayout.razor (top-row and content)
+- Added SVG data URI favicon (navy rounded rect with white P letter) to `_Host.cshtml`
+- Updated `NavigationTests.cs`: renamed `SidebarLink_HasBlockDisplay` → `SidebarLink_HasFlexDisplay`, expects "flex"
+- Files changed: `NavMenu.razor`, `MainLayout.razor`, `app.css`, `_Host.cshtml`, `NavigationTests.cs`
+- **Learnings for future iterations:**
+  - Changing nav link display from `block` to `flex` requires updating the corresponding E2E test assertion
+  - Bootstrap utility classes (px-4) should be replaced with design-token-based CSS, not just removed — use padding in the CSS rules
+  - The `.top-row h2` element must remain for `HomePage_TopRowShowsAppTitle` E2E test (checks for "Pemberton" text)
