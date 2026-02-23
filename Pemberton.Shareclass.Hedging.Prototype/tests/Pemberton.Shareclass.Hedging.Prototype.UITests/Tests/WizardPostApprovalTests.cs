@@ -46,7 +46,7 @@ public class WizardPostApprovalTests : AppPageTest
         // 1 → 2
         await ClickNextAndWaitFor(Page.GetByText("Validation:"));
         // 2 → 3
-        await ClickNextAndWaitFor(Page.GetByText("hedge instructions"));
+        await ClickNextAndWaitFor(Page.GetByText("Hedge Instructions Calculated"));
         // 3 → 4
         await ClickNextAndWaitFor(Page.GetByText("Trade instructions ready for approval"));
         // 4 → 5
@@ -132,7 +132,7 @@ public class WizardPostApprovalTests : AppPageTest
         await ClickNextAndWaitFor(reportingHeader, timeoutMs: 8000);
 
         // 7 → 8
-        var movementsText = Page.GetByText("Movements booked");
+        var movementsText = Page.GetByText("Movements Booked", new PageGetByTextOptions { Exact = true });
         await ClickNextAndWaitFor(movementsText, timeoutMs: 8000);
 
         (await movementsText.IsVisibleAsync()).Should().BeTrue(
@@ -149,7 +149,7 @@ public class WizardPostApprovalTests : AppPageTest
         await ClickNextAndWaitFor(reportingHeader, timeoutMs: 8000);
 
         // 7 → 8
-        var movementsText = Page.GetByText("Movements booked");
+        var movementsText = Page.GetByText("Movements Booked", new PageGetByTextOptions { Exact = true });
         await ClickNextAndWaitFor(movementsText, timeoutMs: 8000);
 
         var nextBtn = Page.Locator("button").Filter(new LocatorFilterOptions { HasText = "Next" });

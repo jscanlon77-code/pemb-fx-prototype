@@ -50,7 +50,7 @@ public class WizardApprovalTests : AppPageTest
         await ClickNextAndWaitFor(step2);
 
         // 2 → 3
-        var step3 = Page.GetByText("hedge instructions");
+        var step3 = Page.GetByText("Hedge Instructions Calculated");
         await ClickNextAndWaitFor(step3);
 
         // 3 → 4
@@ -187,7 +187,7 @@ public class WizardApprovalTests : AppPageTest
         await ClickNextAndWaitFor(step7, timeoutMs: 8000);
 
         // 7 → 8 ("Movements booked" text)
-        var step8 = Page.GetByText("Movements booked");
+        var step8 = Page.GetByText("Movements Booked", new PageGetByTextOptions { Exact = true });
         await ClickNextAndWaitFor(step8, timeoutMs: 8000);
 
         // On the last step Next must be disabled (IsLast == true → Disabled="true")
