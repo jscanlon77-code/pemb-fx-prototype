@@ -31,3 +31,6 @@ app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
 app.Run();
+
+// Make Program accessible to the UITests project via WebApplicationFactory<Program>.
+public partial class Program { }

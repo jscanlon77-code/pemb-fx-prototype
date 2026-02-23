@@ -1,0 +1,34 @@
+{
+  "project": "Pemberton FX Hedging Prototype",
+  "branchName": "ralph/example-feature",
+  "description": "Example PRD — replace with your actual feature stories",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Add currency pair model",
+      "description": "As a developer, I need a CurrencyPair model so hedge instructions can reference standardised pairs.",
+      "acceptanceCriteria": [
+        "CurrencyPair class exists in Models/ with Code (e.g. GBPUSD) and Description properties",
+        "dotnet build passes",
+        "Unit test verifies CurrencyPair construction"
+      ],
+      "priority": 1,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-002",
+      "title": "Display currency pairs in wizard step 3",
+      "description": "As a user, I want to see the currency pair on each hedge instruction so I can verify the calculation.",
+      "acceptanceCriteria": [
+        "HedgingWizard.razor step 3 shows CurrencyPair column in the instructions grid",
+        "dotnet build passes",
+        "Unit tests pass",
+        "E2E test navigates to step 3 and verifies column exists"
+      ],
+      "priority": 2,
+      "passes": false,
+      "notes": ""
+    }
+  ]
+}

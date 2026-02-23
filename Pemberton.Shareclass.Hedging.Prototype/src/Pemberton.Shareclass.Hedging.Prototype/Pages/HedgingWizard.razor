@@ -1,18 +1,21 @@
 @page "/wizard"
+@page "/wizard"
 @inject IHedgingWizardViewModel Vm
 
 <h3>Hedging Execution Wizard</h3>
 
-<RadzenSteps @bind-Value="Vm.Step">
-    <RadzenStepsItem Text="BNY Data" />
-    <RadzenStepsItem Text="Record FX Data" />
-    <RadzenStepsItem Text="Validation" />
-    <RadzenStepsItem Text="Calculation" />
-    <RadzenStepsItem Text="Trade Instructions" />
-    <RadzenStepsItem Text="Approvals" />
-    <RadzenStepsItem Text="Execution" />
-    <RadzenStepsItem Text="Booking" />
-    <RadzenStepsItem Text="Reporting" />
+<RadzenSteps @bind-Value="Vm.Step" ShowStepsButtons="false">
+    <Steps>
+        <RadzenStepsItem Text="BNY Data" />
+        <RadzenStepsItem Text="Record FX Data" />
+        <RadzenStepsItem Text="Validation" />
+        <RadzenStepsItem Text="Calculation" />
+        <RadzenStepsItem Text="Trade Instructions" />
+        <RadzenStepsItem Text="Approvals" />
+        <RadzenStepsItem Text="Execution" />
+        <RadzenStepsItem Text="Booking" />
+        <RadzenStepsItem Text="Reporting" />
+    </Steps>
 </RadzenSteps>
 
 <div class="mt-4">
@@ -29,6 +32,7 @@
     {
         0 => @<div>
             <h4>BNY Data (Share Class Exposure)</h4>
+            <label>Upload BNY CSV:</label>
             <InputFile OnChange="OnBnyCsvUpload" />
             <RadzenDataGrid Data="@Vm.PivotedBnyData" TItem="IDictionary<string, object>">
                 <Columns>
@@ -44,6 +48,7 @@
         </div>,
         1 => @<div>
             <h4>Record FX Data</h4>
+            <label>Upload FX CSV:</label>
             <InputFile OnChange="OnFxCsvUpload" />
             <RadzenDataGrid Data="@Vm.PivotedFxData" TItem="IDictionary<string, object>">
                 <Columns>
@@ -68,13 +73,9 @@
                     <RadzenDataGridColumn TItem="ApproverStatus" Property="Status" Title="Status" />
                     <RadzenDataGridColumn TItem="ApproverStatus" Title="Actions">
                         <Template Context="a">
-                            <RadzenButton Text="Approve"
-                                          Disabled="@(a.Status != "Pending")"
-                                          Click="async () => await Vm.ApproveAsync(a.ApproverName)"
-                                          Style="margin-right:10px" />
-                            <RadzenButton Text="Reject"
-                                          Disabled="@(a.Status != "Pending")"
-                                          ButtonStyle="ButtonStyle.Danger"
+                            <RadzenButton Text="Approve"      Disabled="@(a.Status != "Pending")"
+                                          Click="async () => await Vm.ApproveAsync(a.ApproverName)"    Style="margin-right:10px" />
+                            <RadzenButton Text="Reject"                      Disabled="@(a.Status != "Pending")"                                 ButtonStyle="ButtonStyle.Danger"
                                           Click="async () => await Vm.RejectAsync(a.ApproverName)" />
                         </Template>
                     </RadzenDataGridColumn>
@@ -107,21 +108,21 @@
         </div>,
         8 => @<p>Movements booked (mock API).</p>,
         _ => @<p>Select a step.</p>
-    };
+        };
 
     async Task OnBnyCsvUpload(InputFileChangeEventArgs args)
     {
         if (args.FileCount > 0)
-        {
-            await Vm.LoadBnyCsvAsync(args.File.OpenReadStream());
+           {
+           await Vm.LoadBnyCsvAsync(args.File.OpenReadStream());
         }
     }
 
-    async Task OnFxCsvUpload(InputFileChangeEventArgs args)
+async Task OnFxCsvUpload(InputFileChangeEventArgs args)
+{
+    if (args.FileCount > 0)
     {
-        if (args.FileCount > 0)
-        {
-            await Vm.LoadFxCsvAsync(args.File.OpenReadStream());
-        }
+        await Vm.LoadFxCsvAsync(args.File.OpenReadStream());
     }
+}
 }
