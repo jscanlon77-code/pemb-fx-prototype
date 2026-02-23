@@ -28,6 +28,9 @@
 - **Hedge node link**: HedgeNode wraps content in `<a href="/wizard" class="hedge-node-link">` — nodes are clickable links to wizard
 - **CSS connector lines**: `.workflow-cell::after` uses 2px background lines (not Unicode arrows) — hidden on responsive layouts via `display: none`
 - **Responsive grid**: `.workflow-grid` uses media queries: 3 cols >900px, 2 cols 600-900px, 1 col <600px
+- **Wizard action-bar**: `.action-bar` with `display: flex; justify-content: space-between` — Back left, Next right, border-top separator. Uses design tokens for spacing.
+- **Wizard content area**: `.wizard-content` replaces Bootstrap `mt-4` — uses `margin-top: var(--space-6)` for step content spacing
+- **Radzen Button Variant**: Use `Variant="Variant.Outlined"` for secondary buttons (Back), `ButtonStyle="ButtonStyle.Primary"` + `Icon` for primary actions (Next)
 
 ---
 <!-- Iteration logs below — always append, never replace -->
@@ -112,3 +115,19 @@
   - Wrapping components in `<a>` elements doesn't break existing E2E locators (`.hedge-node` still matched inside the link)
   - CSS connector lines are cleaner than Unicode arrows — use `content: ""` with width/height/background instead of text-based arrows
   - Responsive layouts should hide connectors on breakpoints where grid columns change (connectors assume specific column positions)
+
+## 2026-02-23 - US-006: Redesign Wizard Navigation and Step Indicator
+- Added page-header with h3.page-title 'Execution Wizard' and p.page-subtitle 'Step through the FX hedging workflow'
+- Replaced `<div class="mt-4">` with `<div class="wizard-content">` using design-token spacing
+- Replaced `<div class="mt-3">` with `<div class="action-bar">` — flex layout with border-top, Back left-aligned, Next right-aligned
+- Back button: added `Variant="Variant.Outlined"` and `Icon="arrow_back"`, removed `Style="margin-right:10px"`
+- Next button: kept `ButtonStyle="ButtonStyle.Primary"`, added `Icon="arrow_forward"`
+- Added `.wizard-content` and `.action-bar` CSS classes to app.css using design tokens (--space-6, --surface-border)
+- Updated WizardPageTests.cs: `WizardPage_HasExpectedHeading` expects 'Execution Wizard'
+- Updated NavigationTests.cs: `ClickingWizardLink_NavigatesToWizardPage` expects 'Execution Wizard'
+- Files changed: `HedgingWizard.razor`, `app.css`, `WizardPageTests.cs`, `NavigationTests.cs`
+- **Learnings for future iterations:**
+  - `Variant.Outlined` is the Radzen way to make a secondary/ghost button — cleaner than custom CSS
+  - The `Icon` parameter on RadzenButton renders a Material Icon inside the button automatically
+  - Bootstrap utility classes (mt-3, mt-4) should be replaced with semantic CSS classes using design tokens, not just swapped for other utilities
+  - The approval step (step 5) still has inline `Style="margin-right:10px"` on the Approve button — this is US-009's scope
