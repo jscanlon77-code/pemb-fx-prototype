@@ -1,8 +1,10 @@
-<div class="hedge-node @Category" data-step="@StepIndex">
-    <span class="hedge-node-icon material-icons">@Icon</span>
-    <span class="hedge-node-label">Step @StepIndex</span>
-    <strong class="hedge-node-title">@Title</strong>
-</div>
+<a href="/wizard" class="hedge-node-link">
+    <div class="hedge-node @Category" data-step="@StepIndex">
+        <span class="hedge-node-icon material-icons">@Icon</span>
+        <span class="hedge-node-label">Step @StepIndex</span>
+        <strong class="hedge-node-title">@Title</strong>
+    </div>
+</a>
 
 @code {
     [Parameter] public string Title { get; set; } = string.Empty;

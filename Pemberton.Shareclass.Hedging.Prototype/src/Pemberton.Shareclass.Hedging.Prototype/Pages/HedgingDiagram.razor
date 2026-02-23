@@ -1,16 +1,35 @@
 @page "/diagram"
 @inject IHedgingDiagramViewModel Vm
 
-<h3>Hedging Workflow Diagram</h3>
+<div class="page-header">
+    <h3 class="page-title">Hedging Workflow</h3>
+    <p class="page-subtitle">9-step share-class FX hedging process</p>
+</div>
 
 <div class="workflow-grid">
     @foreach (var step in Vm.WorkflowSteps)
     {
         <div class="workflow-cell">
-            <HedgeNode Title="@step.Title"
-                       Category="@step.Category"
-                       Icon="@step.Icon"
-                       StepIndex="@step.StepIndex" />
+            <HedgeNode Title="@step.Title" Category="@step.Category" Icon="@step.Icon" StepIndex="@step.StepIndex" />
         </div>
     }
+</div>
+
+<div class="color-legend">
+    <div class="color-legend__item">
+        <span class="color-legend__swatch data-input"></span>
+        <span class="color-legend__label">Data Input</span>
+    </div>
+    <div class="color-legend__item">
+        <span class="color-legend__swatch processing"></span>
+        <span class="color-legend__label">Processing</span>
+    </div>
+    <div class="color-legend__item">
+        <span class="color-legend__swatch approval"></span>
+        <span class="color-legend__label">Approval</span>
+    </div>
+    <div class="color-legend__item">
+        <span class="color-legend__swatch output"></span>
+        <span class="color-legend__label">Output</span>
+    </div>
 </div>

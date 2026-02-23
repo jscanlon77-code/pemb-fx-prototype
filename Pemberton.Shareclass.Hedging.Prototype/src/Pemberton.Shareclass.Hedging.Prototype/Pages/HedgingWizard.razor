@@ -1,7 +1,10 @@
 @page "/wizard"
 @inject IHedgingWizardViewModel Vm
 
-<h3>Hedging Execution Wizard</h3>
+<div class="page-header">
+    <h3 class="page-title">Execution Wizard</h3>
+    <p class="page-subtitle">Step through the FX hedging workflow</p>
+</div>
 
 <RadzenSteps @bind-Value="Vm.Step" ShowStepsButtons="false">
     <Steps>
@@ -17,115 +20,297 @@
     </Steps>
 </RadzenSteps>
 
-<div class="mt-4">
+<div class="wizard-content">
     @RenderStep()
 </div>
 
-<div class="mt-3">
-    <RadzenButton Text="Back" Click="() => Vm.Back()" Disabled="Vm.IsFirst" Style="margin-right:10px" />
-    <RadzenButton Text="Next" Click="() => Vm.Next()" Disabled="Vm.IsLast" ButtonStyle="ButtonStyle.Primary" />
+<div class="action-bar">
+    <RadzenButton Text="Back" Click="() => Vm.Back()" Disabled="Vm.IsFirst" Variant="Variant.Outlined" Icon="arrow_back" />
+    <RadzenButton Text="Next" Click="() => Vm.Next()" Disabled="Vm.IsLast" ButtonStyle="ButtonStyle.Primary" Icon="arrow_forward" />
 </div>
 
 @code {
     RenderFragment RenderStep() => Vm.Step switch
     {
         0 => @<div>
+            <p class="step-context">Step 1 of 9</p>
             <h4>BNY Data (Share Class Exposure)</h4>
-            <label>Upload BNY CSV:</label>
-            <InputFile OnChange="OnBnyCsvUpload" />
-            <RadzenDataGrid Data="@Vm.PivotedBnyData" TItem="IDictionary<string, object>">
-                <Columns>
-                    @if (Vm.PivotedBnyData.Any())
-                    {
-                        foreach (var col in Vm.PivotedBnyData.First().Keys)
+            <div class="upload-zone">
+                <span class="material-icons upload-zone__icon">cloud_upload</span>
+                <p class="upload-zone__text">Drop a CSV file here or click to browse</p>
+                <InputFile OnChange="OnBnyCsvUpload" />
+            </div>
+            @if (Vm.BnyData.Any())
+            {
+                <div class="upload-success">
+                    <span class="material-icons upload-success__icon">check_circle</span>
+                    <span class="upload-success__text">@Vm.BnyData.Count records loaded</span>
+                </div>
+                <RadzenDataGrid Data="@Vm.PivotedBnyData" TItem="IDictionary<string, object>">
+                    <Columns>
+                        @if (Vm.PivotedBnyData.Any())
                         {
-                            <RadzenDataGridColumn TItem="IDictionary<string, object>" Property="@col" Title="@col" />
+                            foreach (var col in Vm.PivotedBnyData.First().Keys)
+                            {
+                                <RadzenDataGridColumn TItem="IDictionary<string, object>" Property="@col" Title="@col" />
+                            }
                         }
-                    }
-                </Columns>
-            </RadzenDataGrid>
+                    </Columns>
+                </RadzenDataGrid>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <span class="material-icons empty-state__icon">description</span>
+                    <p class="empty-state__heading">No data uploaded</p>
+                    <p class="empty-state__desc">Upload a CSV file to begin</p>
+                </div>
+            }
         </div>,
         1 => @<div>
+            <p class="step-context">Step 2 of 9</p>
             <h4>Record FX Data</h4>
-            <label>Upload FX CSV:</label>
-            <InputFile OnChange="OnFxCsvUpload" />
-            <RadzenDataGrid Data="@Vm.PivotedFxData" TItem="IDictionary<string, object>">
-                <Columns>
-                    @if (Vm.PivotedFxData.Any())
-                    {
-                        foreach (var col in Vm.PivotedFxData.First().Keys)
+            <div class="upload-zone">
+                <span class="material-icons upload-zone__icon">cloud_upload</span>
+                <p class="upload-zone__text">Drop a CSV file here or click to browse</p>
+                <InputFile OnChange="OnFxCsvUpload" />
+            </div>
+            @if (Vm.FxData.Any())
+            {
+                <div class="upload-success">
+                    <span class="material-icons upload-success__icon">check_circle</span>
+                    <span class="upload-success__text">@Vm.FxData.Count records loaded</span>
+                </div>
+                <RadzenDataGrid Data="@Vm.PivotedFxData" TItem="IDictionary<string, object>">
+                    <Columns>
+                        @if (Vm.PivotedFxData.Any())
                         {
-                            <RadzenDataGridColumn TItem="IDictionary<string, object>" Property="@col" Title="@col" />
+                            foreach (var col in Vm.PivotedFxData.First().Keys)
+                            {
+                                <RadzenDataGridColumn TItem="IDictionary<string, object>" Property="@col" Title="@col" />
+                            }
                         }
-                    }
-                </Columns>
-            </RadzenDataGrid>
+                    </Columns>
+                </RadzenDataGrid>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <span class="material-icons empty-state__icon">description</span>
+                    <p class="empty-state__heading">No data uploaded</p>
+                    <p class="empty-state__desc">Upload a CSV file to begin</p>
+                </div>
+            }
         </div>,
-        2 => @<p>Validation: @(Vm.FxData.Any() && Vm.BnyData.Any() ? "OK" : "Pending")</p>,
-        3 => @<p>Calculated @Vm.Instructions?.Count hedge instructions.</p>,
-        4 => @<p>Trade instructions ready for approval.</p>,
+        2 => @<div>
+            <p class="step-context">Step 3 of 9</p>
+            <h4>Validation</h4>
+            <div class="status-card">
+                @if (Vm.FxData.Any() && Vm.BnyData.Any())
+                {
+                    <span class="material-icons status-card__icon status-card__icon--success">check_circle</span>
+                    <div class="status-card__body">
+                        <span class="status-badge status-badge--success">Passed</span>
+                        <p class="status-card__label">Validation: OK</p>
+                    </div>
+                }
+                else
+                {
+                    <span class="material-icons status-card__icon status-card__icon--warning">pending</span>
+                    <div class="status-card__body">
+                        <span class="status-badge status-badge--pending">Pending</span>
+                        <p class="status-card__label">Validation: Pending</p>
+                    </div>
+                }
+            </div>
+            <div class="checklist">
+                <div class="checklist__item">
+                    <span class="material-icons checklist__icon @(Vm.BnyData.Any() ? "checklist__icon--pass" : "checklist__icon--fail")">@(Vm.BnyData.Any() ? "check_circle" : "cancel")</span>
+                    <span>BNY Data uploaded</span>
+                </div>
+                <div class="checklist__item">
+                    <span class="material-icons checklist__icon @(Vm.FxData.Any() ? "checklist__icon--pass" : "checklist__icon--fail")">@(Vm.FxData.Any() ? "check_circle" : "cancel")</span>
+                    <span>FX Data uploaded</span>
+                </div>
+            </div>
+        </div>,
+        3 => @<div>
+            <p class="step-context">Step 4 of 9</p>
+            <h4>Calculation</h4>
+            @if (Vm.Instructions != null)
+            {
+                <div class="status-card">
+                    <div class="status-card__count">@Vm.Instructions.Count</div>
+                    <div class="status-card__body">
+                        <p class="status-card__heading">Hedge Instructions Calculated</p>
+                        <p class="status-card__label">Calculated @Vm.Instructions.Count hedge instructions.</p>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <span class="material-icons empty-state__icon">calculate</span>
+                    <p class="empty-state__heading">No hedge instructions</p>
+                    <p class="empty-state__desc">Hedge instructions will be calculated automatically</p>
+                </div>
+            }
+        </div>,
+        4 => @<div>
+            <p class="step-context">Step 5 of 9</p>
+            <h4>Trade Instructions</h4>
+            @if (Vm.Instructions != null && Vm.Instructions.Any())
+            {
+                <div class="status-card">
+                    <span class="material-icons status-card__icon status-card__icon--success">assignment_turned_in</span>
+                    <div class="status-card__body">
+                        <p class="status-card__heading">Ready for Approval</p>
+                        <span class="status-badge status-badge--info">@Vm.Instructions.Count instructions</span>
+                        <p class="status-card__label">Trade instructions ready for approval.</p>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <span class="material-icons empty-state__icon">assignment</span>
+                    <p class="empty-state__heading">No trade instructions</p>
+                    <p class="empty-state__desc">Trade instructions ready for approval.</p>
+                </div>
+            }
+        </div>,
         5 => @<div>
+            <p class="step-context">Step 6 of 9</p>
             <h4>Approvals</h4>
+            <div class="approval-progress">
+                <span class="approval-progress__text">@(Vm.Approvals.Count(a => a.Status == "Approved")) of 4 Approved</span>
+                <div class="approval-progress__track">
+                    <div class="approval-progress__bar" style="width: @(Vm.Approvals.Count(a => a.Status == "Approved") * 25)%"></div>
+                </div>
+            </div>
             <RadzenDataGrid Data="@Vm.Approvals" TItem="ApproverStatus">
                 <Columns>
                     <RadzenDataGridColumn TItem="ApproverStatus" Property="ApproverName" Title="Approver" />
-                    <RadzenDataGridColumn TItem="ApproverStatus" Property="Status" Title="Status" />
+                    <RadzenDataGridColumn TItem="ApproverStatus" Title="Status">
+                        <Template Context="a">
+                            <span class="status-badge @GetApprovalBadgeClass(a.Status)">@a.Status</span>
+                        </Template>
+                    </RadzenDataGridColumn>
                     <RadzenDataGridColumn TItem="ApproverStatus" Title="Actions">
                         <Template Context="a">
-                            <RadzenButton Text="Approve"
-                                          Disabled="@(a.Status != "Pending")"
-                                          Click="async () => await Vm.ApproveAsync(a.ApproverName)"
-                                          Style="margin-right:10px" />
-                            <RadzenButton Text="Reject"
-                                          Disabled="@(a.Status != "Pending")"
-                                          ButtonStyle="ButtonStyle.Danger"
-                                          Click="async () => await Vm.RejectAsync(a.ApproverName)" />
+                            <div class="approval-actions">
+                                <RadzenButton Text="Approve" Disabled="@(a.Status != "Pending")"
+                                              Click="async () => await Vm.ApproveAsync(a.ApproverName)"
+                                              ButtonStyle="ButtonStyle.Primary" Icon="check" />
+                                <RadzenButton Text="Reject" Disabled="@(a.Status != "Pending")"
+                                              ButtonStyle="ButtonStyle.Danger" Icon="close"
+                                              Click="async () => await Vm.RejectAsync(a.ApproverName)" />
+                            </div>
                         </Template>
                     </RadzenDataGridColumn>
                 </Columns>
             </RadzenDataGrid>
 
-            @if (!Vm.AllApproved)
+            @if (Vm.AllApproved)
             {
-                <p style="color:red;margin-top:10px;">
-                    All four approvals are required before continuing.
-                </p>
-            }
-        </div>,
-        6 => @<p>@Vm.ExecutionResult</p>,
-        7 => @<div>
-            <h4>Reporting</h4>
-            @if (Vm.ReportingData is not null)
-            {
-                <ul>
-                    @foreach (var item in Vm.ReportingData)
-                    {
-                        <li>@item</li>
-                    }
-                </ul>
+                <div class="alert alert--success">
+                    <span class="material-icons alert__icon">check_circle</span>
+                    <span>All approvals granted. You may proceed to the next step.</span>
+                </div>
             }
             else
             {
-                <p>No reporting data loaded.</p>
+                <div class="alert alert--warning">
+                    <span class="material-icons alert__icon">warning</span>
+                    <span>All four approvals are required before continuing.</span>
+                </div>
             }
         </div>,
-        8 => @<p>Movements booked (mock API).</p>,
+        6 => @<div>
+            <p class="step-context">Step 7 of 9</p>
+            <h4>Execution</h4>
+            @if (Vm.ExecutionResult != null)
+            {
+                <div class="result-card">
+                    <span class="material-icons result-card__icon result-card__icon--success">check_circle</span>
+                    <div class="result-card__body">
+                        <p class="result-card__heading">Trade Executed</p>
+                        <p class="result-card__text">@Vm.ExecutionResult</p>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <span class="material-icons empty-state__icon">play_circle</span>
+                    <p class="empty-state__heading">No execution result</p>
+                    <p class="empty-state__desc">Trades will be executed automatically</p>
+                </div>
+            }
+        </div>,
+        7 => @<div>
+            <p class="step-context">Step 8 of 9</p>
+            <h4>Reporting</h4>
+            @if (Vm.ReportingData is not null)
+            {
+                <div class="data-card-list">
+                    @foreach (var item in Vm.ReportingData)
+                    {
+                        <div class="data-card">
+                            <span class="material-icons data-card__icon">article</span>
+                            <span class="data-card__text">@item</span>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <span class="material-icons empty-state__icon">bar_chart</span>
+                    <p class="empty-state__heading">No reporting data</p>
+                    <p class="empty-state__desc">No reporting data loaded.</p>
+                </div>
+            }
+        </div>,
+        8 => @<div>
+            <p class="step-context">Step 9 of 9</p>
+            <h4>Booking</h4>
+            <div class="result-card">
+                <span class="material-icons result-card__icon result-card__icon--success">check_circle</span>
+                <div class="result-card__body">
+                    <p class="result-card__heading">Movements Booked</p>
+                    <p class="result-card__text">Movements booked successfully.</p>
+                </div>
+            </div>
+            <div class="workflow-complete">
+                <span class="material-icons workflow-complete__icon">celebration</span>
+                <p class="workflow-complete__heading">Workflow Complete</p>
+                <p class="workflow-complete__desc">All hedging workflow steps have been successfully completed.</p>
+            </div>
+        </div>,
         _ => @<p>Select a step.</p>
+        };
+
+    string GetApprovalBadgeClass(string status) => status switch
+    {
+        "Approved" => "status-badge--approved",
+        "Rejected" => "status-badge--rejected",
+        _ => "status-badge--pending"
     };
 
     async Task OnBnyCsvUpload(InputFileChangeEventArgs args)
     {
-        if (args.File is not null)
-        {
-            await Vm.LoadBnyCsvAsync(args.File.OpenReadStream());
+        if (args.FileCount > 0)
+           {
+           await Vm.LoadBnyCsvAsync(args.File.OpenReadStream());
         }
     }
 
-    async Task OnFxCsvUpload(InputFileChangeEventArgs args)
+async Task OnFxCsvUpload(InputFileChangeEventArgs args)
+{
+    if (args.FileCount > 0)
     {
-        if (args.File is not null)
-        {
-            await Vm.LoadFxCsvAsync(args.File.OpenReadStream());
-        }
+        await Vm.LoadFxCsvAsync(args.File.OpenReadStream());
     }
+}
 }

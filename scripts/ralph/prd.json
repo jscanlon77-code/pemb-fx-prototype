@@ -1,208 +1,218 @@
 {
-  "project": "Pemberton FX Hedging Prototype — Material Glow-Up",
-  "branchName": "mark/material-glow-up",
-  "description": "Systematically commit, verify, and extend test coverage for the Material Design styling overhaul: CSS Grid diagram, HedgeNode component, Material Icons, sidebar theming, and Radzen InputFile migration.",
+  "project": "Pemberton FX Hedging Prototype — Professional Design Overhaul",
+  "branchName": "ralph/professional-design-overhaul",
+  "description": "Establish a CSS design token foundation, professionalize every screen (layout shell, home page, diagram, wizard steps 0–8), eliminate inline styles, and add E2E tests for key design elements.",
   "userStories": [
     {
       "id": "US-001",
-      "title": "Commit WorkflowStep model and ViewModel changes",
-      "description": "Stage and commit the new WorkflowStep model and updated ViewModels that expose WorkflowSteps. These three files form the data layer foundation that all other stories depend on. The files already exist in the working tree — stage them, verify the build passes, and commit.",
+      "title": "Create the Professional Web Design AI Skill",
+      "description": "Create a new skill file at .claude/skills/design/SKILL.md that encodes an opinionated design system. It must have valid skill frontmatter (name: design, description, user-invocable: true). Include sections for: Typography (Inter font 400/500/600, type scale with page-title 24px/600, section-heading 18px/600, card-title 15px/500, body 14px/400, caption 12px/500 uppercase), Color Palette (--color-primary: #1e3a5f, --color-accent: #0ea5e9, semantic colors, surfaces, category colors), Spacing (4px base unit --space-1 through --space-12), Elevation (--shadow-sm/md/lg, --radius-sm/md/lg), Component Patterns (page header, status badge pill, empty state, loading state, data card, upload drop zone, action bar), Radzen Overrides (DataGrid striped/uppercase headers, Button with ButtonStyle enum, Steps, Badge), Layout Rules (240px sidebar, 64px top bar, 1200px max-width content), Animation (0.2s ease transitions, 300ms max, 150ms page fade-in).",
       "acceptanceCriteria": [
-        "Stage exactly these 3 files: src/.../Models/WorkflowStep.cs, src/.../ViewModels/HedgingDiagramViewModel.cs, src/.../ViewModels/IHedgingDiagramViewModel.cs",
-        "dotnet build passes with no errors",
-        "dotnet test (unit tests) passes — the existing Nodes_ShouldContainApprovalsAndReporting test still works",
-        "Commit with message: feat: US-001 - Commit WorkflowStep model and ViewModel changes"
+        "File .claude/skills/design/SKILL.md exists with YAML frontmatter: name: design, description, user-invocable: true",
+        "Contains Typography section with Inter font spec and full type scale",
+        "Contains Color Palette section with all CSS custom property definitions",
+        "Contains Spacing section with --space-1 through --space-12",
+        "Contains Elevation, Component Patterns, Radzen Overrides, Layout Rules, and Animation sections",
+        "dotnet build passes",
+        "dotnet test (unit tests) passes"
       ],
       "priority": 1,
       "passes": true,
-      "notes": "Staged and committed WorkflowStep.cs, HedgingDiagramViewModel.cs, IHedgingDiagramViewModel.cs. Build and all 8 unit tests pass."
+      "notes": "Created SKILL.md with all required sections. Also fixed pre-existing build issues: doubled-quote corruption in 18 source files, incorrect NuGet package name (Blazor.Diagrams -> Z.Blazor.Diagrams v3.0.4), updated BlazorDiagram API for v3, replaced Radzen.FileInputChangeEventArgs with InputFileChangeEventArgs, added missing _Imports.razor usings (Forms, Routing), made IHedgingWizardViewModel.Step settable for @bind-Value."
     },
     {
       "id": "US-002",
-      "title": "Commit and verify WorkflowStep unit tests",
-      "description": "Stage and commit the updated HedgingDiagramViewModelTests.cs which adds tests for WorkflowSteps (count, categories, sequential indices, non-empty icons). The file already exists in the working tree.",
+      "title": "Establish CSS Design Token Foundation",
+      "description": "Create the CSS custom property system and base styles. In _Host.cshtml, add a Google Fonts link for Inter (weights 400, 500, 600) and add preconnect hints. In app.css, add a :root block defining ALL CSS custom properties from the design skill (colors, spacing, shadows, radii). Update body font-family to 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif. Replace all hardcoded hex values in app.css with CSS variable references (e.g. .sidebar background uses var(--surface-sidebar), active link color uses var(--color-accent)). Replace all hardcoded hex values in hedging.css with CSS variable references (category colors use var(--category-data-input) etc., spacing uses var(--space-N)). IMPORTANT: The CSS variable values differ from current hardcoded values — this WILL change rendered colors. You MUST also update the 2 affected E2E test files to expect the new RGB values: (1) NavigationTests.cs ActiveLink_HasHighlightColor — change expected from rgb(97, 218, 251) to rgb(14, 165, 233) since --color-accent is #0ea5e9, (2) DiagramPageTests.cs Nodes_HaveCategoryBackgroundColors — update expected values to: data-input rgb(21, 101, 192), processing rgb(0, 121, 107), approval rgb(230, 81, 0), output rgb(46, 125, 50).",
       "acceptanceCriteria": [
-        "Stage exactly: tests/.../HedgingDiagramViewModelTests.cs",
+        "_Host.cshtml includes Google Fonts link for Inter (weights 400, 500, 600) with preconnect hints",
+        "app.css begins with :root block defining all CSS custom properties from the design skill",
+        "body font-family updated to 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+        "All hardcoded hex values in app.css replaced with CSS variable references",
+        "All hardcoded hex values in hedging.css replaced with CSS variable references",
+        "NavigationTests.cs updated: ActiveLink_HasHighlightColor expects rgb(14, 165, 233)",
+        "DiagramPageTests.cs updated: Nodes_HaveCategoryBackgroundColors expects rgb(21, 101, 192), rgb(0, 121, 107), rgb(230, 81, 0), rgb(46, 125, 50)",
         "dotnet build passes",
-        "dotnet test (unit tests) passes — all 5 tests in HedgingDiagramViewModelTests pass (Nodes_ShouldContainApprovalsAndReporting, WorkflowSteps_ShouldContainNineSteps, WorkflowSteps_ShouldHaveExpectedCategories, WorkflowSteps_ShouldHaveSequentialStepIndices, WorkflowSteps_ShouldHaveNonEmptyIcons)",
-        "Commit with message: feat: US-002 - Commit and verify WorkflowStep unit tests"
+        "dotnet test (unit tests) passes"
       ],
       "priority": 2,
       "passes": true,
-      "notes": "Staged and committed HedgingDiagramViewModelTests.cs. All 8 unit tests pass (5 WorkflowStep tests + existing tests)."
+      "notes": "Added Google Fonts preconnect hints and Inter font link to _Host.cshtml. Created comprehensive :root block in app.css with all CSS custom properties (colors, spacing, shadows, radii). Updated body font-family to Inter stack. Replaced all hardcoded hex values in app.css (sidebar, nav, surfaces) and hedging.css (arrows, nodes, categories, spacing) with CSS variable references. Updated NavigationTests.cs and DiagramPageTests.cs to expect new RGB values from design token colors."
     },
     {
       "id": "US-003",
-      "title": "Commit diagram page rewrite with CSS Grid and Material Design",
-      "description": "Atomic commit of the core UI rewrite: HedgingDiagram.razor (CSS Grid), HedgeNode.razor (Material Icons), hedging.css (node/grid/arrow styles), _Host.cshtml (Material Icons font link), csproj (removed Z.Blazor.Diagrams), _Imports.razor (added Radzen usings), and updated DiagramPageTests.cs + NavigationTests test for diagram link. All files already exist in the working tree. These must be committed together because removing Z.Blazor.Diagrams from the csproj while the old razor files reference it would break the build.",
+      "title": "Redesign Layout Shell — Sidebar, Top Bar, Navigation",
+      "description": "Professionalize MainLayout and NavMenu. In NavMenu.razor: add a brand area div above the nav with 'Pemberton' text (20px, weight 600) and a subtitle 'FX Hedging'; add Material Icons to each nav link (Home=home, Diagram=account_tree, Wizard=play_circle) using <span class=\"material-icons\">; give nav items 12px vertical padding, hover background, active left-border accent. In MainLayout.razor: top bar is 64px height with vertically centered content; content area gets max-width:1200px and margin:0 auto. In app.css: sidebar width 240px; add .nav-brand styling; update .nav-menu a to display:flex with icon gap; add .top-row height:64px with flex centering. In _Host.cshtml: add a favicon (SVG data URI with navy P letter). IMPORTANT: Keep the .top-row h2 element containing 'Pemberton' text — the existing HomePageTests.HomePage_TopRowShowsAppTitle test checks for this.",
       "acceptanceCriteria": [
-        "Stage exactly these files: src/.../Pages/HedgingDiagram.razor, src/.../Components/HedgeNode.razor, src/.../wwwroot/css/hedging.css, src/.../Pages/_Host.cshtml, src/.../Pemberton.Shareclass.Hedging.Prototype.csproj, src/...//_Imports.razor, tests/.../DiagramPageTests.cs",
-        "The csproj must NOT reference Z.Blazor.Diagrams — only Radzen.Blazor",
-        "_Host.cshtml must include the Material Icons font stylesheet link",
-        "dotnet build passes with no errors",
-        "dotnet test (unit tests) passes",
-        "Commit with message: feat: US-003 - Commit diagram page rewrite with CSS Grid and Material Design"
+        "NavMenu.razor has a brand area with 'Pemberton' text styled as logo (20px, weight 600)",
+        "Each nav link has a Material Icon span: Home=home, Diagram=account_tree, Wizard=play_circle",
+        "Nav items have 12px vertical padding, hover background, active left-border accent",
+        "Top bar is 64px height with vertically centered content",
+        "Content area has max-width: 1200px and margin: 0 auto",
+        "Sidebar width is 240px",
+        "_Host.cshtml includes a favicon (SVG data URI)",
+        "dotnet build passes",
+        "dotnet test (unit tests) passes"
       ],
       "priority": 3,
       "passes": true,
-      "notes": "Atomic commit of 7 files: diagram page, HedgeNode component, CSS Grid layout, Material Icons font, csproj cleanup, Radzen imports, and comprehensive E2E tests."
+      "notes": "Added nav-brand area with Pemberton title (20px/600) and FX Hedging subtitle. Added Material Icons to each nav link (home, account_tree, play_circle). Updated nav items to display:flex with icon gap, 12px vertical padding, hover background. Updated sidebar to 240px. Top bar set to 64px with flex centering. Content area has max-width:1200px and margin:0 auto. Added SVG favicon with navy P. Removed px-4 Bootstrap utility classes from MainLayout. Updated SidebarLink_HasBlockDisplay E2E test to expect flex display."
     },
     {
       "id": "US-004",
-      "title": "Commit sidebar Material Design styling and navigation tests",
-      "description": "Stage and commit the Material Design sidebar theming (app.css), updated NavMenu.razor, and new navigation E2E tests (NavigationTests.cs). The files already exist in the working tree.",
+      "title": "Redesign Home Page as Professional Dashboard Landing",
+      "description": "Replace the bare h3 + bullet list home page with a professional dashboard. Add a page-header div with h3.page-title 'FX Hedging Dashboard' and p.page-subtitle 'Share-class FX hedging workflow management'. Replace the <ul>/<li> navigation with two nav-card elements in a 2-column grid (.dashboard-grid): (1) Diagram card with Material Icon account_tree (48px), title 'Workflow Diagram', description text, linking to /diagram; (2) Wizard card with icon play_circle, title 'Execution Wizard', description text, linking to /wizard. Add a workflow-overview section showing 9 steps horizontally with category-colored indicator pills. All styling uses CSS custom properties via classes in app.css. No inline style attributes. IMPORTANT: The existing E2E tests check for specific elements: (1) HomePageTests.HomePage_HasExpectedHeading checks h3 text — update it to expect 'FX Hedging Dashboard', (2) HomePageTests.HomePage_HasLinksToWizardAndDiagram checks for 'article a[href=diagram]' and 'article a[href=wizard]' — ensure the nav-card links use <a> tags with these href values inside the article.content container.",
       "acceptanceCriteria": [
-        "Stage exactly these files: src/.../wwwroot/css/app.css, src/.../Shared/NavMenu.razor, tests/.../NavigationTests.cs",
-        "app.css sidebar background must be #20232a with white text",
-        "NavMenu.razor must contain links to /, /diagram, and /wizard",
+        "Page has h3.page-title with text 'FX Hedging Dashboard' and p.page-subtitle",
+        "Two navigation cards in a .dashboard-grid (2-column responsive grid)",
+        "Diagram card has icon account_tree (48px), title 'Workflow Diagram', links to /diagram",
+        "Wizard card has icon play_circle, title 'Execution Wizard', links to /wizard",
+        "Workflow overview section showing 9 steps with category-colored indicators",
+        "No inline style attributes",
+        "HomePageTests.cs updated: HomePage_HasExpectedHeading expects 'FX Hedging Dashboard'",
         "dotnet build passes",
-        "dotnet test (unit tests) passes",
-        "Commit with message: feat: US-004 - Commit sidebar Material Design styling and navigation tests"
+        "dotnet test (unit tests) passes"
       ],
       "priority": 4,
       "passes": true,
-      "notes": "Sidebar themed with dark background #20232a, active link indicator with #61dafb highlight. Navigation tests include pointer-events, cursor, transition, and cross-page navigation."
+      "notes": "Replaced bare h3 + ul/li home page with professional dashboard. Added page-header with h3.page-title 'FX Hedging Dashboard' and subtitle. Created 2-column dashboard-grid with nav-card elements linking to /diagram and /wizard with Material Icons (account_tree, play_circle). Added workflow-overview section with 9 category-colored pills showing all workflow steps. All styling uses CSS custom properties in app.css (page-header, dashboard-grid, nav-card, workflow-overview, workflow-pill). Updated HomePageTests.cs to expect new heading. No inline styles."
     },
     {
       "id": "US-005",
-      "title": "Commit wizard back-navigation E2E tests",
-      "description": "Stage and commit the new WizardBackNavigationTests.cs file which tests the Back button in the wizard (back from step 1, back from step 2, disabled on step 0, round-trip). The file already exists in the working tree as an untracked file.",
+      "title": "Redesign Hedging Diagram Page",
+      "description": "Polish the workflow diagram page. Add a page-header div with h3.page-title 'Hedging Workflow' and p.page-subtitle '9-step share-class FX hedging process'. In hedging.css: replace Unicode arrow pseudo-elements with CSS-drawn connector lines (thin 2px lines using background or border, no text content). Add a color-legend section below the grid with four items: Data Input (blue swatch), Processing (teal), Approval (orange), Output (green). In HedgeNode.razor: wrap the node content in a clickable <a> element linking to /wizard. Add hover elevation using var(--shadow-md). Make grid responsive: 3 columns above 900px, 2 columns 600–900px, 1 column below 600px. All styling uses CSS variables, no inline styles. IMPORTANT: Update affected E2E tests: (1) DiagramPageTests.DiagramPage_HasExpectedHeading — change expected text to 'Hedging Workflow', (2) NavigationTests.ClickingDiagramLink_NavigatesToDiagramPage — change expected h3 text to 'Hedging Workflow'. Keep all other diagram test assertions intact (node count, labels, categories, step indices, icons, grid display).",
       "acceptanceCriteria": [
-        "Stage exactly: tests/.../WizardBackNavigationTests.cs",
-        "File contains tests: BackFromStep1_ReturnsToStep0, BackFromStep2_ReturnsToStep1, BackButton_IsDisabled_OnStep0, BackThenForward_RoundTrip_ReturnsToSameStep",
+        "Page header has h3 title 'Hedging Workflow' and subtitle",
+        "Unicode arrows replaced with CSS-drawn connector lines (2px background/border)",
+        "Color legend section below grid with four category items and colored swatches",
+        "HedgeNode.razor wraps content in a clickable <a> linking to /wizard",
+        "Grid responsive: 3 cols > 900px, 2 cols 600-900px, 1 col < 600px",
+        "DiagramPageTests.cs updated: heading expects 'Hedging Workflow'",
+        "NavigationTests.cs updated: diagram heading expects 'Hedging Workflow'",
         "dotnet build passes",
-        "dotnet test (unit tests) passes",
-        "Commit with message: feat: US-005 - Commit wizard back-navigation E2E tests"
+        "dotnet test (unit tests) passes"
       ],
       "priority": 5,
       "passes": true,
-      "notes": "4 back-navigation E2E tests committed. Uses ClickBackAndWaitFor/ClickNextAndWaitFor helper pattern."
+      "notes": "Replaced DiagramCanvas (Z.Blazor.Diagrams) with custom workflow grid using HedgeNode components. Added page-header with h3.page-title 'Hedging Workflow' and subtitle. Replaced Unicode arrow pseudo-elements with CSS-drawn 2px connector lines (horizontal between columns, vertical at row ends). Added color-legend section below grid with four category swatches. Wrapped HedgeNode content in clickable <a> linking to /wizard. Made grid responsive: 3 cols >900px, 2 cols 600-900px, 1 col <600px. Updated DiagramPageTests and NavigationTests heading expectations."
     },
     {
       "id": "US-006",
-      "title": "Commit wizard post-approval E2E tests",
-      "description": "Stage and commit the new WizardPostApprovalTests.cs file which tests wizard steps 6-8 (post-approval execution, reporting, book movements). The file already exists in the working tree as an untracked file.",
+      "title": "Redesign Wizard Navigation and Step Indicator",
+      "description": "Professionalize the wizard shell (header and action bar) before individual steps are redesigned. Add a page-header div with h3.page-title 'Execution Wizard' and p.page-subtitle 'Step through the FX hedging workflow'. Replace the mt-3 div containing Back/Next buttons with a styled action-bar div (border-top, flex layout, Back left-aligned, Next right-aligned). Back button: Variant.Outlined with Icon='arrow_back'. Next button: ButtonStyle.Primary with Icon='arrow_forward'. Remove all inline Style attributes from buttons (no Style=\"margin-right:10px\"). Replace Bootstrap utility classes (mt-4, mt-3, px-4) with design-token CSS classes. IMPORTANT: Update affected E2E tests: (1) WizardPageTests.WizardPage_HasExpectedHeading — change expected h3 text to 'Execution Wizard', (2) NavigationTests.ClickingWizardLink_NavigatesToWizardPage — change expected h3 text to 'Execution Wizard'.",
       "acceptanceCriteria": [
-        "Stage exactly: tests/.../WizardPostApprovalTests.cs",
-        "File contains tests: Step6_ShowsExecutionContent, Step7_ShowsReportingHeading, Step7_ShowsReportingContent, Step8_ShowsMovementsBookedText, Step8_NextButton_IsDisabled",
+        "Page header has h3 'Execution Wizard' with descriptive subtitle",
+        "Action bar with border-top, flex layout: Back left, Next right",
+        "Back button uses Variant.Outlined with Icon arrow_back",
+        "Next button uses ButtonStyle.Primary with Icon arrow_forward",
+        "All inline Style attributes removed from buttons",
+        "Bootstrap utility classes (mt-4, mt-3) replaced with CSS classes",
+        "WizardPageTests.cs updated: heading expects 'Execution Wizard'",
+        "NavigationTests.cs updated: wizard heading expects 'Execution Wizard'",
         "dotnet build passes",
-        "dotnet test (unit tests) passes",
-        "Commit with message: feat: US-006 - Commit wizard post-approval E2E tests"
+        "dotnet test (unit tests) passes"
       ],
       "priority": 6,
       "passes": true,
-      "notes": "5 post-approval E2E tests committed. NavigateToStep6 helper approves all 4 approvers via XPath ancestor traversal to find Approve button per row."
+      "notes": "Added page-header with h3.page-title 'Execution Wizard' and p.page-subtitle. Replaced mt-4 div with .wizard-content class. Replaced mt-3 div with .action-bar (border-top, flex layout, Back left-aligned, Next right-aligned). Back button uses Variant.Outlined with Icon='arrow_back'. Next button uses ButtonStyle.Primary with Icon='arrow_forward'. Removed Style='margin-right:10px' from Back button. Added .wizard-content and .action-bar CSS classes to app.css using design tokens. Updated WizardPageTests and NavigationTests heading expectations to 'Execution Wizard'."
     },
     {
       "id": "US-007",
-      "title": "Add E2E test for Material Icons font loading",
-      "description": "Write a NEW Playwright E2E test in DiagramPageTests.cs that verifies the Material Icons web font is loaded and rendering correctly on the diagram page. The test should check that the .hedge-node-icon elements use the 'Material Icons' font-family and that the icons have non-zero rendered dimensions (confirming the font loaded rather than falling back to text).",
+      "title": "Redesign Wizard Steps 0–1 — File Upload with Data Display",
+      "description": "Replace bare InputFile elements with styled upload zones. For each step (0 and 1): add a step-context label ('Step 1 of 9' / 'Step 2 of 9') above the h4 title. Style the file upload area as a dashed-border drop zone with cloud_upload icon (48px) and instructional text. Before upload: show an empty-state div with icon, 'No data uploaded' heading, 'Upload a CSV file to begin' description. After upload: show an upload-success div with green check_circle icon and record count text (e.g. '5 records loaded'). Keep the h4 titles as 'BNY Data (Share Class Exposure)' and 'Record FX Data' so existing E2E tests that locate these headings still work. Keep the RadzenDataGrid for displaying uploaded data. No inline style attributes.",
       "acceptanceCriteria": [
-        "A new test method DiagramPage_MaterialIcons_FontIsLoaded exists in DiagramPageTests.cs",
-        "The test verifies .hedge-node-icon elements have font-family containing 'Material Icons' (via getComputedStyle)",
-        "The test verifies at least one icon element has non-zero offsetWidth (confirming the font rendered)",
+        "Step 0 and 1 have step-context label ('Step 1 of 9' / 'Step 2 of 9') above h4 title",
+        "Upload area styled as dashed-border drop zone with cloud_upload icon and text",
+        "Before upload: empty-state with icon, heading, description",
+        "After upload: upload-success with green icon and record count",
+        "h4 titles remain 'BNY Data (Share Class Exposure)' and 'Record FX Data' (existing test compatibility)",
+        "No inline style attributes",
         "dotnet build passes",
-        "dotnet test (unit tests) passes",
-        "Commit with message: feat: US-007 - Add E2E test for Material Icons font loading"
+        "dotnet test (unit tests) passes"
       ],
       "priority": 7,
       "passes": true,
-      "notes": "Test checks fontFamily via getComputedStyle and offsetWidth > 0 to confirm font rendered."
+      "notes": "Added step-context labels ('Step 1 of 9' / 'Step 2 of 9') above h4 titles. Styled upload area as dashed-border drop zone with cloud_upload icon (48px) and instructional text. Before upload: empty-state with description icon, 'No data uploaded' heading, 'Upload a CSV file to begin' description. After upload: upload-success with green check_circle icon and record count (e.g. '5 records loaded'). Kept h4 titles as 'BNY Data (Share Class Exposure)' and 'Record FX Data' for E2E test compatibility. Kept RadzenDataGrid for uploaded data display. Added CSS classes to app.css: .step-context, .upload-zone, .upload-success, .empty-state with BEM-style children. No inline style attributes."
     },
     {
       "id": "US-008",
-      "title": "Add E2E test for category background colors",
-      "description": "Write a NEW Playwright E2E test in DiagramPageTests.cs that verifies each category of hedge-node has the correct Material Design background color. data-input=#1976D2 (rgb(25,118,210)), processing=#00897B (rgb(0,137,123)), approval=#F57C00 (rgb(245,124,0)), output=#388E3C (rgb(56,142,60)). Test at least one node per category.",
+      "title": "Redesign Wizard Steps 2–4 — Validation, Calculation, Trade Instructions",
+      "description": "Replace plaintext paragraphs with professional status cards. Step 2 (Validation): status-card with large icon (check_circle green when both uploads done, pending amber otherwise), status-badge pill, checklist showing 'BNY Data uploaded' and 'FX Data uploaded' with check/cross icons. Keep the text 'Validation:' visible somewhere for E2E test compatibility (WizardPageTests.WizardPage_Step2_ShowsValidationStatus searches for 'Validation:'). Step 3 (Calculation): status-card with large prominent count number (status-card__count), 'Hedge Instructions Calculated' label, empty state if no instructions. Keep text containing 'hedge instructions' visible for test compatibility. Step 4 (Trade Instructions): status-card with 'Ready for Approval' heading, count badge, empty state if not available. Keep text 'Trade instructions ready for approval' visible for test compatibility. All step headers include step-context ('Step N of 9'). All styling uses CSS variables, no inline styles.",
       "acceptanceCriteria": [
-        "A new test method DiagramPage_Nodes_HaveCategoryBackgroundColors exists in DiagramPageTests.cs",
-        "The test checks background-color via getComputedStyle for at least one node per category",
-        "Expected colors: data-input=rgb(25, 118, 210), processing=rgb(0, 137, 123), approval=rgb(245, 124, 0), output=rgb(56, 142, 60)",
+        "Step 2: status-card with conditional icon (check_circle/pending), status badge, upload checklist",
+        "Step 2 keeps visible text containing 'Validation:' for E2E compatibility",
+        "Step 3: status-card with prominent count number and label, empty state if null",
+        "Step 3 keeps visible text containing 'hedge instructions' for E2E compatibility",
+        "Step 4: status-card with heading and count, empty state",
+        "Step 4 keeps visible text 'Trade instructions ready for approval' for E2E compatibility",
+        "All steps have step-context labels ('Step N of 9')",
+        "No inline style attributes",
         "dotnet build passes",
-        "dotnet test (unit tests) passes",
-        "Commit with message: feat: US-008 - Add E2E test for category background colors"
+        "dotnet test (unit tests) passes"
       ],
       "priority": 8,
       "passes": true,
-      "notes": "Test checks background-color via getComputedStyle for one node per category: data-input (node 0), processing (node 2), approval (node 5), output (node 6)."
+      "notes": "Replaced plaintext paragraphs with professional status cards. Step 2: status-card with conditional check_circle (green) or pending (amber) icon, status-badge pill (Passed/Pending), checklist showing BNY Data and FX Data upload status with check/cross icons. Keeps 'Validation:' text visible for E2E compatibility. Step 3: status-card with prominent count number (status-card__count), 'Hedge Instructions Calculated' heading, empty state with calculate icon if null. Keeps 'hedge instructions' text visible. Step 4: status-card with assignment_turned_in icon, 'Ready for Approval' heading, count badge, empty state if not available. Keeps 'Trade instructions ready for approval.' text visible in both states. All steps have step-context labels ('Step N of 9'). Added CSS classes to app.css: .status-card (with __icon, __icon--success, __icon--warning, __body, __heading, __label, __count), .status-badge (with --success, --pending, --info), .checklist (with __item, __icon, __icon--pass, __icon--fail). No inline style attributes."
     },
     {
       "id": "US-009",
-      "title": "Add E2E test for hover elevation effect",
-      "description": "Write a NEW Playwright E2E test in DiagramPageTests.cs that verifies hedge-node elements have a CSS transition property set (confirming the hover elevation animation is wired up). The test should check that the computed transition property includes 'transform' since the hover effect uses transform: translateY(-2px).",
+      "title": "Redesign Wizard Step 5 — Approvals with Status Badges",
+      "description": "Replace the bare approval grid with status badges, progress indicator, and styled alerts. Add an approval-progress bar at top showing 'N of 4 Approved' with a visual progress bar fill. In the RadzenDataGrid Status column, render colored status-badge spans: Pending=status-badge--pending (amber), Approved=status-badge--approved (green), Rejected=status-badge--rejected (red). Approve button: ButtonStyle.Primary with Icon='check'. Reject button: ButtonStyle.Danger with Icon='close'. Wrap buttons in an approval-actions div instead of using inline Style='margin-right:10px'. Warning message (not all approved): styled alert--warning div with warning icon and the text 'All four approvals are required before continuing.' (keep exact text for E2E test WizardApprovalTests). Success message (all approved): alert--success div with checkmark. Add step-context 'Step 6 of 9'. Keep the h4 'Approvals' heading for E2E test compatibility. Remove ALL inline style attributes from step 5 (especially style='color:red;margin-top:10px;').",
       "acceptanceCriteria": [
-        "A new test method DiagramPage_Nodes_HaveHoverTransition exists in DiagramPageTests.cs",
-        "The test verifies .hedge-node elements have a computed transition property that includes 'transform'",
+        "Approval progress bar showing 'N of 4 Approved' with visual fill",
+        "Status badges: Pending=amber, Approved=green, Rejected=red",
+        "Approve button: ButtonStyle.Primary with check icon; Reject: ButtonStyle.Danger with close icon",
+        "Button spacing uses CSS classes not inline style",
+        "Warning: alert--warning with text 'All four approvals are required before continuing.'",
+        "Success: alert--success when all approved",
+        "h4 'Approvals' heading preserved for E2E compatibility",
+        "All inline style attributes removed from step 5",
         "dotnet build passes",
-        "dotnet test (unit tests) passes",
-        "Commit with message: feat: US-009 - Add E2E test for hover elevation effect"
+        "dotnet test (unit tests) passes"
       ],
       "priority": 9,
       "passes": true,
-      "notes": "Test checks computed transition property via getComputedStyle and asserts it contains 'transform' for the hover elevation effect."
+      "notes": "Added approval-progress bar at top showing 'N of 4 Approved' with animated green fill bar (width transitions via CSS). RadzenDataGrid Status column now uses Template with colored status-badge spans: Pending=status-badge--pending (amber), Approved=status-badge--approved (green), Rejected=status-badge--rejected (red). Approve button uses ButtonStyle.Primary with Icon='check'; Reject button uses ButtonStyle.Danger with Icon='close'. Buttons wrapped in .approval-actions div (flex with gap) instead of inline Style='margin-right:10px'. Warning message replaced with .alert.alert--warning div with warning icon. Added .alert.alert--success div with check_circle icon shown when all approved. Step-context 'Step 6 of 9' added. h4 'Approvals' heading preserved. All inline style attributes removed except dynamic progress bar width. Added CSS classes to app.css: .approval-progress (track, bar, text), .approval-actions, .status-badge--approved, .status-badge--rejected, .alert (with --warning, --success variants, __icon)."
     },
     {
       "id": "US-010",
-      "title": "Create Dockerfile for Ralph sandbox environment",
-      "description": "Create a Dockerfile at scripts/ralph/Dockerfile and a .dockerignore at the repo root that build an isolated sandbox image for running Ralph. The image must contain the .NET SDK, jq, Node.js, Claude CLI, and git so Ralph can build, test, and commit inside the container without affecting the host.",
+      "title": "Redesign Wizard Steps 6–8 — Execution, Booking, Reporting",
+      "description": "Replace plaintext output steps with professional result cards and a workflow-complete banner. Step 6 (Execution): result-card with success icon, execution result text in styled container, empty state if ExecutionResult is null. Step 7 (Booking): this is currently step 8 in the code but labeled 'Movements booked' — note the wizard code has steps 7 and 8 SWAPPED (step 7 renders Reporting, step 8 renders Booking). Keep this existing order but fix the visual presentation. Step 7 (Reporting): h4 'Reporting' heading preserved for test compatibility, if ReportingData exists show as a styled RadzenDataGrid or data-card list (not raw ul/li), empty state with bar_chart icon if null. Step 8 (Booking/final): confirmation card with checkmark, 'Movements Booked' heading, keep 'Movements booked' text visible for E2E test. Add workflow-complete banner with green success styling on the final step. Add step-context labels. No inline styles, no raw ul/li for data display.",
       "acceptanceCriteria": [
-        "scripts/ralph/Dockerfile exists and uses mcr.microsoft.com/dotnet/sdk:8.0 (or equivalent devcontainer base)",
-        "Dockerfile installs jq, Node.js (LTS), git, and Claude CLI via npm install -g @anthropic-ai/claude-code",
-        "Dockerfile uses COPY . /workspace and WORKDIR /workspace, then runs dotnet restore",
-        "No secrets (API keys, tokens) are baked into the image",
-        ".dockerignore at repo root excludes bin/, obj/, .git/, node_modules/, and other build artifacts",
-        "docker build -f scripts/ralph/Dockerfile . succeeds with no errors"
+        "Step 6: result-card with success icon, execution text, empty state if null",
+        "Step 7: h4 'Reporting' preserved, styled data display (not ul/li), empty state with bar_chart icon",
+        "Step 8: confirmation card with 'Movements Booked', workflow-complete banner",
+        "Text 'Movements booked' visible for E2E test compatibility",
+        "All step headers include step-context ('Step N of 9')",
+        "No inline style attributes, no raw ul/li for data display",
+        "dotnet build passes",
+        "dotnet test (unit tests) passes"
       ],
       "priority": 10,
       "passes": true,
-      "notes": "Dockerfile uses dotnet/sdk:8.0 base, installs jq/git/Node.js 20.x/Claude CLI. .dockerignore excludes bin/, obj/, .git/, node_modules/, IDE files. Docker build succeeds with dotnet restore."
+      "notes": "Step 6 (Execution): Added step-context 'Step 7 of 9', h4 'Execution' heading, result-card with check_circle success icon and execution text when ExecutionResult is set, empty-state with play_circle icon when null. Step 7 (Reporting): Added step-context 'Step 8 of 9', kept h4 'Reporting' heading for E2E compatibility, replaced raw ul/li with data-card-list (flex column of data-card items with article icon), empty-state with bar_chart icon preserving 'No reporting data loaded.' text for E2E compatibility. Step 8 (Booking): Added step-context 'Step 9 of 9', h4 'Booking' heading, result-card with check_circle icon and 'Movements Booked' heading preserving 'Movements booked' text, workflow-complete banner with celebration icon and green success styling. Added CSS classes to app.css: .result-card (with __icon, __icon--success, __body, __heading, __text), .data-card-list, .data-card (with __icon, __text), .workflow-complete (with __icon, __heading, __desc). Updated WizardPostApprovalTests.cs Step6_ShowsExecutionContent to use .wizard-content .empty-state/.result-card locator (was broken div.mt-4 from US-006). No inline style attributes."
     },
     {
       "id": "US-011",
-      "title": "Create container entrypoint script",
-      "description": "Create scripts/ralph/entrypoint.sh — the container entrypoint that validates the environment, configures git, and hands off to ralph.sh. Update the Dockerfile to set ENTRYPOINT to this script.",
+      "title": "Add E2E Tests for Professional Design Elements",
+      "description": "Add Playwright E2E tests verifying key visual design improvements won't regress. Create a new test file DesignSystemTests.cs in the UITests/Tests/ directory (inheriting AppPageTest). Tests to include: (1) body font-family includes 'Inter', (2) CSS custom properties defined on :root (--color-primary, --surface-card, --space-4 are non-empty), (3) sidebar is 240px wide, (4) home page contains nav-card elements with expected icons/titles, (5) wizard step headers include step-context text like 'Step 1 of 9', (6) approval step shows status-badge elements, (7) wizard has action-bar with Back and Next buttons, (8) diagram page has a color-legend section. Run ALL E2E tests (existing + new) and fix any failures caused by the redesign. All tests in both unit and E2E test projects must pass.",
       "acceptanceCriteria": [
-        "scripts/ralph/entrypoint.sh exists and is executable (chmod +x)",
-        "entrypoint.sh validates that ANTHROPIC_API_KEY is set, exits non-zero with a clear message if missing",
-        "entrypoint.sh configures git user.name and user.email for in-container commits",
-        "When GITHUB_TOKEN is set, entrypoint.sh rewrites the git remote origin URL to https://x-access-token:$GITHUB_TOKEN@github.com/... format",
-        "entrypoint.sh checks out the PRD branch (from prd.json branchName) and execs into ralph.sh",
-        "Dockerfile ENTRYPOINT is updated to [\"scripts/ralph/entrypoint.sh\"]"
+        "New DesignSystemTests.cs file in UITests/Tests/ inheriting AppPageTest",
+        "Test: body font-family includes 'Inter'",
+        "Test: CSS custom properties defined on :root (--color-primary, --surface-card, --space-4 non-empty)",
+        "Test: sidebar is 240px wide",
+        "Test: home page contains nav-card elements with expected icons/titles",
+        "Test: wizard step headers include step-context text",
+        "Test: approval step shows status-badge elements",
+        "Test: wizard has action-bar with Back and Next buttons",
+        "Test: diagram page has color-legend section",
+        "dotnet build passes",
+        "dotnet test (unit tests) passes",
+        "dotnet test (E2E tests) passes — all existing and new tests"
       ],
       "priority": 11,
       "passes": true,
-      "notes": "Created entrypoint.sh: validates ANTHROPIC_API_KEY, configures git user/email, rewrites remote with GITHUB_TOKEN, checks out PRD branch, exports RALPH_DOCKER=1, execs into ralph.sh. Updated Dockerfile with ENTRYPOINT."
-    },
-    {
-      "id": "US-012",
-      "title": "Create wrapper script to build and run Ralph in Docker",
-      "description": "Create scripts/ralph/docker-run.sh — a host-side convenience script that builds the Docker image, runs the container with correct environment variables, and prints a summary banner on completion.",
-      "acceptanceCriteria": [
-        "scripts/ralph/docker-run.sh exists and is executable (chmod +x)",
-        "Script builds the Docker image using scripts/ralph/Dockerfile with a tagged name (e.g. ralph-sandbox)",
-        "Script runs the container with --rm, passing through ANTHROPIC_API_KEY and GITHUB_TOKEN from the host environment",
-        "Script accepts a --max-iterations <n> argument and passes it to ralph.sh inside the container",
-        "Script prints a summary banner after the container exits (success/failure, branch name)",
-        "Running ./scripts/ralph/docker-run.sh --help prints usage information"
-      ],
-      "priority": 12,
-      "passes": true,
-      "notes": "Created docker-run.sh: builds ralph-sandbox image, runs with --rm, passes ANTHROPIC_API_KEY/GITHUB_TOKEN, supports --max-iterations and --no-push flags, prints summary banner on exit. --help prints usage."
-    },
-    {
-      "id": "US-013",
-      "title": "Push results branch from container on completion",
-      "description": "Wire up automatic git push of the results branch when Ralph runs inside Docker. ralph.sh should detect the RALPH_DOCKER=1 environment variable and push to origin when GITHUB_TOKEN is also set. docker-run.sh should support a --no-push flag to disable this behavior. Non-Docker behavior must remain unchanged.",
-      "acceptanceCriteria": [
-        "entrypoint.sh exports RALPH_DOCKER=1 before execing into ralph.sh",
-        "ralph.sh conditionally runs git push origin <branch> when both RALPH_DOCKER=1 and GITHUB_TOKEN are set",
-        "When RALPH_DOCKER is unset or not equal to 1, ralph.sh does NOT push (existing behavior preserved)",
-        "docker-run.sh accepts a --no-push flag that sets RALPH_NO_PUSH=1 in the container environment",
-        "When RALPH_NO_PUSH=1 is set, ralph.sh skips the push even if RALPH_DOCKER=1 and GITHUB_TOKEN are set",
-        "Existing non-Docker ralph.sh behavior is completely unchanged"
-      ],
-      "priority": 13,
-      "passes": true,
-      "notes": "Added push_if_docker() function to ralph.sh. Pushes to origin when RALPH_DOCKER=1 and GITHUB_TOKEN set, skips when RALPH_NO_PUSH=1. Called on both success and max-iterations exit paths. entrypoint.sh already exported RALPH_DOCKER=1; docker-run.sh already passes --no-push as RALPH_NO_PUSH=1."
+      "notes": "Created DesignSystemTests.cs with 8 E2E tests: body font-family includes Inter, CSS custom properties defined on :root, sidebar is 240px wide, home page nav-cards have expected icons/titles, wizard step-context label, approval step status-badges, wizard action-bar with Back/Next buttons, diagram page color-legend. Fixed pre-existing bugs: duplicate @page \"/wizard\" directive in HedgingWizard.razor causing ambiguous route crash, GetByText(\"hedge instructions\") strict mode violation (resolved to 2 elements after US-008 redesign — changed to \"Hedge Instructions Calculated\"), GetByText(\"Movements booked\") strict mode violation (changed to exact match \"Movements Booked\"). Step-context text-transform: uppercase required case-insensitive comparison in test. All 65 E2E tests and 8 unit tests pass."
     }
   ]
 }

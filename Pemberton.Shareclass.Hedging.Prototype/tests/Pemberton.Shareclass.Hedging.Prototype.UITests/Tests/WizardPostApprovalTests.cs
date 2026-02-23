@@ -46,7 +46,7 @@ public class WizardPostApprovalTests : AppPageTest
         // 1 → 2
         await ClickNextAndWaitFor(Page.GetByText("Validation:"));
         // 2 → 3
-        await ClickNextAndWaitFor(Page.GetByText("hedge instructions"));
+        await ClickNextAndWaitFor(Page.GetByText("Hedge Instructions Calculated"));
         // 3 → 4
         await ClickNextAndWaitFor(Page.GetByText("Trade instructions ready for approval"));
         // 4 → 5
@@ -81,15 +81,15 @@ public class WizardPostApprovalTests : AppPageTest
     {
         await NavigateToStep6();
 
-        // Step 6 renders Vm.ExecutionResult inside a <p> in div.mt-4.
-        // With no uploaded data, ExecutionResult is empty, so check the element exists in DOM
+        // Step 6 renders a result-card (if ExecutionResult set) or empty-state (if null).
+        // With no uploaded data, ExecutionResult is null, so check empty-state or result-card exists
         // and the approval heading is gone (confirming we advanced past step 5).
         var approvalsHeader = Page.Locator("h4").Filter(new LocatorFilterOptions { HasText = "Approvals" });
         await Expect(approvalsHeader).ToBeHiddenAsync(new() { Timeout = 5000 });
 
-        var content = Page.Locator("div.mt-4 p");
+        var content = Page.Locator(".wizard-content").Locator(".empty-state, .result-card");
         (await content.CountAsync()).Should().BeGreaterThanOrEqualTo(1,
-            "step 6 must render a <p> element for execution content");
+            "step 6 must render a result-card or empty-state element for execution content");
     }
 
     // ── step 7 ──────────────────────────────────────────────────────────
@@ -132,7 +132,7 @@ public class WizardPostApprovalTests : AppPageTest
         await ClickNextAndWaitFor(reportingHeader, timeoutMs: 8000);
 
         // 7 → 8
-        var movementsText = Page.GetByText("Movements booked");
+        var movementsText = Page.GetByText("Movements Booked", new PageGetByTextOptions { Exact = true });
         await ClickNextAndWaitFor(movementsText, timeoutMs: 8000);
 
         (await movementsText.IsVisibleAsync()).Should().BeTrue(
@@ -149,7 +149,7 @@ public class WizardPostApprovalTests : AppPageTest
         await ClickNextAndWaitFor(reportingHeader, timeoutMs: 8000);
 
         // 7 → 8
-        var movementsText = Page.GetByText("Movements booked");
+        var movementsText = Page.GetByText("Movements Booked", new PageGetByTextOptions { Exact = true });
         await ClickNextAndWaitFor(movementsText, timeoutMs: 8000);
 
         var nextBtn = Page.Locator("button").Filter(new LocatorFilterOptions { HasText = "Next" });

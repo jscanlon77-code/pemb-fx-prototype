@@ -24,7 +24,7 @@ public class NavigationTests : AppPageTest
         await Page.WaitForURLAsync("**/diagram");
 
         var heading = Page.Locator("h3").First;
-        (await heading.InnerTextAsync()).Should().Be("Hedging Workflow Diagram");
+        (await heading.InnerTextAsync()).Should().Be("Hedging Workflow");
     }
 
     [Test]
@@ -34,7 +34,7 @@ public class NavigationTests : AppPageTest
         await Page.WaitForURLAsync("**/wizard");
 
         var heading = Page.Locator("h3").First;
-        (await heading.InnerTextAsync()).Should().Be("Hedging Execution Wizard");
+        (await heading.InnerTextAsync()).Should().Be("Execution Wizard");
     }
 
     [Test]
@@ -125,14 +125,14 @@ public class NavigationTests : AppPageTest
         var color = await activeLink.EvaluateAsync<string>(
             "el => window.getComputedStyle(el).color");
 
-        // #61dafb = rgb(97, 218, 251)
-        color.Should().Be("rgb(97, 218, 251)",
-            "active nav link must use the highlight color #61dafb");
+        // --color-accent: #0ea5e9 = rgb(14, 165, 233)
+        color.Should().Be("rgb(14, 165, 233)",
+            "active nav link must use the accent color #0ea5e9");
     }
 
     [Test]
-    [Description("Nav links must use block display for full-width click targets")]
-    public async Task SidebarLink_HasBlockDisplay()
+    [Description("Nav links must use flex display for icon + text alignment")]
+    public async Task SidebarLink_HasFlexDisplay()
     {
         var link = Page.Locator(".nav-menu a").First;
         await link.WaitForAsync();
@@ -140,8 +140,8 @@ public class NavigationTests : AppPageTest
         var display = await link.EvaluateAsync<string>(
             "el => window.getComputedStyle(el).display");
 
-        display.Should().Be("block",
-            "nav links must use display:block for full-width click targets");
+        display.Should().Be("flex",
+            "nav links must use display:flex for icon + text alignment");
     }
 
     [Test]

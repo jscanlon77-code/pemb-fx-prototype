@@ -20,7 +20,7 @@ public class HomePageTests : AppPageTest
     {
         var heading = Page.Locator("h3").First;
         await heading.WaitForAsync();
-        (await heading.InnerTextAsync()).Should().Be("Hedging Prototype");
+        (await heading.InnerTextAsync()).Should().Be("FX Hedging Dashboard");
     }
 
     [Test]

@@ -2,134 +2,231 @@
 ## Codebase Patterns
 <!-- Reusable patterns discovered across iterations — update this section, don't append -->
 
-- **WorkflowStep model**: `Models/WorkflowStep.cs` — simple record-like class with `StepIndex`, `Title`, `Category`, `Icon` (all `init`-only)
-- **ViewModel pattern**: `HedgingDiagramViewModel` exposes both `IReadOnlyList<string> Nodes` (legacy) and `IReadOnlyList<WorkflowStep> WorkflowSteps` (new)
+- **WorkflowStep model**: `Models/WorkflowStep.cs` — record-like class with `StepIndex`, `Title`, `Category`, `Icon` (all `init`-only)
+- **ViewModel pattern**: `HedgingDiagramViewModel` exposes both `IReadOnlyList<string> Nodes` (legacy) and `IReadOnlyList<WorkflowStep> WorkflowSteps`
 - **Categories**: data-input, processing, approval, output — map to Material Design color palette
+- **CSS files**: `wwwroot/css/app.css` (layout, components, design tokens in :root), `wwwroot/css/hedging.css` (diagram grid, nodes)
+- **CSS custom properties**: All design tokens defined in `:root` block of app.css — colors, spacing, shadows, radii. Always use `var(--token)` instead of hardcoded values.
+- **E2E test base**: `AppPageTest` class with `BaseUrl` from `TEST_BASE_URL` env var (default localhost:5000)
+- **E2E test pattern**: `EvaluateAsync<string>("el => window.getComputedStyle(el).propertyName")` for CSS assertions
+- **Nav link display**: `.nav-menu a` uses `display: flex` (not block) for icon+text alignment — E2E test `SidebarLink_HasFlexDisplay` expects "flex"
+- **Step context label**: `.step-context` — 12px uppercase secondary text showing "Step N of 9" above step h4 title
+- **Upload zone pattern**: `.upload-zone` — dashed border, centered column layout with cloud_upload icon + instructional text + InputFile; hover state changes border to accent
+- **Empty state pattern**: `.empty-state` — centered column with large icon (0.5 opacity), heading, description; reusable for any "no data" scenario
+- **Upload success pattern**: `.upload-success` — green banner with check_circle icon and record count; uses light green bg (#f0fdf4) + green border (#bbf7d0)
+- **Conditional data display**: Steps 0-1 use `Vm.BnyData.Any()` / `Vm.FxData.Any()` to toggle between empty-state and upload-success + RadzenDataGrid
+- **Layout dimensions**: Sidebar 240px, top bar 64px, content max-width 1200px
+- **Material Icons**: Loaded via Google Fonts CDN in `_Host.cshtml`; use `<span class="material-icons">icon_name</span>` in nav links
+- **NuGet packages**: Main app uses `Z.Blazor.Diagrams` (not `Blazor.Diagrams`) v3.0.4; namespace is still `Blazor.Diagrams`. Radzen.Blazor resolves to 4.31.0.
+- **Z.Blazor.Diagrams v3 API**: `Diagram` renamed to `BlazorDiagram`, `<BlazorDiagram>` component → `<DiagramCanvas BlazorDiagram="@diagram" />`, `GetDefaultPort()` removed — use `Ports.First(p => p.Alignment == ...)` instead
+- **File upload**: Use standard Blazor `InputFile` with `InputFileChangeEventArgs` (not Radzen `RadzenFileInput`/`FileInputChangeEventArgs`)
+- **IHedgingWizardViewModel.Step**: Has `{ get; set; }` — setter needed for `@bind-Value` in RadzenSteps
+- **Design skill**: `.claude/skills/design/SKILL.md` — comprehensive design system tokens (colors, spacing, typography, components)
+- **Wizard step numbering**: Steps 0-8 rendered via `Vm.Step switch` in HedgingWizard.razor; note steps 7/8 are Reporting/Booking (swapped from expected order)
+- **GetByText strict mode**: After US-008/US-010 redesign, `GetByText("hedge instructions")` resolves to 2 elements (heading + label) — use `GetByText("Hedge Instructions Calculated")` for unique match. Similarly, `GetByText("Movements booked")` matches 2 elements — use exact match `GetByText("Movements Booked", new PageGetByTextOptions { Exact = true })`
+- **CSS text-transform**: `.step-context` has `text-transform: uppercase` — rendered text is "STEP 1 OF 9" not "Step 1 of 9". Use case-insensitive comparison in E2E tests
+- **Duplicate @page directive**: HedgingWizard.razor had duplicate `@page "/wizard"` causing ambiguous route crash — must have exactly one
+- **Approval gate**: Approver rows found via exact text match + XPath ancestor::tr[1]; Approve button disabled after click confirms state change
+- **Unit tests**: `dotnet test Pemberton.Shareclass.Hedging.Prototype/tests/Pemberton.Shareclass.Hedging.Prototype.Tests/`
+- **E2E tests**: `dotnet test Pemberton.Shareclass.Hedging.Prototype/tests/Pemberton.Shareclass.Hedging.Prototype.UITests/`
+- **Page header pattern**: Use `.page-header` > `h3.page-title` + `p.page-subtitle` for consistent page headers — CSS defined in app.css
+- **Dashboard nav-card pattern**: `.nav-card` with `__icon`, `__title`, `__desc` — links rendered as `<a>` elements with href for E2E test compatibility (`article a[href='...']`)
+- **Workflow pills**: `.workflow-pill` with category color classes (data-input, processing, approval, output) — reusable for step indicators
+- **Color legend**: `.color-legend` with `__item`, `__swatch`, `__label` — category swatches reuse `.data-input`, `.processing`, `.approval`, `.output` classes
+- **Hedge node link**: HedgeNode wraps content in `<a href="/wizard" class="hedge-node-link">` — nodes are clickable links to wizard
+- **CSS connector lines**: `.workflow-cell::after` uses 2px background lines (not Unicode arrows) — hidden on responsive layouts via `display: none`
+- **Responsive grid**: `.workflow-grid` uses media queries: 3 cols >900px, 2 cols 600-900px, 1 col <600px
+- **Wizard action-bar**: `.action-bar` with `display: flex; justify-content: space-between` — Back left, Next right, border-top separator. Uses design tokens for spacing.
+- **Wizard content area**: `.wizard-content` replaces Bootstrap `mt-4` — uses `margin-top: var(--space-6)` for step content spacing
+- **Radzen Button Variant**: Use `Variant="Variant.Outlined"` for secondary buttons (Back), `ButtonStyle="ButtonStyle.Primary"` + `Icon` for primary actions (Next)
+- **Status card pattern**: `.status-card` — flex layout with large icon/count + body (heading, badge, label). Use `__icon--success` (green) / `__icon--warning` (amber) for conditional states. `__count` for large prominent numbers.
+- **Status badge pattern**: `.status-badge` — pill-shaped inline badge with `--success` (green), `--pending` (amber), `--info` (blue) variants. Uses 999px border-radius, uppercase, 12px/600.
+- **Checklist pattern**: `.checklist` — vertical list of `__item` rows with `__icon--pass` (green check_circle) / `__icon--fail` (red cancel) icons. Reusable for multi-condition validation displays.
+- **Approval progress**: `.approval-progress` with `__text`, `__track`, `__bar` — green fill bar with transition; bar width set via inline style (`width: N%`)
+- **Approval actions**: `.approval-actions` — flex container with gap for Approve/Reject buttons; replaces inline `margin-right` styles
+- **Alert pattern**: `.alert` with `--warning` (amber bg/border) / `--success` (green bg/border) variants and `__icon` — reusable for informational, warning, and success messages
+- **Status badge approval variants**: `.status-badge--approved` (green) and `.status-badge--rejected` (red) complement existing `--success`, `--pending`, `--info` variants
+- **Helper methods in @code**: Use `string GetApprovalBadgeClass(string)` pattern for mapping data values to CSS classes — keeps Razor markup clean
+- **Result card pattern**: `.result-card` — flex layout with large icon + body (heading, text). Use `__icon--success` (green check_circle) for completed states. Reusable for any step completion display.
+- **Data card list pattern**: `.data-card-list` > `.data-card` — vertical list of items with icon + text. Replaces raw `ul/li` for professional data display.
+- **Workflow complete banner**: `.workflow-complete` — centered column with celebration icon, green success styling (#f0fdf4 bg, #bbf7d0 border). Used on final wizard step.
 
 ---
 <!-- Iteration logs below — always append, never replace -->
 
-## 2026-02-22 - US-001: Commit WorkflowStep model and ViewModel changes
-- Staged and committed WorkflowStep.cs, HedgingDiagramViewModel.cs, IHedgingDiagramViewModel.cs
-- Files changed: Models/WorkflowStep.cs (new), ViewModels/HedgingDiagramViewModel.cs, ViewModels/IHedgingDiagramViewModel.cs
+## 2026-02-22 - US-001: Create the Professional Web Design AI Skill
+- Created `.claude/skills/design/SKILL.md` with YAML frontmatter and all 8 required sections
+- Fixed pre-existing doubled-quote corruption (`""` → `"`) across 18 source files (all .cs, .razor, .cshtml, .css)
+- Fixed NuGet package: `Blazor.Diagrams` → `Z.Blazor.Diagrams` v3.0.4 (net8.0 target)
+- Fixed .csproj files: doubled quotes in XML attributes
+- Updated HedgingDiagram.razor for Z.Blazor.Diagrams v3 API (BlazorDiagram, DiagramCanvas, port lookup)
+- Replaced `RadzenFileInput`/`Radzen.FileInputChangeEventArgs` with standard `InputFile`/`InputFileChangeEventArgs`
+- Added `@using Microsoft.AspNetCore.Components.Forms` and `@using Microsoft.AspNetCore.Components.Routing` to _Imports.razor
+- Made `IHedgingWizardViewModel.Step` settable (needed for `@bind-Value`)
+- Files changed: 23 files (SKILL.md, 2 .csproj, 12 src .cs/.razor/.cshtml/.css, 3 test .cs, _Imports.razor, IHedgingWizardViewModel.cs, HedgingDiagram.razor)
 - **Learnings for future iterations:**
-  - WorkflowStep uses `init`-only properties — immutable after construction
-  - The ViewModel maintains both legacy `Nodes` (string list) and new `WorkflowSteps` for backward compatibility
-  - 9 workflow steps (0-8) with 4 categories: data-input (2), processing (3), approval (1), output (3)
+  - The codebase on main had systematic doubled-quote corruption — all fixed now
+  - Z.Blazor.Diagrams v3 has breaking API changes from v2 (Diagram→BlazorDiagram, different component names, removed GetDefaultPort)
+  - Radzen 4.31 doesn't have `FileInputChangeEventArgs` — use standard Blazor `InputFileChangeEventArgs` instead
+  - The `@bind-Value` on RadzenSteps requires a settable property on the interface
 
-## 2026-02-22 - US-002: Commit and verify WorkflowStep unit tests
-- Staged and committed HedgingDiagramViewModelTests.cs with 5 WorkflowStep tests
-- Files changed: tests/Pemberton.Shareclass.Hedging.Prototype.Tests/HedgingDiagramViewModelTests.cs
+## 2026-02-23 - US-002: Establish CSS Design Token Foundation
+- Added Google Fonts preconnect hints (`fonts.googleapis.com`, `fonts.gstatic.com`) and Inter font link (weights 400, 500, 600) to `_Host.cshtml`
+- Created comprehensive `:root` block in `app.css` with all CSS custom properties from design skill: brand/accent colors, semantic colors, surfaces, category colors, text colors, spacing (--space-1 through --space-12), shadows, border radii
+- Updated `body` font-family to `'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`
+- Replaced all hardcoded hex values in `app.css`: sidebar bg → `var(--surface-sidebar)`, text → `var(--text-on-dark)`, active/hover color → `var(--color-accent)`, main bg → `var(--surface-body)`, topbar → `var(--surface-topbar)`, border → `var(--surface-border)`, border-radius → `var(--radius-sm)`
+- Replaced all hardcoded values in `hedging.css`: grid gap/margin/padding → spacing tokens, arrow color → `var(--text-secondary)`, node padding/radius/gap → tokens, shadows → `var(--shadow-md)`/`var(--shadow-lg)`, category backgrounds → `var(--category-*)` tokens
+- Updated `NavigationTests.cs`: `ActiveLink_HasHighlightColor` expects `rgb(14, 165, 233)` (was `rgb(97, 218, 251)`)
+- Updated `DiagramPageTests.cs`: `Nodes_HaveCategoryBackgroundColors` expects new RGB values matching design tokens
+- Files changed: `_Host.cshtml`, `app.css`, `hedging.css`, `NavigationTests.cs`, `DiagramPageTests.cs`
 - **Learnings for future iterations:**
-  - Test file already had `Nodes_ShouldContainApprovalsAndReporting` from before — 4 new WorkflowStep tests added alongside
-  - Tests instantiate `HedgingDiagramViewModel` directly (no mocking needed — no service dependencies)
-  - Total unit test count is now 8 (3 wizard + 5 diagram)
+  - CSS variable values intentionally differ from old hardcoded values — E2E tests checking computed colors MUST be updated when design tokens change
+  - The `:root` block is the single source of truth for all design tokens; future CSS should reference `var(--token)` exclusively
+  - Resolved pre-existing merge conflict state on `prd.json` and `progress.txt` — files had unmerged status but no actual conflict markers
 
-## 2026-02-22 - US-003: Commit diagram page rewrite with CSS Grid and Material Design
-- Atomic commit of the core UI rewrite: CSS Grid layout, Material Icons, HedgeNode component
-- Files changed: Pages/HedgingDiagram.razor, Components/HedgeNode.razor, wwwroot/css/hedging.css, Pages/_Host.cshtml, csproj, _Imports.razor, DiagramPageTests.cs
+## 2026-02-23 - US-003: Redesign Layout Shell — Sidebar, Top Bar, Navigation
+- Added nav-brand area to `NavMenu.razor` with 'Pemberton' title (20px, weight 600) and 'FX Hedging' subtitle (12px, uppercase, accent color)
+- Added Material Icons to each nav link: home, account_tree, play_circle via `<span class="material-icons">`
+- Updated `.nav-menu a` to `display: flex` with `align-items: center` and `gap: var(--space-3)` for icon+text alignment
+- Nav items padding updated to use design tokens (`var(--space-1)` vertical, `var(--space-3)` horizontal)
+- Added `.material-icons` opacity styling (0.7 default, 1.0 on hover/active)
+- Updated sidebar width from 220px to 240px
+- Top bar: height 64px, display:flex, align-items:center, padding via tokens, h2 styled (16px/600)
+- Content area: max-width 1200px, margin:0 auto, padding via tokens
+- Removed `px-4` Bootstrap utility class from MainLayout.razor (top-row and content)
+- Added SVG data URI favicon (navy rounded rect with white P letter) to `_Host.cshtml`
+- Updated `NavigationTests.cs`: renamed `SidebarLink_HasBlockDisplay` → `SidebarLink_HasFlexDisplay`, expects "flex"
+- Files changed: `NavMenu.razor`, `MainLayout.razor`, `app.css`, `_Host.cshtml`, `NavigationTests.cs`
 - **Learnings for future iterations:**
-  - Removed Z.Blazor.Diagrams dependency in favor of pure CSS Grid + custom HedgeNode component
-  - HedgeNode.razor uses `@Category` as a CSS class on `.hedge-node` div for color mapping
-  - E2E tests use `getComputedStyle` via Playwright's `EvaluateAsync<string>()` for style assertions
-  - CSS arrows use `::after` pseudo-elements with Unicode arrow characters
-  - Category colors: data-input=#1976D2, processing=#00897B, approval=#F57C00, output=#388E3C
+  - Changing nav link display from `block` to `flex` requires updating the corresponding E2E test assertion
+  - Bootstrap utility classes (px-4) should be replaced with design-token-based CSS, not just removed — use padding in the CSS rules
+  - The `.top-row h2` element must remain for `HomePage_TopRowShowsAppTitle` E2E test (checks for "Pemberton" text)
 
-## 2026-02-22 - US-004: Commit sidebar Material Design styling and navigation tests
-- Sidebar themed with dark background, active link highlight, E2E navigation tests
-- Files changed: wwwroot/css/app.css, Shared/NavMenu.razor, NavigationTests.cs
+## 2026-02-23 - US-004: Redesign Home Page as Professional Dashboard Landing
+- Replaced bare h3 + ul/li home page with professional dashboard layout
+- Added page-header with h3.page-title 'FX Hedging Dashboard' and p.page-subtitle
+- Created 2-column .dashboard-grid with two .nav-card elements: Diagram (account_tree icon, links to /diagram) and Wizard (play_circle icon, links to /wizard)
+- Added .workflow-overview section with 9 category-colored .workflow-pill elements showing all steps
+- Added CSS classes to app.css: .page-header, .page-title, .page-subtitle, .dashboard-grid, .nav-card (with __icon, __title, __desc), .workflow-overview, .workflow-pill (with __index, __label)
+- Updated HomePageTests.cs: HomePage_HasExpectedHeading now expects 'FX Hedging Dashboard'
+- Nav-cards use `<a>` tags directly so `article a[href='diagram']` and `article a[href='wizard']` selectors work for E2E tests
+- Also committed pre-existing csproj cleanup (TreatWarningsAsErrors, Radzen 4.31.0, removed duplicate Project line)
+- Files changed: `Index.razor`, `app.css`, `HomePageTests.cs`, `.csproj`
 - **Learnings for future iterations:**
-  - Sidebar colors: background #20232a, active highlight #61dafb (rgb(97, 218, 251))
-  - Active links have `border-left: 3px solid #61dafb` indicator
-  - NavMenu uses Blazor `NavLink` component with `NavLinkMatch.All` for home route
-  - E2E tests for CSS use pattern: `EvaluateAsync<string>("el => window.getComputedStyle(el).propertyName")`
+  - E2E test `HomePage_HasLinksToWizardAndDiagram` expects `article a[href='diagram']` — the nav-card links must be `<a>` elements (not NavLink wrapped in div) directly inside the `article.content` container
+  - The .page-header/.page-title pattern is reusable for all page redesigns (US-005, US-006, etc.)
+  - No inline styles needed — all dashboard styling achieved through CSS classes using design tokens
 
-## 2026-02-22 - US-005: Commit wizard back-navigation E2E tests
-- Committed WizardBackNavigationTests.cs with 4 back-navigation tests
-- Files changed: tests/.../WizardBackNavigationTests.cs (new)
+## 2026-02-23 - US-005: Redesign Hedging Diagram Page
+- Replaced DiagramCanvas (Z.Blazor.Diagrams) with custom workflow grid using HedgeNode components rendered via `Vm.WorkflowSteps`
+- Added page-header with h3.page-title 'Hedging Workflow' and p.page-subtitle '9-step share-class FX hedging process'
+- Replaced Unicode arrow pseudo-elements (`\2192`, `\2193`) with CSS-drawn 2px connector lines using `background: var(--text-secondary)`
+- Added color-legend section below grid with four category swatches (Data Input, Processing, Approval, Output)
+- Wrapped HedgeNode content in clickable `<a href="/wizard" class="hedge-node-link">` element
+- Added `.hedge-node-link` CSS (text-decoration:none, color:inherit, display:block)
+- Made grid responsive: 3 cols >900px, 2 cols 600-900px, 1 col <600px via media queries; connectors hidden on smaller layouts
+- Updated DiagramPageTests.cs: heading expects 'Hedging Workflow' (was 'Hedging Workflow Diagram')
+- Updated NavigationTests.cs: diagram heading expects 'Hedging Workflow'
+- Removed Z.Blazor.Diagrams `@using` directives and DiagramCanvas code from HedgingDiagram.razor
+- Files changed: `HedgingDiagram.razor`, `HedgeNode.razor`, `hedging.css`, `DiagramPageTests.cs`, `NavigationTests.cs`
 - **Learnings for future iterations:**
-  - E2E test helpers `ClickNextAndWaitFor`/`ClickBackAndWaitFor` accept a locator to wait for after click
-  - Back button uses `Page.Locator("button").Filter(new LocatorFilterOptions { HasText = "Back" })`
-  - Wizard step headers are `h4` elements, identifiable by step title text
+  - The diagram page originally used Z.Blazor.Diagrams DiagramCanvas but E2E tests expected custom `.workflow-grid`/`.hedge-node` elements — the custom grid approach is the correct one
+  - Wrapping components in `<a>` elements doesn't break existing E2E locators (`.hedge-node` still matched inside the link)
+  - CSS connector lines are cleaner than Unicode arrows — use `content: ""` with width/height/background instead of text-based arrows
+  - Responsive layouts should hide connectors on breakpoints where grid columns change (connectors assume specific column positions)
 
-## 2026-02-22 - US-006: Commit wizard post-approval E2E tests
-- Committed WizardPostApprovalTests.cs with 5 tests covering steps 6-8
-- Files changed: tests/.../WizardPostApprovalTests.cs (new)
+## 2026-02-23 - US-006: Redesign Wizard Navigation and Step Indicator
+- Added page-header with h3.page-title 'Execution Wizard' and p.page-subtitle 'Step through the FX hedging workflow'
+- Replaced `<div class="mt-4">` with `<div class="wizard-content">` using design-token spacing
+- Replaced `<div class="mt-3">` with `<div class="action-bar">` — flex layout with border-top, Back left-aligned, Next right-aligned
+- Back button: added `Variant="Variant.Outlined"` and `Icon="arrow_back"`, removed `Style="margin-right:10px"`
+- Next button: kept `ButtonStyle="ButtonStyle.Primary"`, added `Icon="arrow_forward"`
+- Added `.wizard-content` and `.action-bar` CSS classes to app.css using design tokens (--space-6, --surface-border)
+- Updated WizardPageTests.cs: `WizardPage_HasExpectedHeading` expects 'Execution Wizard'
+- Updated NavigationTests.cs: `ClickingWizardLink_NavigatesToWizardPage` expects 'Execution Wizard'
+- Files changed: `HedgingWizard.razor`, `app.css`, `WizardPageTests.cs`, `NavigationTests.cs`
 - **Learnings for future iterations:**
-  - Approval gate pattern: find approver name cell, traverse to parent `<tr>` via XPath, find Approve button
-  - After clicking Approve, wait for button to become disabled (confirms state change)
-  - Step 6 renders execution result in `div.mt-4 p`; step 7 shows "Reporting" heading; step 8 shows "Movements booked"
-  - Next button is disabled on the final step (step 8)
+  - `Variant.Outlined` is the Radzen way to make a secondary/ghost button — cleaner than custom CSS
+  - The `Icon` parameter on RadzenButton renders a Material Icon inside the button automatically
+  - Bootstrap utility classes (mt-3, mt-4) should be replaced with semantic CSS classes using design tokens, not just swapped for other utilities
+  - The approval step (step 5) still has inline `Style="margin-right:10px"` on the Approve button — this is US-009's scope
 
-## 2026-02-22 - US-007: Add E2E test for Material Icons font loading
-- Added DiagramPage_MaterialIcons_FontIsLoaded test to DiagramPageTests.cs
-- Files changed: tests/.../DiagramPageTests.cs
+## 2026-02-23 - US-007: Redesign Wizard Steps 0–1 — File Upload with Data Display
+- Added `.step-context` labels ("Step 1 of 9" / "Step 2 of 9") above h4 titles in steps 0 and 1
+- Styled file upload area as `.upload-zone` — dashed 2px border, centered layout with `cloud_upload` icon (48px) and instructional text
+- Before upload: `.empty-state` with `description` icon (0.5 opacity), "No data uploaded" heading, "Upload a CSV file to begin" description
+- After upload: `.upload-success` banner with green `check_circle` icon and "@Vm.BnyData.Count records loaded" text
+- Kept h4 titles "BNY Data (Share Class Exposure)" and "Record FX Data" unchanged for E2E test compatibility
+- Kept `RadzenDataGrid` for displaying uploaded data, shown only when data exists
+- Added CSS classes to `app.css`: `.step-context`, `.upload-zone` (with `__icon`, `__text`), `.upload-success` (with `__icon`, `__text`), `.empty-state` (with `__icon`, `__heading`, `__desc`)
+- No inline style attributes used anywhere
+- Files changed: `HedgingWizard.razor`, `app.css`
 - **Learnings for future iterations:**
-  - Use `EvaluateAsync<string>("el => window.getComputedStyle(el).fontFamily")` to check font-family
-  - Use `EvaluateAsync<int>("el => el.offsetWidth")` to verify element has non-zero rendered dimensions
-  - Material Icons font-family string contains "Material Icons" when loaded from Google Fonts CDN
+  - `Vm.BnyData` (List<BnyData>) and `Vm.FxData` (List<Exposure>) provide `.Any()` and `.Count` for checking upload state
+  - The upload zone hover effect (border-color change) gives a visual affordance without JavaScript
+  - Empty state and upload success patterns are reusable for future steps that have conditional content
+  - No E2E test changes needed — existing tests check h4 text content which was preserved
 
-## 2026-02-22 - US-008: Add E2E test for category background colors
-- Added DiagramPage_Nodes_HaveCategoryBackgroundColors test to DiagramPageTests.cs
-- Files changed: tests/.../DiagramPageTests.cs
+## 2026-02-23 - US-008: Redesign Wizard Steps 2–4 — Validation, Calculation, Trade Instructions
+- Step 2 (Validation): Replaced bare `<p>` with status-card containing conditional icon (check_circle green / pending amber), status-badge pill (Passed/Pending), and a checklist showing BNY Data and FX Data upload status with check/cross icons
+- Step 3 (Calculation): Replaced bare `<p>` with status-card featuring prominent count number (status-card__count 48px), heading "Hedge Instructions Calculated", empty state with calculate icon when null
+- Step 4 (Trade Instructions): Replaced bare `<p>` with status-card using assignment_turned_in icon, "Ready for Approval" heading, count badge, empty state when no instructions
+- All three steps have step-context labels ("Step 3 of 9" / "Step 4 of 9" / "Step 5 of 9")
+- Added CSS classes to `app.css`: `.status-card` (with `__icon`, `__icon--success`, `__icon--warning`, `__body`, `__heading`, `__label`, `__count`), `.status-badge` (with `--success`, `--pending`, `--info`), `.checklist` (with `__item`, `__icon`, `__icon--pass`, `__icon--fail`)
+- E2E compatibility preserved: "Validation:" text visible in status-card__label, "hedge instructions" text visible in status-card__label, "Trade instructions ready for approval." text visible in both card and empty state
+- No inline style attributes used
+- Files changed: `HedgingWizard.razor`, `app.css`
 - **Learnings for future iterations:**
-  - Use `EvaluateAsync<string>("el => window.getComputedStyle(el).backgroundColor")` for background color assertions
-  - Browser returns colors in `rgb(r, g, b)` format — assert against that, not hex
-  - Test one representative node per category: node 0 (data-input), node 2 (processing), node 5 (approval), node 6 (output)
-  - Category-to-color mapping: data-input=rgb(25, 118, 210), processing=rgb(0, 137, 123), approval=rgb(245, 124, 0), output=rgb(56, 142, 60)
+  - `Vm.Instructions` is nullable (`List<HedgeInstruction>?`) — use null-check for empty state, `.Any()` for additional checks
+  - The status-card pattern with `__count` provides a visually prominent number display — reusable for any metric/KPI card
+  - Status-badge pill pattern with semantic color variants is reusable for approval statuses in US-009
+  - E2E tests use `Page.GetByText("Validation:")` which matches partial text — safe to include "Validation:" as part of longer text
+  - The checklist pattern with conditional icons is useful for multi-condition validation displays
 
-## 2026-02-22 - US-009: Add E2E test for hover elevation effect
-- Added DiagramPage_Nodes_HaveHoverTransition test to DiagramPageTests.cs
-- Files changed: tests/.../DiagramPageTests.cs
+## 2026-02-23 - US-009: Redesign Wizard Step 5 — Approvals with Status Badges
+- Added approval-progress bar at top of step 5 showing "N of 4 Approved" with a visual green fill bar (animated via CSS transition)
+- RadzenDataGrid Status column changed from `Property="Status"` to `Template` with colored status-badge spans: Pending (amber), Approved (green), Rejected (red)
+- Approve button: changed to `ButtonStyle.Primary` with `Icon="check"`; Reject button: kept `ButtonStyle.Danger`, added `Icon="close"`
+- Wrapped Approve/Reject buttons in `.approval-actions` div (flex with gap) — removed inline `Style="margin-right:10px"`
+- Replaced inline-styled `<p style="color:red;margin-top:10px;">` warning with `.alert.alert--warning` div containing warning Material Icon
+- Added `.alert.alert--success` div with check_circle icon shown when `Vm.AllApproved` is true
+- Added step-context "Step 6 of 9" above h4 heading
+- Kept h4 "Approvals" heading for E2E test compatibility
+- Kept exact text "All four approvals are required before continuing." for E2E test compatibility
+- Added helper method `GetApprovalBadgeClass(string status)` in @code block for badge CSS class mapping
+- Added CSS classes to `app.css`: `.approval-progress` (with `__text`, `__track`, `__bar`), `.approval-actions`, `.status-badge--approved`, `.status-badge--rejected`, `.alert` (with `__icon`, `--warning`, `--success`)
+- Files changed: `HedgingWizard.razor`, `app.css`
 - **Learnings for future iterations:**
-  - Use `EvaluateAsync<string>("el => window.getComputedStyle(el).transition")` to check transition property
-  - The computed `transition` shorthand includes "transform" when `transition: transform 0.2s` is set in CSS
-  - Only need to check one node since all `.hedge-node` elements share the same CSS rule
+  - Dynamic progress bar width requires inline style (`width: N%`) — this is the accepted pattern for progress bars even when "no inline styles" is the rule
+  - `Vm.Approvals` is `IList<ApproverStatus>` — use `.Count(predicate)` (LINQ) to count specific statuses
+  - Status column changed from `Property` binding to `Template` renders badge spans — may affect E2E tests that count "Pending" text occurrences (US-011 scope)
+  - The `.alert` pattern with `--warning`/`--success` variants is reusable for any informational/warning/success messages
+  - `GetApprovalBadgeClass` helper in @code block keeps Razor markup clean — avoids inline ternary expressions in class attributes
 
-## 2026-02-22 - US-010: Create Dockerfile for Ralph sandbox environment
-- Created `scripts/ralph/Dockerfile` using `mcr.microsoft.com/dotnet/sdk:8.0` base image
-- Created `.dockerignore` at repo root excluding bin/, obj/, .git/, node_modules/, IDE files, test results
-- Dockerfile installs jq, git, Node.js 20.x (LTS via nodesource), and Claude CLI via npm
-- Uses `COPY . /workspace`, `WORKDIR /workspace`, and runs `dotnet restore` on the solution
-- Files changed: scripts/ralph/Dockerfile (new), .dockerignore (new)
+## 2026-02-23 - US-010: Redesign Wizard Steps 6–8 — Execution, Booking, Reporting
+- Step 6 (Execution): Replaced bare `<p>@Vm.ExecutionResult</p>` with result-card (check_circle success icon + body) when ExecutionResult is set, empty-state (play_circle icon) when null. Added step-context "Step 7 of 9" and h4 "Execution" heading
+- Step 7 (Reporting): Replaced raw `<ul>/<li>` with `.data-card-list` > `.data-card` items (article icon + text). Empty state uses bar_chart icon. Kept h4 "Reporting" and "No reporting data loaded." text for E2E compatibility
+- Step 8 (Booking): Replaced bare `<p>Movements booked (mock API).</p>` with result-card (check_circle + "Movements Booked" heading) and `.workflow-complete` banner (celebration icon, green success styling). Kept "Movements booked" text for E2E compatibility
+- Updated `WizardPostApprovalTests.cs`: `Step6_ShowsExecutionContent` locator changed from broken `div.mt-4 p` to `.wizard-content .empty-state, .result-card`
+- Added CSS classes to `app.css`: `.result-card` (with `__icon`, `__icon--success`, `__body`, `__heading`, `__text`), `.data-card-list`, `.data-card` (with `__icon`, `__text`), `.workflow-complete` (with `__icon`, `__heading`, `__desc`)
+- Files changed: `HedgingWizard.razor`, `app.css`, `WizardPostApprovalTests.cs`
 - **Learnings for future iterations:**
-  - Docker build context is ~125MB after .dockerignore exclusions
-  - Node.js installed via nodesource setup script for apt — `setup_20.x` for LTS
-  - Claude CLI installed globally via `npm install -g @anthropic-ai/claude-code`
-  - No ENTRYPOINT set yet — that's US-011's responsibility
+  - `Vm.ExecutionResult` is `string?` — null when no data uploaded/executed, set by `_engine.Execute()` at step 6
+  - `Vm.ReportingData` is `IEnumerable<object>?` — null by default, populated by `_api.GetReportingDataAsync()` at step 7
+  - The `div.mt-4` locator in WizardPostApprovalTests was broken since US-006 (changed to `.wizard-content`) — always verify E2E locators match current class names
+  - Workflow-complete banner reuses the same green success colors as upload-success and alert--success (#f0fdf4 bg, #bbf7d0 border)
+  - All output steps (6-8) now follow consistent pattern: step-context + h4 heading + conditional result-card/empty-state
 
-## 2026-02-22 - US-011: Create container entrypoint script
-- Created `scripts/ralph/entrypoint.sh` as the Docker container entrypoint
-- Updated `scripts/ralph/Dockerfile` to set `ENTRYPOINT ["scripts/ralph/entrypoint.sh"]`
-- Files changed: scripts/ralph/entrypoint.sh (new), scripts/ralph/Dockerfile (updated)
+## 2026-02-23 - US-011: Add E2E Tests for Professional Design Elements
+- Created `DesignSystemTests.cs` in UITests/Tests/ with 8 Playwright E2E tests covering all design system elements
+- Tests: (1) body font-family includes 'Inter', (2) CSS custom properties on :root (--color-primary, --surface-card, --space-4), (3) sidebar is 240px wide, (4) home page nav-cards with icons/titles, (5) wizard step-context label, (6) approval step status-badges, (7) wizard action-bar with Back/Next, (8) diagram page color-legend
+- Fixed pre-existing bug: duplicate `@page "/wizard"` directive in `HedgingWizard.razor` causing `InvalidOperationException: ambiguous routes` crash — all 65 E2E tests were failing
+- Fixed `GetByText("hedge instructions")` strict mode violation in 3 test files (WizardPageTests, WizardApprovalTests, WizardPostApprovalTests) — changed to `GetByText("Hedge Instructions Calculated")` for unique match
+- Fixed `GetByText("Movements booked")` strict mode violation in 2 test files (WizardApprovalTests, WizardPostApprovalTests) — changed to exact match `GetByText("Movements Booked", new PageGetByTextOptions { Exact = true })`
+- Fixed step-context assertion: CSS `text-transform: uppercase` renders "STEP 1 OF 9" — used `.ToUpperInvariant().Should().Contain("STEP 1 OF 9")` for case-insensitive comparison
+- Files changed: `DesignSystemTests.cs` (new), `HedgingWizard.razor`, `WizardPageTests.cs`, `WizardApprovalTests.cs`, `WizardPostApprovalTests.cs`
 - **Learnings for future iterations:**
-  - entrypoint.sh validates `ANTHROPIC_API_KEY`, exits non-zero with clear message if missing
-  - Git configured with `--global` for user.name/email; `/workspace` marked as safe directory
-  - GITHUB_TOKEN rewrites origin URL to `https://x-access-token:TOKEN@github.com/...` via sed
-  - Branch checkout: reads `branchName` from prd.json, checks out or creates branch
-  - Exports `RALPH_DOCKER=1` before exec'ing into ralph.sh — US-013 will use this for conditional push
-  - Dockerfile adds `chmod +x` for both entrypoint.sh and ralph.sh to ensure scripts are executable in container
-
-## 2026-02-22 - US-012: Create wrapper script to build and run Ralph in Docker
-- Created `scripts/ralph/docker-run.sh` — host-side convenience script for Docker-based Ralph runs
-- Builds `ralph-sandbox` image from `scripts/ralph/Dockerfile`, runs with `--rm`
-- Passes `ANTHROPIC_API_KEY` and `GITHUB_TOKEN` (if set) to the container
-- Supports `--max-iterations <n>` (passed through to ralph.sh), `--no-push` (sets `RALPH_NO_PUSH=1`), and `--help`
-- Prints summary banner on completion with success/failure status and branch name
-- Files changed: scripts/ralph/docker-run.sh (new)
-- **Learnings for future iterations:**
-  - ralph.sh accepts max iterations as a positional numeric arg: `if [[ "$1" =~ ^[0-9]+$ ]]; then MAX_ITERATIONS=$1; fi`
-  - Docker run args built as bash array for clean handling of conditional `-e` flags
-  - Capture container exit code via `|| EXIT_CODE=$?` pattern to still print summary banner on failure
-  - `--no-push` sets `RALPH_NO_PUSH=1` env var — US-013 will use this in ralph.sh to skip push
-
-## 2026-02-22 - US-013: Push results branch from container on completion
-- Added `push_if_docker()` function to ralph.sh that conditionally pushes the branch to origin
-- Function checks three conditions: RALPH_DOCKER=1, GITHUB_TOKEN is set, RALPH_NO_PUSH != 1
-- Called from both exit paths: successful completion (all stories done) and max iterations reached
-- No changes needed to entrypoint.sh (already exports RALPH_DOCKER=1) or docker-run.sh (already passes RALPH_NO_PUSH=1)
-- Files changed: scripts/ralph/ralph.sh
-- **Learnings for future iterations:**
-  - The push function is defined after BRANCH_NAME is read from prd.json, but placed before the archive section for readability — it uses `$BRANCH_NAME` which is set later in the script flow, but only called at the end after BRANCH_NAME is populated
-  - Three env vars control push behavior: RALPH_DOCKER (set by entrypoint.sh), GITHUB_TOKEN (passed from host), RALPH_NO_PUSH (set by docker-run.sh --no-push)
-  - Non-Docker runs are completely unaffected since RALPH_DOCKER is never set outside the container
+  - `GetByText()` uses substring matching by default — when redesigning UI to have multiple elements containing similar text (e.g., heading + label both containing "hedge instructions"), existing tests WILL break with strict mode violations
+  - Use `new PageGetByTextOptions { Exact = true }` for exact text matching when the substring is common across multiple elements
+  - CSS `text-transform` affects the computed `InnerTextAsync()` value — test assertions must account for uppercase transforms
+  - Always verify the app starts correctly before running E2E tests — duplicate `@page` directives silently pass the build but crash at runtime

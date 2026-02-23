@@ -35,7 +35,7 @@ public class WizardPageTests : AppPageTest
     {
         var heading = Page.Locator("h3").First;
         await heading.WaitForAsync();
-        (await heading.InnerTextAsync()).Should().Be("Hedging Execution Wizard");
+        (await heading.InnerTextAsync()).Should().Be("Execution Wizard");
     }
 
     [Test]
@@ -113,7 +113,7 @@ public class WizardPageTests : AppPageTest
         var validationText = Page.GetByText("Validation:");
         await ClickNextAndWaitFor(validationText);
 
-        var calcText = Page.GetByText("hedge instructions");
+        var calcText = Page.GetByText("Hedge Instructions Calculated");
         await ClickNextAndWaitFor(calcText);
 
         (await calcText.IsVisibleAsync()).Should().BeTrue(
@@ -132,7 +132,7 @@ public class WizardPageTests : AppPageTest
         var validationText = Page.GetByText("Validation:");
         await ClickNextAndWaitFor(validationText);
 
-        var calcText = Page.GetByText("hedge instructions");
+        var calcText = Page.GetByText("Hedge Instructions Calculated");
         await ClickNextAndWaitFor(calcText);
 
         var tradeText = Page.GetByText("Trade instructions ready for approval");

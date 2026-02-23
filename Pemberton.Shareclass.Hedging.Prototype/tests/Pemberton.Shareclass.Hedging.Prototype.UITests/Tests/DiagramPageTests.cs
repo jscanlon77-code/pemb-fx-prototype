@@ -22,7 +22,7 @@ public class DiagramPageTests : AppPageTest
     {
         var heading = Page.Locator("h3").First;
         await heading.WaitForAsync();
-        (await heading.InnerTextAsync()).Should().Be("Hedging Workflow Diagram");
+        (await heading.InnerTextAsync()).Should().Be("Hedging Workflow");
     }
 
     // ── grid container ──────────────────────────────────────────────────
@@ -180,28 +180,28 @@ public class DiagramPageTests : AppPageTest
         var nodes = Page.Locator(".hedge-node");
         await nodes.First.WaitForAsync(new LocatorWaitForOptions { Timeout = 8000 });
 
-        // data-input: #1976D2 = rgb(25, 118, 210) — node 0
+        // data-input: --category-data-input: #1565c0 = rgb(21, 101, 192) — node 0
         var dataInputBg = await nodes.Nth(0).EvaluateAsync<string>(
             "el => window.getComputedStyle(el).backgroundColor");
-        dataInputBg.Should().Be("rgb(25, 118, 210)",
-            "data-input nodes must have background #1976D2");
+        dataInputBg.Should().Be("rgb(21, 101, 192)",
+            "data-input nodes must have background #1565c0");
 
-        // processing: #00897B = rgb(0, 137, 123) — node 2
+        // processing: --category-processing: #00796b = rgb(0, 121, 107) — node 2
         var processingBg = await nodes.Nth(2).EvaluateAsync<string>(
             "el => window.getComputedStyle(el).backgroundColor");
-        processingBg.Should().Be("rgb(0, 137, 123)",
-            "processing nodes must have background #00897B");
+        processingBg.Should().Be("rgb(0, 121, 107)",
+            "processing nodes must have background #00796b");
 
-        // approval: #F57C00 = rgb(245, 124, 0) — node 5
+        // approval: --category-approval: #e65100 = rgb(230, 81, 0) — node 5
         var approvalBg = await nodes.Nth(5).EvaluateAsync<string>(
             "el => window.getComputedStyle(el).backgroundColor");
-        approvalBg.Should().Be("rgb(245, 124, 0)",
-            "approval nodes must have background #F57C00");
+        approvalBg.Should().Be("rgb(230, 81, 0)",
+            "approval nodes must have background #e65100");
 
-        // output: #388E3C = rgb(56, 142, 60) — node 6
+        // output: --category-output: #2e7d32 = rgb(46, 125, 50) — node 6
         var outputBg = await nodes.Nth(6).EvaluateAsync<string>(
             "el => window.getComputedStyle(el).backgroundColor");
-        outputBg.Should().Be("rgb(56, 142, 60)",
-            "output nodes must have background #388E3C");
+        outputBg.Should().Be("rgb(46, 125, 50)",
+            "output nodes must have background #2e7d32");
     }
 }
