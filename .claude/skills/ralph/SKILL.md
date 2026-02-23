@@ -1,7 +1,7 @@
 ---
 name: ralph
 description: "Convert a PRD to prd.json for the Ralph autonomous agent loop."
-user-invocable: true
+user-invokable: true
 ---
 
 # PRD to prd.json Converter
@@ -39,7 +39,8 @@ Read the PRD and generate `scripts/ralph/prd.json` with this structure:
       "acceptanceCriteria": [
         "Specific criterion from PRD",
         "dotnet build passes",
-        "Unit tests pass"
+        "Unit tests pass",
+        "E2E tests pass"
       ],
       "priority": 1,
       "passes": false,
@@ -71,10 +72,13 @@ Ask the user to confirm before writing.
 4. **`branchName`** is `ralph/` + feature name in kebab-case
 5. Every story MUST include `dotnet build passes` in acceptance criteria
 6. Every story MUST include `Unit tests pass` in acceptance criteria
+7. Every story MUST include `E2E tests pass` in acceptance criteria
 
 ## The Number One Rule
 
 > Each story must be completable in ONE Ralph iteration (one context window).
+
+Stories that change application code must include writing unit tests AND E2E tests as part of the implementation. Test authorship is not a separate story — it's part of completing each story.
 
 If a PRD story is too large, split it. Signs it's too large:
 - Touches more than 4 files

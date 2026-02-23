@@ -24,8 +24,9 @@ Violating this rule causes merge conflicts, broken builds, and wasted tokens. **
    ```bash
    dotnet build Pemberton.Shareclass.Hedging.Prototype/Pemberton.Shareclass.Hedging.Prototype.sln
    dotnet test Pemberton.Shareclass.Hedging.Prototype/tests/Pemberton.Shareclass.Hedging.Prototype.Tests/
+   dotnet test Pemberton.Shareclass.Hedging.Prototype/tests/Pemberton.Shareclass.Hedging.Prototype.UITests/
    ```
-8. **Fix any failures** — do not proceed until build and tests pass
+8. **Fix any failures** — do not proceed until build, unit tests, and E2E tests all pass
 9. **Commit all changes** with message: `feat: [Story ID] - [Story Title]`
 10. **Update prd.json** — set `passes: true` for the completed story, add implementation notes to `notes`
 11. **Append to progress.txt** using this format:
@@ -47,11 +48,20 @@ Violating this rule causes merge conflicts, broken builds, and wasted tokens. **
 
 ## Quality Requirements
 
-- ALL commits must pass `dotnet build` and `dotnet test` (unit tests)
+- ALL commits must pass `dotnet build`, unit tests, and E2E tests (Playwright)
 - Do NOT commit broken code
 - Keep changes focused — one story per iteration
 - Follow existing MVVM patterns (see AGENTS.md)
 - Use FluentAssertions in tests, Moq for mocking services
+
+## Testing Requirements
+
+Every story that changes application code MUST include:
+
+1. **Unit tests** — test new/changed ViewModel logic, services, and models using NUnit + Moq + FluentAssertions. Add tests to `tests/Pemberton.Shareclass.Hedging.Prototype.Tests/`.
+2. **E2E tests** — test new/changed user-facing behavior using Playwright. Add tests to `tests/Pemberton.Shareclass.Hedging.Prototype.UITests/Tests/`. Inherit from `AppPageTest`. See `AGENTS.md` for patterns.
+
+Do NOT mark a story as complete without writing tests. "All existing tests pass" is not sufficient — you must add tests that cover the new functionality.
 
 ## Stop Condition
 
