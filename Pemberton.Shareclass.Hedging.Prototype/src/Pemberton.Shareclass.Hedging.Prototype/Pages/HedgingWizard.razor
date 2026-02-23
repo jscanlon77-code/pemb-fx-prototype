@@ -34,36 +34,74 @@
     RenderFragment RenderStep() => Vm.Step switch
     {
         0 => @<div>
+            <p class="step-context">Step 1 of 9</p>
             <h4>BNY Data (Share Class Exposure)</h4>
-            <label>Upload BNY CSV:</label>
-            <InputFile OnChange="OnBnyCsvUpload" />
-            <RadzenDataGrid Data="@Vm.PivotedBnyData" TItem="IDictionary<string, object>">
-                <Columns>
-                    @if (Vm.PivotedBnyData.Any())
-                    {
-                        foreach (var col in Vm.PivotedBnyData.First().Keys)
+            <div class="upload-zone">
+                <span class="material-icons upload-zone__icon">cloud_upload</span>
+                <p class="upload-zone__text">Drop a CSV file here or click to browse</p>
+                <InputFile OnChange="OnBnyCsvUpload" />
+            </div>
+            @if (Vm.BnyData.Any())
+            {
+                <div class="upload-success">
+                    <span class="material-icons upload-success__icon">check_circle</span>
+                    <span class="upload-success__text">@Vm.BnyData.Count records loaded</span>
+                </div>
+                <RadzenDataGrid Data="@Vm.PivotedBnyData" TItem="IDictionary<string, object>">
+                    <Columns>
+                        @if (Vm.PivotedBnyData.Any())
                         {
-                            <RadzenDataGridColumn TItem="IDictionary<string, object>" Property="@col" Title="@col" />
+                            foreach (var col in Vm.PivotedBnyData.First().Keys)
+                            {
+                                <RadzenDataGridColumn TItem="IDictionary<string, object>" Property="@col" Title="@col" />
+                            }
                         }
-                    }
-                </Columns>
-            </RadzenDataGrid>
+                    </Columns>
+                </RadzenDataGrid>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <span class="material-icons empty-state__icon">description</span>
+                    <p class="empty-state__heading">No data uploaded</p>
+                    <p class="empty-state__desc">Upload a CSV file to begin</p>
+                </div>
+            }
         </div>,
         1 => @<div>
+            <p class="step-context">Step 2 of 9</p>
             <h4>Record FX Data</h4>
-            <label>Upload FX CSV:</label>
-            <InputFile OnChange="OnFxCsvUpload" />
-            <RadzenDataGrid Data="@Vm.PivotedFxData" TItem="IDictionary<string, object>">
-                <Columns>
-                    @if (Vm.PivotedFxData.Any())
-                    {
-                        foreach (var col in Vm.PivotedFxData.First().Keys)
+            <div class="upload-zone">
+                <span class="material-icons upload-zone__icon">cloud_upload</span>
+                <p class="upload-zone__text">Drop a CSV file here or click to browse</p>
+                <InputFile OnChange="OnFxCsvUpload" />
+            </div>
+            @if (Vm.FxData.Any())
+            {
+                <div class="upload-success">
+                    <span class="material-icons upload-success__icon">check_circle</span>
+                    <span class="upload-success__text">@Vm.FxData.Count records loaded</span>
+                </div>
+                <RadzenDataGrid Data="@Vm.PivotedFxData" TItem="IDictionary<string, object>">
+                    <Columns>
+                        @if (Vm.PivotedFxData.Any())
                         {
-                            <RadzenDataGridColumn TItem="IDictionary<string, object>" Property="@col" Title="@col" />
+                            foreach (var col in Vm.PivotedFxData.First().Keys)
+                            {
+                                <RadzenDataGridColumn TItem="IDictionary<string, object>" Property="@col" Title="@col" />
+                            }
                         }
-                    }
-                </Columns>
-            </RadzenDataGrid>
+                    </Columns>
+                </RadzenDataGrid>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <span class="material-icons empty-state__icon">description</span>
+                    <p class="empty-state__heading">No data uploaded</p>
+                    <p class="empty-state__desc">Upload a CSV file to begin</p>
+                </div>
+            }
         </div>,
         2 => @<p>Validation: @(Vm.FxData.Any() && Vm.BnyData.Any() ? "OK" : "Pending")</p>,
         3 => @<p>Calculated @Vm.Instructions?.Count hedge instructions.</p>,
