@@ -7,8 +7,8 @@ on:
     branches: [main]
 
 jobs:
-  build:
-    name: Build
+  unit-tests:
+    name: Unit Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -23,31 +23,6 @@ jobs:
 
       - name: Build
         run: dotnet build Pemberton.Shareclass.Hedging.Prototype/Pemberton.Shareclass.Hedging.Prototype.sln --no-restore
-
-      - name: Upload build output
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-output
-          path: Pemberton.Shareclass.Hedging.Prototype/**/bin/Debug/net8.0/
-          retention-days: 1
-
-  unit-tests:
-    name: Unit Tests
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: "8.0.x"
-
-      - name: Download build output
-        uses: actions/download-artifact@v4
-        with:
-          name: build-output
-          path: Pemberton.Shareclass.Hedging.Prototype/
 
       - name: Run unit tests
         run: >
@@ -65,7 +40,6 @@ jobs:
 
   e2e-tests:
     name: E2E Tests (Playwright)
-    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -75,11 +49,11 @@ jobs:
         with:
           dotnet-version: "8.0.x"
 
-      - name: Download build output
-        uses: actions/download-artifact@v4
-        with:
-          name: build-output
-          path: Pemberton.Shareclass.Hedging.Prototype/
+      - name: Restore
+        run: dotnet restore Pemberton.Shareclass.Hedging.Prototype/Pemberton.Shareclass.Hedging.Prototype.sln
+
+      - name: Build
+        run: dotnet build Pemberton.Shareclass.Hedging.Prototype/Pemberton.Shareclass.Hedging.Prototype.sln --no-restore
 
       - name: Install required dependencies
         run: sudo apt-get update && sudo apt-get install -y libasound2t64
