@@ -1,13 +1,10 @@
-name: Tests
+name: CI
 
 on:
   push:
-    branches:
-      - main
-      - "mark/**"
+    branches: ["**"]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   unit-tests:
@@ -58,11 +55,14 @@ jobs:
       - name: Build
         run: dotnet build Pemberton.Shareclass.Hedging.Prototype/Pemberton.Shareclass.Hedging.Prototype.sln --no-restore
 
-      - name: Install Playwright browsers (with OS dependencies)
+      - name: Install required dependencies
+        run: sudo apt-get update && sudo apt-get install -y libasound2t64
+
+      - name: Install Playwright browsers
         run: >
           pwsh
           Pemberton.Shareclass.Hedging.Prototype/tests/Pemberton.Shareclass.Hedging.Prototype.UITests/bin/Debug/net8.0/playwright.ps1
-          install --with-deps chromium
+          install chromium
 
       - name: Run E2E tests
         run: >
