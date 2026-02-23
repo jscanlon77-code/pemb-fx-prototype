@@ -36,8 +36,8 @@
         "dotnet test (unit tests) passes"
       ],
       "priority": 2,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Added Google Fonts preconnect hints and Inter font link to _Host.cshtml. Created comprehensive :root block in app.css with all CSS custom properties (colors, spacing, shadows, radii). Updated body font-family to Inter stack. Replaced all hardcoded hex values in app.css (sidebar, nav, surfaces) and hedging.css (arrows, nodes, categories, spacing) with CSS variable references. Updated NavigationTests.cs and DiagramPageTests.cs to expect new RGB values from design token colors."
     },
     {
       "id": "US-003",

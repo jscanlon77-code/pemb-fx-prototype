@@ -5,7 +5,8 @@
 - **WorkflowStep model**: `Models/WorkflowStep.cs` — record-like class with `StepIndex`, `Title`, `Category`, `Icon` (all `init`-only)
 - **ViewModel pattern**: `HedgingDiagramViewModel` exposes both `IReadOnlyList<string> Nodes` (legacy) and `IReadOnlyList<WorkflowStep> WorkflowSteps`
 - **Categories**: data-input, processing, approval, output — map to Material Design color palette
-- **CSS files**: `wwwroot/css/app.css` (layout, components), `wwwroot/css/hedging.css` (diagram grid, nodes)
+- **CSS files**: `wwwroot/css/app.css` (layout, components, design tokens in :root), `wwwroot/css/hedging.css` (diagram grid, nodes)
+- **CSS custom properties**: All design tokens defined in `:root` block of app.css — colors, spacing, shadows, radii. Always use `var(--token)` instead of hardcoded values.
 - **E2E test base**: `AppPageTest` class with `BaseUrl` from `TEST_BASE_URL` env var (default localhost:5000)
 - **E2E test pattern**: `EvaluateAsync<string>("el => window.getComputedStyle(el).propertyName")` for CSS assertions
 - **NuGet packages**: Main app uses `Z.Blazor.Diagrams` (not `Blazor.Diagrams`) v3.0.4; namespace is still `Blazor.Diagrams`. Radzen.Blazor resolves to 4.31.0.
@@ -36,3 +37,17 @@
   - Z.Blazor.Diagrams v3 has breaking API changes from v2 (Diagram→BlazorDiagram, different component names, removed GetDefaultPort)
   - Radzen 4.31 doesn't have `FileInputChangeEventArgs` — use standard Blazor `InputFileChangeEventArgs` instead
   - The `@bind-Value` on RadzenSteps requires a settable property on the interface
+
+## 2026-02-23 - US-002: Establish CSS Design Token Foundation
+- Added Google Fonts preconnect hints (`fonts.googleapis.com`, `fonts.gstatic.com`) and Inter font link (weights 400, 500, 600) to `_Host.cshtml`
+- Created comprehensive `:root` block in `app.css` with all CSS custom properties from design skill: brand/accent colors, semantic colors, surfaces, category colors, text colors, spacing (--space-1 through --space-12), shadows, border radii
+- Updated `body` font-family to `'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`
+- Replaced all hardcoded hex values in `app.css`: sidebar bg → `var(--surface-sidebar)`, text → `var(--text-on-dark)`, active/hover color → `var(--color-accent)`, main bg → `var(--surface-body)`, topbar → `var(--surface-topbar)`, border → `var(--surface-border)`, border-radius → `var(--radius-sm)`
+- Replaced all hardcoded values in `hedging.css`: grid gap/margin/padding → spacing tokens, arrow color → `var(--text-secondary)`, node padding/radius/gap → tokens, shadows → `var(--shadow-md)`/`var(--shadow-lg)`, category backgrounds → `var(--category-*)` tokens
+- Updated `NavigationTests.cs`: `ActiveLink_HasHighlightColor` expects `rgb(14, 165, 233)` (was `rgb(97, 218, 251)`)
+- Updated `DiagramPageTests.cs`: `Nodes_HaveCategoryBackgroundColors` expects new RGB values matching design tokens
+- Files changed: `_Host.cshtml`, `app.css`, `hedging.css`, `NavigationTests.cs`, `DiagramPageTests.cs`
+- **Learnings for future iterations:**
+  - CSS variable values intentionally differ from old hardcoded values — E2E tests checking computed colors MUST be updated when design tokens change
+  - The `:root` block is the single source of truth for all design tokens; future CSS should reference `var(--token)` exclusively
+  - Resolved pre-existing merge conflict state on `prd.json` and `progress.txt` — files had unmerged status but no actual conflict markers
