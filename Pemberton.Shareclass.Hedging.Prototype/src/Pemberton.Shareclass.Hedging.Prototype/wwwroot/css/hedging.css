@@ -9,38 +9,46 @@
     padding: var(--space-4);
 }
 
-/* ── Flow Arrows ─────────────────────────────────────────────────────── */
+/* ── CSS Connector Lines ─────────────────────────────────────────────── */
 
-/* Right arrows between columns 1→2 and 2→3 */
-.workflow-cell:nth-child(3n+1)::after,
-.workflow-cell:nth-child(3n+2)::after {
-    content: "\2192"; /* → */
-    position: absolute;
-    right: -36px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 24px;
-    color: var(--text-secondary);
-    font-weight: bold;
+.workflow-cell {
+    position: relative;
 }
 
-/* Down arrows on column-3 cells (rows 1 and 2) */
+/* Horizontal connectors between columns 1→2 and 2→3 */
+.workflow-cell:nth-child(3n+1)::after,
+.workflow-cell:nth-child(3n+2)::after {
+    content: "";
+    position: absolute;
+    right: calc(-1 * var(--space-12));
+    top: 50%;
+    transform: translateY(-50%);
+    width: var(--space-12);
+    height: 2px;
+    background: var(--text-secondary);
+}
+
+/* Vertical connectors on column-3 cells (rows 1 and 2) */
 .workflow-cell:nth-child(3)::after,
 .workflow-cell:nth-child(6)::after {
-    content: "\2193"; /* ↓ */
+    content: "";
     position: absolute;
     right: auto;
     left: 50%;
     top: auto;
-    bottom: -28px;
+    bottom: calc(-1 * var(--space-8));
     transform: translateX(-50%);
-    font-size: 24px;
-    color: var(--text-secondary);
-    font-weight: bold;
+    width: 2px;
+    height: var(--space-8);
+    background: var(--text-secondary);
 }
 
-.workflow-cell {
-    position: relative;
+/* ── Node Link Wrapper ─────────────────────────────────────────────── */
+
+.hedge-node-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
 }
 
 /* ── Node Cards ──────────────────────────────────────────────────────── */
@@ -97,4 +105,73 @@
 
 .hedge-node.output {
     background: var(--category-output);
+}
+
+/* ── Color Legend ─────────────────────────────────────────────────────── */
+
+.color-legend {
+    display: flex;
+    gap: var(--space-6);
+    justify-content: center;
+    max-width: 900px;
+    margin: var(--space-6) auto 0;
+    padding: var(--space-4);
+}
+
+.color-legend__item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.color-legend__swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: var(--radius-sm);
+}
+
+.color-legend__swatch.data-input {
+    background: var(--category-data-input);
+}
+
+.color-legend__swatch.processing {
+    background: var(--category-processing);
+}
+
+.color-legend__swatch.approval {
+    background: var(--category-approval);
+}
+
+.color-legend__swatch.output {
+    background: var(--category-output);
+}
+
+.color-legend__label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* ── Responsive Grid ─────────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+    .workflow-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Hide connector lines on smaller layouts */
+    .workflow-cell::after {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .workflow-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .color-legend {
+        flex-wrap: wrap;
+        gap: var(--space-3);
+    }
 }

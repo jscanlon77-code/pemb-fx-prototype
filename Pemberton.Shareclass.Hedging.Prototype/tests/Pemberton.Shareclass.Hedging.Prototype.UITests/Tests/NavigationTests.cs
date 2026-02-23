@@ -24,7 +24,7 @@ public class NavigationTests : AppPageTest
         await Page.WaitForURLAsync("**/diagram");
 
         var heading = Page.Locator("h3").First;
-        (await heading.InnerTextAsync()).Should().Be("Hedging Workflow Diagram");
+        (await heading.InnerTextAsync()).Should().Be("Hedging Workflow");
     }
 
     [Test]

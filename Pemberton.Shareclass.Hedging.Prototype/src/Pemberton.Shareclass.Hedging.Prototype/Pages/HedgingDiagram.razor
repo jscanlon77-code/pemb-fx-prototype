@@ -1,49 +1,35 @@
 @page "/diagram"
-@using Blazor.Diagrams
-@using Blazor.Diagrams.Components
-@using Blazor.Diagrams.Core.Models
-@using Blazor.Diagrams.Core.Geometry
 @inject IHedgingDiagramViewModel Vm
 
-<h3>Hedging Workflow Diagram</h3>
+<div class="page-header">
+    <h3 class="page-title">Hedging Workflow</h3>
+    <p class="page-subtitle">9-step share-class FX hedging process</p>
+</div>
 
-<DiagramCanvas BlazorDiagram="@diagram" />
-
-@code {
-    private BlazorDiagram diagram = default!;
-
-    protected override void OnInitialized()
+<div class="workflow-grid">
+    @foreach (var step in Vm.WorkflowSteps)
     {
-        diagram = new BlazorDiagram();
-
-        var nodes = new List<NodeModel>();
-
-        double x = 50;
-        double y = 50;
-
-        foreach (var title in Vm.Nodes)
-        {
-            var node = new NodeModel(new Blazor.Diagrams.Core.Geometry.Point(x, y))
-            {
-                Title = title
-            };
-            node.AddPort(PortAlignment.Right);
-            node.AddPort(PortAlignment.Left);
-            nodes.Add(node);
-            x += 250;
-        }
-
-        foreach (var node in nodes)
-        {
-            diagram.Nodes.Add(node);
-        }
-
-        for (int i = 0; i < nodes.Count - 1; i++)
-        {
-            var sourcePort = nodes[i].Ports.First(p => p.Alignment == PortAlignment.Right);
-            var targetPort = nodes[i + 1].Ports.First(p => p.Alignment == PortAlignment.Left);
-            var link = new LinkModel(sourcePort, targetPort);
-            diagram.Links.Add(link);
-        }
+        <div class="workflow-cell">
+            <HedgeNode Title="@step.Title" Category="@step.Category" Icon="@step.Icon" StepIndex="@step.StepIndex" />
+        </div>
     }
-}
+</div>
+
+<div class="color-legend">
+    <div class="color-legend__item">
+        <span class="color-legend__swatch data-input"></span>
+        <span class="color-legend__label">Data Input</span>
+    </div>
+    <div class="color-legend__item">
+        <span class="color-legend__swatch processing"></span>
+        <span class="color-legend__label">Processing</span>
+    </div>
+    <div class="color-legend__item">
+        <span class="color-legend__swatch approval"></span>
+        <span class="color-legend__label">Approval</span>
+    </div>
+    <div class="color-legend__item">
+        <span class="color-legend__swatch output"></span>
+        <span class="color-legend__label">Output</span>
+    </div>
+</div>
