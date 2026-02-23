@@ -131,8 +131,8 @@ public class NavigationTests : AppPageTest
     }
 
     [Test]
-    [Description("Nav links must use block display for full-width click targets")]
-    public async Task SidebarLink_HasBlockDisplay()
+    [Description("Nav links must use flex display for icon + text alignment")]
+    public async Task SidebarLink_HasFlexDisplay()
     {
         var link = Page.Locator(".nav-menu a").First;
         await link.WaitForAsync();
@@ -140,8 +140,8 @@ public class NavigationTests : AppPageTest
         var display = await link.EvaluateAsync<string>(
             "el => window.getComputedStyle(el).display");
 
-        display.Should().Be("block",
-            "nav links must use display:block for full-width click targets");
+        display.Should().Be("flex",
+            "nav links must use display:flex for icon + text alignment");
     }
 
     [Test]

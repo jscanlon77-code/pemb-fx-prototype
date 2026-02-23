@@ -69,9 +69,33 @@ body {
 }
 
 .sidebar {
-    width: 220px;
+    width: 240px;
     background: var(--surface-sidebar);
     color: var(--text-on-dark);
+}
+
+/* ── Nav Brand ─────────────────────────────────────────────────────── */
+
+.nav-brand {
+    padding: var(--space-5) var(--space-4);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.nav-brand__title {
+    display: block;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-on-dark);
+}
+
+.nav-brand__subtitle {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--color-accent);
+    margin-top: var(--space-1);
 }
 
 .nav-menu ul {
@@ -81,17 +105,29 @@ body {
 }
 
 .nav-menu li {
-    padding: 10px 15px;
+    padding: var(--space-1) var(--space-3);
 }
 
 .nav-menu a {
     color: var(--text-on-dark);
     text-decoration: none;
-    display: block;
-    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-3);
     border-radius: var(--radius-sm);
     transition: color 0.2s, background-color 0.2s;
     border-left: 3px solid transparent;
+}
+
+.nav-menu a .material-icons {
+    font-size: 20px;
+    opacity: 0.7;
+}
+
+.nav-menu a:hover .material-icons,
+.nav-menu a.active .material-icons {
+    opacity: 1;
 }
 
 .nav-menu a:hover {
@@ -121,10 +157,23 @@ main {
 }
 
 .top-row {
+    height: 64px;
+    display: flex;
+    align-items: center;
+    padding: 0 var(--space-6);
     background: var(--surface-topbar);
     border-bottom: 1px solid var(--surface-border);
 }
 
+.top-row h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
 .content {
-    padding-top: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-6);
 }
