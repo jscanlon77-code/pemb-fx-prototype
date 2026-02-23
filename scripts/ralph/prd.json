@@ -74,8 +74,8 @@
         "dotnet test (unit tests) passes"
       ],
       "priority": 4,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Replaced bare h3 + ul/li home page with professional dashboard. Added page-header with h3.page-title 'FX Hedging Dashboard' and subtitle. Created 2-column dashboard-grid with nav-card elements linking to /diagram and /wizard with Material Icons (account_tree, play_circle). Added workflow-overview section with 9 category-colored pills showing all workflow steps. All styling uses CSS custom properties in app.css (page-header, dashboard-grid, nav-card, workflow-overview, workflow-pill). Updated HomePageTests.cs to expect new heading. No inline styles."
     },
     {
       "id": "US-005",
