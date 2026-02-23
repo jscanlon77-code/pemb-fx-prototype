@@ -44,6 +44,9 @@
 - **Alert pattern**: `.alert` with `--warning` (amber bg/border) / `--success` (green bg/border) variants and `__icon` — reusable for informational, warning, and success messages
 - **Status badge approval variants**: `.status-badge--approved` (green) and `.status-badge--rejected` (red) complement existing `--success`, `--pending`, `--info` variants
 - **Helper methods in @code**: Use `string GetApprovalBadgeClass(string)` pattern for mapping data values to CSS classes — keeps Razor markup clean
+- **Result card pattern**: `.result-card` — flex layout with large icon + body (heading, text). Use `__icon--success` (green check_circle) for completed states. Reusable for any step completion display.
+- **Data card list pattern**: `.data-card-list` > `.data-card` — vertical list of items with icon + text. Replaces raw `ul/li` for professional data display.
+- **Workflow complete banner**: `.workflow-complete` — centered column with celebration icon, green success styling (#f0fdf4 bg, #bbf7d0 border). Used on final wizard step.
 
 ---
 <!-- Iteration logs below — always append, never replace -->
@@ -196,3 +199,17 @@
   - Status column changed from `Property` binding to `Template` renders badge spans — may affect E2E tests that count "Pending" text occurrences (US-011 scope)
   - The `.alert` pattern with `--warning`/`--success` variants is reusable for any informational/warning/success messages
   - `GetApprovalBadgeClass` helper in @code block keeps Razor markup clean — avoids inline ternary expressions in class attributes
+
+## 2026-02-23 - US-010: Redesign Wizard Steps 6–8 — Execution, Booking, Reporting
+- Step 6 (Execution): Replaced bare `<p>@Vm.ExecutionResult</p>` with result-card (check_circle success icon + body) when ExecutionResult is set, empty-state (play_circle icon) when null. Added step-context "Step 7 of 9" and h4 "Execution" heading
+- Step 7 (Reporting): Replaced raw `<ul>/<li>` with `.data-card-list` > `.data-card` items (article icon + text). Empty state uses bar_chart icon. Kept h4 "Reporting" and "No reporting data loaded." text for E2E compatibility
+- Step 8 (Booking): Replaced bare `<p>Movements booked (mock API).</p>` with result-card (check_circle + "Movements Booked" heading) and `.workflow-complete` banner (celebration icon, green success styling). Kept "Movements booked" text for E2E compatibility
+- Updated `WizardPostApprovalTests.cs`: `Step6_ShowsExecutionContent` locator changed from broken `div.mt-4 p` to `.wizard-content .empty-state, .result-card`
+- Added CSS classes to `app.css`: `.result-card` (with `__icon`, `__icon--success`, `__body`, `__heading`, `__text`), `.data-card-list`, `.data-card` (with `__icon`, `__text`), `.workflow-complete` (with `__icon`, `__heading`, `__desc`)
+- Files changed: `HedgingWizard.razor`, `app.css`, `WizardPostApprovalTests.cs`
+- **Learnings for future iterations:**
+  - `Vm.ExecutionResult` is `string?` — null when no data uploaded/executed, set by `_engine.Execute()` at step 6
+  - `Vm.ReportingData` is `IEnumerable<object>?` — null by default, populated by `_api.GetReportingDataAsync()` at step 7
+  - The `div.mt-4` locator in WizardPostApprovalTests was broken since US-006 (changed to `.wizard-content`) — always verify E2E locators match current class names
+  - Workflow-complete banner reuses the same green success colors as upload-success and alert--success (#f0fdf4 bg, #bbf7d0 border)
+  - All output steps (6-8) now follow consistent pattern: step-context + h4 heading + conditional result-card/empty-state

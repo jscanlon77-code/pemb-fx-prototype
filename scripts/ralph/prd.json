@@ -189,8 +189,8 @@
         "dotnet test (unit tests) passes"
       ],
       "priority": 10,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Step 6 (Execution): Added step-context 'Step 7 of 9', h4 'Execution' heading, result-card with check_circle success icon and execution text when ExecutionResult is set, empty-state with play_circle icon when null. Step 7 (Reporting): Added step-context 'Step 8 of 9', kept h4 'Reporting' heading for E2E compatibility, replaced raw ul/li with data-card-list (flex column of data-card items with article icon), empty-state with bar_chart icon preserving 'No reporting data loaded.' text for E2E compatibility. Step 8 (Booking): Added step-context 'Step 9 of 9', h4 'Booking' heading, result-card with check_circle icon and 'Movements Booked' heading preserving 'Movements booked' text, workflow-complete banner with celebration icon and green success styling. Added CSS classes to app.css: .result-card (with __icon, __icon--success, __body, __heading, __text), .data-card-list, .data-card (with __icon, __text), .workflow-complete (with __icon, __heading, __desc). Updated WizardPostApprovalTests.cs Step6_ShowsExecutionContent to use .wizard-content .empty-state/.result-card locator (was broken div.mt-4 from US-006). No inline style attributes."
     },
     {
       "id": "US-011",
