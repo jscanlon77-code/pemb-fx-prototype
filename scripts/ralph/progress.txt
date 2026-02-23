@@ -36,6 +36,9 @@
 - **Wizard action-bar**: `.action-bar` with `display: flex; justify-content: space-between` — Back left, Next right, border-top separator. Uses design tokens for spacing.
 - **Wizard content area**: `.wizard-content` replaces Bootstrap `mt-4` — uses `margin-top: var(--space-6)` for step content spacing
 - **Radzen Button Variant**: Use `Variant="Variant.Outlined"` for secondary buttons (Back), `ButtonStyle="ButtonStyle.Primary"` + `Icon` for primary actions (Next)
+- **Status card pattern**: `.status-card` — flex layout with large icon/count + body (heading, badge, label). Use `__icon--success` (green) / `__icon--warning` (amber) for conditional states. `__count` for large prominent numbers.
+- **Status badge pattern**: `.status-badge` — pill-shaped inline badge with `--success` (green), `--pending` (amber), `--info` (blue) variants. Uses 999px border-radius, uppercase, 12px/600.
+- **Checklist pattern**: `.checklist` — vertical list of `__item` rows with `__icon--pass` (green check_circle) / `__icon--fail` (red cancel) icons. Reusable for multi-condition validation displays.
 
 ---
 <!-- Iteration logs below — always append, never replace -->
@@ -152,3 +155,19 @@
   - The upload zone hover effect (border-color change) gives a visual affordance without JavaScript
   - Empty state and upload success patterns are reusable for future steps that have conditional content
   - No E2E test changes needed — existing tests check h4 text content which was preserved
+
+## 2026-02-23 - US-008: Redesign Wizard Steps 2–4 — Validation, Calculation, Trade Instructions
+- Step 2 (Validation): Replaced bare `<p>` with status-card containing conditional icon (check_circle green / pending amber), status-badge pill (Passed/Pending), and a checklist showing BNY Data and FX Data upload status with check/cross icons
+- Step 3 (Calculation): Replaced bare `<p>` with status-card featuring prominent count number (status-card__count 48px), heading "Hedge Instructions Calculated", empty state with calculate icon when null
+- Step 4 (Trade Instructions): Replaced bare `<p>` with status-card using assignment_turned_in icon, "Ready for Approval" heading, count badge, empty state when no instructions
+- All three steps have step-context labels ("Step 3 of 9" / "Step 4 of 9" / "Step 5 of 9")
+- Added CSS classes to `app.css`: `.status-card` (with `__icon`, `__icon--success`, `__icon--warning`, `__body`, `__heading`, `__label`, `__count`), `.status-badge` (with `--success`, `--pending`, `--info`), `.checklist` (with `__item`, `__icon`, `__icon--pass`, `__icon--fail`)
+- E2E compatibility preserved: "Validation:" text visible in status-card__label, "hedge instructions" text visible in status-card__label, "Trade instructions ready for approval." text visible in both card and empty state
+- No inline style attributes used
+- Files changed: `HedgingWizard.razor`, `app.css`
+- **Learnings for future iterations:**
+  - `Vm.Instructions` is nullable (`List<HedgeInstruction>?`) — use null-check for empty state, `.Any()` for additional checks
+  - The status-card pattern with `__count` provides a visually prominent number display — reusable for any metric/KPI card
+  - Status-badge pill pattern with semantic color variants is reusable for approval statuses in US-009
+  - E2E tests use `Page.GetByText("Validation:")` which matches partial text — safe to include "Validation:" as part of longer text
+  - The checklist pattern with conditional icons is useful for multi-condition validation displays

@@ -151,8 +151,8 @@
         "dotnet test (unit tests) passes"
       ],
       "priority": 8,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Replaced plaintext paragraphs with professional status cards. Step 2: status-card with conditional check_circle (green) or pending (amber) icon, status-badge pill (Passed/Pending), checklist showing BNY Data and FX Data upload status with check/cross icons. Keeps 'Validation:' text visible for E2E compatibility. Step 3: status-card with prominent count number (status-card__count), 'Hedge Instructions Calculated' heading, empty state with calculate icon if null. Keeps 'hedge instructions' text visible. Step 4: status-card with assignment_turned_in icon, 'Ready for Approval' heading, count badge, empty state if not available. Keeps 'Trade instructions ready for approval.' text visible in both states. All steps have step-context labels ('Step N of 9'). Added CSS classes to app.css: .status-card (with __icon, __icon--success, __icon--warning, __body, __heading, __label, __count), .status-badge (with --success, --pending, --info), .checklist (with __item, __icon, __icon--pass, __icon--fail). No inline style attributes."
     },
     {
       "id": "US-009",
