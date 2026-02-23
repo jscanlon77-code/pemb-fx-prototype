@@ -624,3 +624,106 @@ main {
 .workflow-pill.output {
     background: var(--category-output);
 }
+
+/* ── Result Card ────────────────────────────────────────────────── */
+
+.result-card {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-5);
+    padding: var(--space-6);
+    margin-top: var(--space-4);
+    background: var(--surface-card);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.result-card__icon {
+    font-size: 48px;
+    flex-shrink: 0;
+}
+
+.result-card__icon--success {
+    color: var(--color-success);
+}
+
+.result-card__body {
+    flex: 1;
+}
+
+.result-card__heading {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 var(--space-2) 0;
+}
+
+.result-card__text {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: var(--space-2) 0 0 0;
+}
+
+/* ── Data Card List ─────────────────────────────────────────────── */
+
+.data-card-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+}
+
+.data-card {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: var(--surface-card);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-md);
+}
+
+.data-card__icon {
+    font-size: 20px;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+}
+
+.data-card__text {
+    font-size: 14px;
+    color: var(--text-primary);
+}
+
+/* ── Workflow Complete Banner ────────────────────────────────────── */
+
+.workflow-complete {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: var(--space-8) var(--space-6);
+    margin-top: var(--space-6);
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: var(--radius-lg);
+}
+
+.workflow-complete__icon {
+    font-size: 48px;
+    color: var(--color-success);
+    margin-bottom: var(--space-3);
+}
+
+.workflow-complete__heading {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-success);
+    margin: 0 0 var(--space-2) 0;
+}
+
+.workflow-complete__desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 0;
+}

@@ -81,15 +81,15 @@ public class WizardPostApprovalTests : AppPageTest
     {
         await NavigateToStep6();
 
-        // Step 6 renders Vm.ExecutionResult inside a <p> in div.mt-4.
-        // With no uploaded data, ExecutionResult is empty, so check the element exists in DOM
+        // Step 6 renders a result-card (if ExecutionResult set) or empty-state (if null).
+        // With no uploaded data, ExecutionResult is null, so check empty-state or result-card exists
         // and the approval heading is gone (confirming we advanced past step 5).
         var approvalsHeader = Page.Locator("h4").Filter(new LocatorFilterOptions { HasText = "Approvals" });
         await Expect(approvalsHeader).ToBeHiddenAsync(new() { Timeout = 5000 });
 
-        var content = Page.Locator("div.mt-4 p");
+        var content = Page.Locator(".wizard-content").Locator(".empty-state, .result-card");
         (await content.CountAsync()).Should().BeGreaterThanOrEqualTo(1,
-            "step 6 must render a <p> element for execution content");
+            "step 6 must render a result-card or empty-state element for execution content");
     }
 
     // ── step 7 ──────────────────────────────────────────────────────────

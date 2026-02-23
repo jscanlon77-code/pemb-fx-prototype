@@ -227,24 +227,68 @@
                 </div>
             }
         </div>,
-        6 => @<p>@Vm.ExecutionResult</p>,
-        7 => @<div>
-            <h4>Reporting</h4>
-            @if (Vm.ReportingData is not null)
+        6 => @<div>
+            <p class="step-context">Step 7 of 9</p>
+            <h4>Execution</h4>
+            @if (Vm.ExecutionResult != null)
             {
-                <ul>
-                    @foreach (var item in Vm.ReportingData)
-                    {
-                        <li>@item</li>
-                    }
-                </ul>
+                <div class="result-card">
+                    <span class="material-icons result-card__icon result-card__icon--success">check_circle</span>
+                    <div class="result-card__body">
+                        <p class="result-card__heading">Trade Executed</p>
+                        <p class="result-card__text">@Vm.ExecutionResult</p>
+                    </div>
+                </div>
             }
             else
             {
-                <p>No reporting data loaded.</p>
+                <div class="empty-state">
+                    <span class="material-icons empty-state__icon">play_circle</span>
+                    <p class="empty-state__heading">No execution result</p>
+                    <p class="empty-state__desc">Trades will be executed automatically</p>
+                </div>
             }
         </div>,
-        8 => @<p>Movements booked (mock API).</p>,
+        7 => @<div>
+            <p class="step-context">Step 8 of 9</p>
+            <h4>Reporting</h4>
+            @if (Vm.ReportingData is not null)
+            {
+                <div class="data-card-list">
+                    @foreach (var item in Vm.ReportingData)
+                    {
+                        <div class="data-card">
+                            <span class="material-icons data-card__icon">article</span>
+                            <span class="data-card__text">@item</span>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <span class="material-icons empty-state__icon">bar_chart</span>
+                    <p class="empty-state__heading">No reporting data</p>
+                    <p class="empty-state__desc">No reporting data loaded.</p>
+                </div>
+            }
+        </div>,
+        8 => @<div>
+            <p class="step-context">Step 9 of 9</p>
+            <h4>Booking</h4>
+            <div class="result-card">
+                <span class="material-icons result-card__icon result-card__icon--success">check_circle</span>
+                <div class="result-card__body">
+                    <p class="result-card__heading">Movements Booked</p>
+                    <p class="result-card__text">Movements booked successfully.</p>
+                </div>
+            </div>
+            <div class="workflow-complete">
+                <span class="material-icons workflow-complete__icon">celebration</span>
+                <p class="workflow-complete__heading">Workflow Complete</p>
+                <p class="workflow-complete__desc">All hedging workflow steps have been successfully completed.</p>
+            </div>
+        </div>,
         _ => @<p>Select a step.</p>
         };
 
