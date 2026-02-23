@@ -10,6 +10,11 @@
 - **E2E test base**: `AppPageTest` class with `BaseUrl` from `TEST_BASE_URL` env var (default localhost:5000)
 - **E2E test pattern**: `EvaluateAsync<string>("el => window.getComputedStyle(el).propertyName")` for CSS assertions
 - **Nav link display**: `.nav-menu a` uses `display: flex` (not block) for icon+text alignment — E2E test `SidebarLink_HasFlexDisplay` expects "flex"
+- **Step context label**: `.step-context` — 12px uppercase secondary text showing "Step N of 9" above step h4 title
+- **Upload zone pattern**: `.upload-zone` — dashed border, centered column layout with cloud_upload icon + instructional text + InputFile; hover state changes border to accent
+- **Empty state pattern**: `.empty-state` — centered column with large icon (0.5 opacity), heading, description; reusable for any "no data" scenario
+- **Upload success pattern**: `.upload-success` — green banner with check_circle icon and record count; uses light green bg (#f0fdf4) + green border (#bbf7d0)
+- **Conditional data display**: Steps 0-1 use `Vm.BnyData.Any()` / `Vm.FxData.Any()` to toggle between empty-state and upload-success + RadzenDataGrid
 - **Layout dimensions**: Sidebar 240px, top bar 64px, content max-width 1200px
 - **Material Icons**: Loaded via Google Fonts CDN in `_Host.cshtml`; use `<span class="material-icons">icon_name</span>` in nav links
 - **NuGet packages**: Main app uses `Z.Blazor.Diagrams` (not `Blazor.Diagrams`) v3.0.4; namespace is still `Blazor.Diagrams`. Radzen.Blazor resolves to 4.31.0.
@@ -131,3 +136,19 @@
   - The `Icon` parameter on RadzenButton renders a Material Icon inside the button automatically
   - Bootstrap utility classes (mt-3, mt-4) should be replaced with semantic CSS classes using design tokens, not just swapped for other utilities
   - The approval step (step 5) still has inline `Style="margin-right:10px"` on the Approve button — this is US-009's scope
+
+## 2026-02-23 - US-007: Redesign Wizard Steps 0–1 — File Upload with Data Display
+- Added `.step-context` labels ("Step 1 of 9" / "Step 2 of 9") above h4 titles in steps 0 and 1
+- Styled file upload area as `.upload-zone` — dashed 2px border, centered layout with `cloud_upload` icon (48px) and instructional text
+- Before upload: `.empty-state` with `description` icon (0.5 opacity), "No data uploaded" heading, "Upload a CSV file to begin" description
+- After upload: `.upload-success` banner with green `check_circle` icon and "@Vm.BnyData.Count records loaded" text
+- Kept h4 titles "BNY Data (Share Class Exposure)" and "Record FX Data" unchanged for E2E test compatibility
+- Kept `RadzenDataGrid` for displaying uploaded data, shown only when data exists
+- Added CSS classes to `app.css`: `.step-context`, `.upload-zone` (with `__icon`, `__text`), `.upload-success` (with `__icon`, `__text`), `.empty-state` (with `__icon`, `__heading`, `__desc`)
+- No inline style attributes used anywhere
+- Files changed: `HedgingWizard.razor`, `app.css`
+- **Learnings for future iterations:**
+  - `Vm.BnyData` (List<BnyData>) and `Vm.FxData` (List<Exposure>) provide `.Any()` and `.Count` for checking upload state
+  - The upload zone hover effect (border-color change) gives a visual affordance without JavaScript
+  - Empty state and upload success patterns are reusable for future steps that have conditional content
+  - No E2E test changes needed — existing tests check h4 text content which was preserved

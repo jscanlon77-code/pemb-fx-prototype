@@ -131,8 +131,8 @@
         "dotnet test (unit tests) passes"
       ],
       "priority": 7,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Added step-context labels ('Step 1 of 9' / 'Step 2 of 9') above h4 titles. Styled upload area as dashed-border drop zone with cloud_upload icon (48px) and instructional text. Before upload: empty-state with description icon, 'No data uploaded' heading, 'Upload a CSV file to begin' description. After upload: upload-success with green check_circle icon and record count (e.g. '5 records loaded'). Kept h4 titles as 'BNY Data (Share Class Exposure)' and 'Record FX Data' for E2E test compatibility. Kept RadzenDataGrid for uploaded data display. Added CSS classes to app.css: .step-context, .upload-zone, .upload-success, .empty-state with BEM-style children. No inline style attributes."
     },
     {
       "id": "US-008",
