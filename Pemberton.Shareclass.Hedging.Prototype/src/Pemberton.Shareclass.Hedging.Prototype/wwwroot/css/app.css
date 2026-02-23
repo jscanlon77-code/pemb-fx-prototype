@@ -245,6 +245,21 @@ main {
     line-height: 1.5;
 }
 
+/* ── Wizard Layout ───────────────────────────────────────────────── */
+
+.wizard-content {
+    margin-top: var(--space-6);
+}
+
+.action-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--space-6);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--surface-border);
+}
+
 /* ── Workflow Overview ────────────────────────────────────────────── */
 
 .workflow-overview {

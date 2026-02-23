@@ -2,7 +2,10 @@
 @page "/wizard"
 @inject IHedgingWizardViewModel Vm
 
-<h3>Hedging Execution Wizard</h3>
+<div class="page-header">
+    <h3 class="page-title">Execution Wizard</h3>
+    <p class="page-subtitle">Step through the FX hedging workflow</p>
+</div>
 
 <RadzenSteps @bind-Value="Vm.Step" ShowStepsButtons="false">
     <Steps>
@@ -18,13 +21,13 @@
     </Steps>
 </RadzenSteps>
 
-<div class="mt-4">
+<div class="wizard-content">
     @RenderStep()
 </div>
 
-<div class="mt-3">
-    <RadzenButton Text="Back" Click="() => Vm.Back()" Disabled="Vm.IsFirst" Style="margin-right:10px" />
-    <RadzenButton Text="Next" Click="() => Vm.Next()" Disabled="Vm.IsLast" ButtonStyle="ButtonStyle.Primary" />
+<div class="action-bar">
+    <RadzenButton Text="Back" Click="() => Vm.Back()" Disabled="Vm.IsFirst" Variant="Variant.Outlined" Icon="arrow_back" />
+    <RadzenButton Text="Next" Click="() => Vm.Next()" Disabled="Vm.IsLast" ButtonStyle="ButtonStyle.Primary" Icon="arrow_forward" />
 </div>
 
 @code {

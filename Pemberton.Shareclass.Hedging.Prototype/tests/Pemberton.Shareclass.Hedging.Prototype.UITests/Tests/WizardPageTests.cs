@@ -35,7 +35,7 @@ public class WizardPageTests : AppPageTest
     {
         var heading = Page.Locator("h3").First;
         await heading.WaitForAsync();
-        (await heading.InnerTextAsync()).Should().Be("Hedging Execution Wizard");
+        (await heading.InnerTextAsync()).Should().Be("Execution Wizard");
     }
 
     [Test]
