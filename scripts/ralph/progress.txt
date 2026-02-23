@@ -23,6 +23,9 @@
 - **IHedgingWizardViewModel.Step**: Has `{ get; set; }` — setter needed for `@bind-Value` in RadzenSteps
 - **Design skill**: `.claude/skills/design/SKILL.md` — comprehensive design system tokens (colors, spacing, typography, components)
 - **Wizard step numbering**: Steps 0-8 rendered via `Vm.Step switch` in HedgingWizard.razor; note steps 7/8 are Reporting/Booking (swapped from expected order)
+- **GetByText strict mode**: After US-008/US-010 redesign, `GetByText("hedge instructions")` resolves to 2 elements (heading + label) — use `GetByText("Hedge Instructions Calculated")` for unique match. Similarly, `GetByText("Movements booked")` matches 2 elements — use exact match `GetByText("Movements Booked", new PageGetByTextOptions { Exact = true })`
+- **CSS text-transform**: `.step-context` has `text-transform: uppercase` — rendered text is "STEP 1 OF 9" not "Step 1 of 9". Use case-insensitive comparison in E2E tests
+- **Duplicate @page directive**: HedgingWizard.razor had duplicate `@page "/wizard"` causing ambiguous route crash — must have exactly one
 - **Approval gate**: Approver rows found via exact text match + XPath ancestor::tr[1]; Approve button disabled after click confirms state change
 - **Unit tests**: `dotnet test Pemberton.Shareclass.Hedging.Prototype/tests/Pemberton.Shareclass.Hedging.Prototype.Tests/`
 - **E2E tests**: `dotnet test Pemberton.Shareclass.Hedging.Prototype/tests/Pemberton.Shareclass.Hedging.Prototype.UITests/`
@@ -213,3 +216,17 @@
   - The `div.mt-4` locator in WizardPostApprovalTests was broken since US-006 (changed to `.wizard-content`) — always verify E2E locators match current class names
   - Workflow-complete banner reuses the same green success colors as upload-success and alert--success (#f0fdf4 bg, #bbf7d0 border)
   - All output steps (6-8) now follow consistent pattern: step-context + h4 heading + conditional result-card/empty-state
+
+## 2026-02-23 - US-011: Add E2E Tests for Professional Design Elements
+- Created `DesignSystemTests.cs` in UITests/Tests/ with 8 Playwright E2E tests covering all design system elements
+- Tests: (1) body font-family includes 'Inter', (2) CSS custom properties on :root (--color-primary, --surface-card, --space-4), (3) sidebar is 240px wide, (4) home page nav-cards with icons/titles, (5) wizard step-context label, (6) approval step status-badges, (7) wizard action-bar with Back/Next, (8) diagram page color-legend
+- Fixed pre-existing bug: duplicate `@page "/wizard"` directive in `HedgingWizard.razor` causing `InvalidOperationException: ambiguous routes` crash — all 65 E2E tests were failing
+- Fixed `GetByText("hedge instructions")` strict mode violation in 3 test files (WizardPageTests, WizardApprovalTests, WizardPostApprovalTests) — changed to `GetByText("Hedge Instructions Calculated")` for unique match
+- Fixed `GetByText("Movements booked")` strict mode violation in 2 test files (WizardApprovalTests, WizardPostApprovalTests) — changed to exact match `GetByText("Movements Booked", new PageGetByTextOptions { Exact = true })`
+- Fixed step-context assertion: CSS `text-transform: uppercase` renders "STEP 1 OF 9" — used `.ToUpperInvariant().Should().Contain("STEP 1 OF 9")` for case-insensitive comparison
+- Files changed: `DesignSystemTests.cs` (new), `HedgingWizard.razor`, `WizardPageTests.cs`, `WizardApprovalTests.cs`, `WizardPostApprovalTests.cs`
+- **Learnings for future iterations:**
+  - `GetByText()` uses substring matching by default — when redesigning UI to have multiple elements containing similar text (e.g., heading + label both containing "hedge instructions"), existing tests WILL break with strict mode violations
+  - Use `new PageGetByTextOptions { Exact = true }` for exact text matching when the substring is common across multiple elements
+  - CSS `text-transform` affects the computed `InnerTextAsync()` value — test assertions must account for uppercase transforms
+  - Always verify the app starts correctly before running E2E tests — duplicate `@page` directives silently pass the build but crash at runtime

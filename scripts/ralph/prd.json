@@ -211,8 +211,8 @@
         "dotnet test (E2E tests) passes — all existing and new tests"
       ],
       "priority": 11,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Created DesignSystemTests.cs with 8 E2E tests: body font-family includes Inter, CSS custom properties defined on :root, sidebar is 240px wide, home page nav-cards have expected icons/titles, wizard step-context label, approval step status-badges, wizard action-bar with Back/Next buttons, diagram page color-legend. Fixed pre-existing bugs: duplicate @page \"/wizard\" directive in HedgingWizard.razor causing ambiguous route crash, GetByText(\"hedge instructions\") strict mode violation (resolved to 2 elements after US-008 redesign — changed to \"Hedge Instructions Calculated\"), GetByText(\"Movements booked\") strict mode violation (changed to exact match \"Movements Booked\"). Step-context text-transform: uppercase required case-insensitive comparison in test. All 65 E2E tests and 8 unit tests pass."
     }
   ]
 }
