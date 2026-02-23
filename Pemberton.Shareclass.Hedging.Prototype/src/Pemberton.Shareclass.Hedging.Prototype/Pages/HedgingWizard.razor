@@ -181,27 +181,50 @@
             }
         </div>,
         5 => @<div>
+            <p class="step-context">Step 6 of 9</p>
             <h4>Approvals</h4>
+            <div class="approval-progress">
+                <span class="approval-progress__text">@(Vm.Approvals.Count(a => a.Status == "Approved")) of 4 Approved</span>
+                <div class="approval-progress__track">
+                    <div class="approval-progress__bar" style="width: @(Vm.Approvals.Count(a => a.Status == "Approved") * 25)%"></div>
+                </div>
+            </div>
             <RadzenDataGrid Data="@Vm.Approvals" TItem="ApproverStatus">
                 <Columns>
                     <RadzenDataGridColumn TItem="ApproverStatus" Property="ApproverName" Title="Approver" />
-                    <RadzenDataGridColumn TItem="ApproverStatus" Property="Status" Title="Status" />
+                    <RadzenDataGridColumn TItem="ApproverStatus" Title="Status">
+                        <Template Context="a">
+                            <span class="status-badge @GetApprovalBadgeClass(a.Status)">@a.Status</span>
+                        </Template>
+                    </RadzenDataGridColumn>
                     <RadzenDataGridColumn TItem="ApproverStatus" Title="Actions">
                         <Template Context="a">
-                            <RadzenButton Text="Approve"      Disabled="@(a.Status != "Pending")"
-                                          Click="async () => await Vm.ApproveAsync(a.ApproverName)"    Style="margin-right:10px" />
-                            <RadzenButton Text="Reject"                      Disabled="@(a.Status != "Pending")"                                 ButtonStyle="ButtonStyle.Danger"
-                                          Click="async () => await Vm.RejectAsync(a.ApproverName)" />
+                            <div class="approval-actions">
+                                <RadzenButton Text="Approve" Disabled="@(a.Status != "Pending")"
+                                              Click="async () => await Vm.ApproveAsync(a.ApproverName)"
+                                              ButtonStyle="ButtonStyle.Primary" Icon="check" />
+                                <RadzenButton Text="Reject" Disabled="@(a.Status != "Pending")"
+                                              ButtonStyle="ButtonStyle.Danger" Icon="close"
+                                              Click="async () => await Vm.RejectAsync(a.ApproverName)" />
+                            </div>
                         </Template>
                     </RadzenDataGridColumn>
                 </Columns>
             </RadzenDataGrid>
 
-            @if (!Vm.AllApproved)
+            @if (Vm.AllApproved)
             {
-                <p style="color:red;margin-top:10px;">
-                    All four approvals are required before continuing.
-                </p>
+                <div class="alert alert--success">
+                    <span class="material-icons alert__icon">check_circle</span>
+                    <span>All approvals granted. You may proceed to the next step.</span>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert--warning">
+                    <span class="material-icons alert__icon">warning</span>
+                    <span>All four approvals are required before continuing.</span>
+                </div>
             }
         </div>,
         6 => @<p>@Vm.ExecutionResult</p>,
@@ -224,6 +247,13 @@
         8 => @<p>Movements booked (mock API).</p>,
         _ => @<p>Select a step.</p>
         };
+
+    string GetApprovalBadgeClass(string status) => status switch
+    {
+        "Approved" => "status-badge--approved",
+        "Rejected" => "status-badge--rejected",
+        _ => "status-badge--pending"
+    };
 
     async Task OnBnyCsvUpload(InputFileChangeEventArgs args)
     {
