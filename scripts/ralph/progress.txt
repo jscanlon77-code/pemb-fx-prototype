@@ -39,6 +39,11 @@
 - **Status card pattern**: `.status-card` — flex layout with large icon/count + body (heading, badge, label). Use `__icon--success` (green) / `__icon--warning` (amber) for conditional states. `__count` for large prominent numbers.
 - **Status badge pattern**: `.status-badge` — pill-shaped inline badge with `--success` (green), `--pending` (amber), `--info` (blue) variants. Uses 999px border-radius, uppercase, 12px/600.
 - **Checklist pattern**: `.checklist` — vertical list of `__item` rows with `__icon--pass` (green check_circle) / `__icon--fail` (red cancel) icons. Reusable for multi-condition validation displays.
+- **Approval progress**: `.approval-progress` with `__text`, `__track`, `__bar` — green fill bar with transition; bar width set via inline style (`width: N%`)
+- **Approval actions**: `.approval-actions` — flex container with gap for Approve/Reject buttons; replaces inline `margin-right` styles
+- **Alert pattern**: `.alert` with `--warning` (amber bg/border) / `--success` (green bg/border) variants and `__icon` — reusable for informational, warning, and success messages
+- **Status badge approval variants**: `.status-badge--approved` (green) and `.status-badge--rejected` (red) complement existing `--success`, `--pending`, `--info` variants
+- **Helper methods in @code**: Use `string GetApprovalBadgeClass(string)` pattern for mapping data values to CSS classes — keeps Razor markup clean
 
 ---
 <!-- Iteration logs below — always append, never replace -->
@@ -171,3 +176,23 @@
   - Status-badge pill pattern with semantic color variants is reusable for approval statuses in US-009
   - E2E tests use `Page.GetByText("Validation:")` which matches partial text — safe to include "Validation:" as part of longer text
   - The checklist pattern with conditional icons is useful for multi-condition validation displays
+
+## 2026-02-23 - US-009: Redesign Wizard Step 5 — Approvals with Status Badges
+- Added approval-progress bar at top of step 5 showing "N of 4 Approved" with a visual green fill bar (animated via CSS transition)
+- RadzenDataGrid Status column changed from `Property="Status"` to `Template` with colored status-badge spans: Pending (amber), Approved (green), Rejected (red)
+- Approve button: changed to `ButtonStyle.Primary` with `Icon="check"`; Reject button: kept `ButtonStyle.Danger`, added `Icon="close"`
+- Wrapped Approve/Reject buttons in `.approval-actions` div (flex with gap) — removed inline `Style="margin-right:10px"`
+- Replaced inline-styled `<p style="color:red;margin-top:10px;">` warning with `.alert.alert--warning` div containing warning Material Icon
+- Added `.alert.alert--success` div with check_circle icon shown when `Vm.AllApproved` is true
+- Added step-context "Step 6 of 9" above h4 heading
+- Kept h4 "Approvals" heading for E2E test compatibility
+- Kept exact text "All four approvals are required before continuing." for E2E test compatibility
+- Added helper method `GetApprovalBadgeClass(string status)` in @code block for badge CSS class mapping
+- Added CSS classes to `app.css`: `.approval-progress` (with `__text`, `__track`, `__bar`), `.approval-actions`, `.status-badge--approved`, `.status-badge--rejected`, `.alert` (with `__icon`, `--warning`, `--success`)
+- Files changed: `HedgingWizard.razor`, `app.css`
+- **Learnings for future iterations:**
+  - Dynamic progress bar width requires inline style (`width: N%`) — this is the accepted pattern for progress bars even when "no inline styles" is the rule
+  - `Vm.Approvals` is `IList<ApproverStatus>` — use `.Count(predicate)` (LINQ) to count specific statuses
+  - Status column changed from `Property` binding to `Template` renders badge spans — may affect E2E tests that count "Pending" text occurrences (US-011 scope)
+  - The `.alert` pattern with `--warning`/`--success` variants is reusable for any informational/warning/success messages
+  - `GetApprovalBadgeClass` helper in @code block keeps Razor markup clean — avoids inline ternary expressions in class attributes
