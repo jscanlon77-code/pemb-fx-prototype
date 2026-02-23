@@ -103,9 +103,83 @@
                 </div>
             }
         </div>,
-        2 => @<p>Validation: @(Vm.FxData.Any() && Vm.BnyData.Any() ? "OK" : "Pending")</p>,
-        3 => @<p>Calculated @Vm.Instructions?.Count hedge instructions.</p>,
-        4 => @<p>Trade instructions ready for approval.</p>,
+        2 => @<div>
+            <p class="step-context">Step 3 of 9</p>
+            <h4>Validation</h4>
+            <div class="status-card">
+                @if (Vm.FxData.Any() && Vm.BnyData.Any())
+                {
+                    <span class="material-icons status-card__icon status-card__icon--success">check_circle</span>
+                    <div class="status-card__body">
+                        <span class="status-badge status-badge--success">Passed</span>
+                        <p class="status-card__label">Validation: OK</p>
+                    </div>
+                }
+                else
+                {
+                    <span class="material-icons status-card__icon status-card__icon--warning">pending</span>
+                    <div class="status-card__body">
+                        <span class="status-badge status-badge--pending">Pending</span>
+                        <p class="status-card__label">Validation: Pending</p>
+                    </div>
+                }
+            </div>
+            <div class="checklist">
+                <div class="checklist__item">
+                    <span class="material-icons checklist__icon @(Vm.BnyData.Any() ? "checklist__icon--pass" : "checklist__icon--fail")">@(Vm.BnyData.Any() ? "check_circle" : "cancel")</span>
+                    <span>BNY Data uploaded</span>
+                </div>
+                <div class="checklist__item">
+                    <span class="material-icons checklist__icon @(Vm.FxData.Any() ? "checklist__icon--pass" : "checklist__icon--fail")">@(Vm.FxData.Any() ? "check_circle" : "cancel")</span>
+                    <span>FX Data uploaded</span>
+                </div>
+            </div>
+        </div>,
+        3 => @<div>
+            <p class="step-context">Step 4 of 9</p>
+            <h4>Calculation</h4>
+            @if (Vm.Instructions != null)
+            {
+                <div class="status-card">
+                    <div class="status-card__count">@Vm.Instructions.Count</div>
+                    <div class="status-card__body">
+                        <p class="status-card__heading">Hedge Instructions Calculated</p>
+                        <p class="status-card__label">Calculated @Vm.Instructions.Count hedge instructions.</p>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <span class="material-icons empty-state__icon">calculate</span>
+                    <p class="empty-state__heading">No hedge instructions</p>
+                    <p class="empty-state__desc">Hedge instructions will be calculated automatically</p>
+                </div>
+            }
+        </div>,
+        4 => @<div>
+            <p class="step-context">Step 5 of 9</p>
+            <h4>Trade Instructions</h4>
+            @if (Vm.Instructions != null && Vm.Instructions.Any())
+            {
+                <div class="status-card">
+                    <span class="material-icons status-card__icon status-card__icon--success">assignment_turned_in</span>
+                    <div class="status-card__body">
+                        <p class="status-card__heading">Ready for Approval</p>
+                        <span class="status-badge status-badge--info">@Vm.Instructions.Count instructions</span>
+                        <p class="status-card__label">Trade instructions ready for approval.</p>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <span class="material-icons empty-state__icon">assignment</span>
+                    <p class="empty-state__heading">No trade instructions</p>
+                    <p class="empty-state__desc">Trade instructions ready for approval.</p>
+                </div>
+            }
+        </div>,
         5 => @<div>
             <h4>Approvals</h4>
             <RadzenDataGrid Data="@Vm.Approvals" TItem="ApproverStatus">
