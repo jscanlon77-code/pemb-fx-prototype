@@ -177,3 +177,136 @@ main {
     margin: 0 auto;
     padding: var(--space-6);
 }
+
+/* ── Page Header ──────────────────────────────────────────────────── */
+
+.page-header {
+    margin-bottom: var(--space-6);
+}
+
+.page-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 var(--space-1) 0;
+}
+
+.page-subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/* ── Dashboard Grid ───────────────────────────────────────────────── */
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-6);
+    margin-bottom: var(--space-8);
+}
+
+.nav-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: var(--space-8) var(--space-6);
+    background: var(--surface-card);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.nav-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.nav-card__icon {
+    font-size: 48px;
+    color: var(--color-accent);
+    margin-bottom: var(--space-4);
+}
+
+.nav-card__title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+}
+
+.nav-card__desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+/* ── Workflow Overview ────────────────────────────────────────────── */
+
+.workflow-overview {
+    background: var(--surface-card);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-sm);
+}
+
+.workflow-overview__heading {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin: 0 0 var(--space-4) 0;
+}
+
+.workflow-overview__steps {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+}
+
+.workflow-pill {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    color: var(--text-on-primary);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.workflow-pill__index {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.workflow-pill__label {
+    white-space: nowrap;
+}
+
+.workflow-pill.data-input {
+    background: var(--category-data-input);
+}
+
+.workflow-pill.processing {
+    background: var(--category-processing);
+}
+
+.workflow-pill.approval {
+    background: var(--category-approval);
+}
+
+.workflow-pill.output {
+    background: var(--category-output);
+}

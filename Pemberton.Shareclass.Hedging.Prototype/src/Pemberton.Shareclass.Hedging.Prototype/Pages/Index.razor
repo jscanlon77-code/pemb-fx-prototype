@@ -1,8 +1,62 @@
 @page "/"
 
-<h3>Hedging Prototype</h3>
+<div class="page-header">
+    <h3 class="page-title">FX Hedging Dashboard</h3>
+    <p class="page-subtitle">Share-class FX hedging workflow management</p>
+</div>
 
-<ul>
-    <li><NavLink href="diagram">Hedging Workflow Diagram</NavLink></li>
-    <li><NavLink href="wizard">Hedging Execution Wizard</NavLink></li>
-</ul>
+<div class="dashboard-grid">
+    <a href="diagram" class="nav-card">
+        <span class="material-icons nav-card__icon">account_tree</span>
+        <span class="nav-card__title">Workflow Diagram</span>
+        <span class="nav-card__desc">View the 9-step share-class FX hedging process as an interactive workflow diagram</span>
+    </a>
+
+    <a href="wizard" class="nav-card">
+        <span class="material-icons nav-card__icon">play_circle</span>
+        <span class="nav-card__title">Execution Wizard</span>
+        <span class="nav-card__desc">Step through data upload, validation, calculation, approvals, and trade execution</span>
+    </a>
+</div>
+
+<div class="workflow-overview">
+    <h4 class="workflow-overview__heading">Workflow Steps</h4>
+    <div class="workflow-overview__steps">
+        <div class="workflow-pill data-input">
+            <span class="workflow-pill__index">1</span>
+            <span class="workflow-pill__label">BNY Data</span>
+        </div>
+        <div class="workflow-pill data-input">
+            <span class="workflow-pill__index">2</span>
+            <span class="workflow-pill__label">FX Data</span>
+        </div>
+        <div class="workflow-pill processing">
+            <span class="workflow-pill__index">3</span>
+            <span class="workflow-pill__label">Validate</span>
+        </div>
+        <div class="workflow-pill processing">
+            <span class="workflow-pill__index">4</span>
+            <span class="workflow-pill__label">Calculate</span>
+        </div>
+        <div class="workflow-pill processing">
+            <span class="workflow-pill__index">5</span>
+            <span class="workflow-pill__label">Instructions</span>
+        </div>
+        <div class="workflow-pill approval">
+            <span class="workflow-pill__index">6</span>
+            <span class="workflow-pill__label">Approvals</span>
+        </div>
+        <div class="workflow-pill output">
+            <span class="workflow-pill__index">7</span>
+            <span class="workflow-pill__label">Execute</span>
+        </div>
+        <div class="workflow-pill output">
+            <span class="workflow-pill__index">8</span>
+            <span class="workflow-pill__label">Book</span>
+        </div>
+        <div class="workflow-pill output">
+            <span class="workflow-pill__index">9</span>
+            <span class="workflow-pill__label">Report</span>
+        </div>
+    </div>
+</div>
